@@ -193,6 +193,7 @@ async function main() {
 }
 
 main().catch(e => {
+  console.log('::error::' + (e.stack || e.message));
   console.error('TEST FAILED:', e);
   process.exit(1);
 });

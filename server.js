@@ -691,9 +691,9 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '127.0.0.1', () => {
   console.log(`=================================================================`);
-  console.log(`🚀 [CYBERRANGE PRO] Serveur opérationnel sur http://localhost:${PORT}`);
+  console.log(`🚀 [CYBERRANGE PRO] Serveur opérationnel sur http://127.0.0.1:${PORT}`);
   console.log(`🛡️  5 Modules d'élite, 5 Boss Fights, Cibles réelles prêtes.`);
   console.log(`=================================================================`);
 });
