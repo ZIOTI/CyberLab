@@ -20,13 +20,22 @@ async function ensureServerRunning() {
   }
 
   console.log('[TEST] Démarrage automatique du serveur CyberLab...');
+  let stderrOutput = '';
   const server = spawn(process.execPath, ['server.js'], {
-    cwd: __dirname,
-    stdio: 'inherit'
+    cwd: __dirname
+  });
+
+  server.stdout.on('data', d => process.stdout.write(d));
+  server.stderr.on('data', d => {
+    stderrOutput += d.toString();
+    process.stderr.write(d);
   });
 
   const start = Date.now();
   while (Date.now() - start < 12000) {
+    if (server.exitCode !== null) {
+      throw new Error(`Le serveur CyberLab a crashé immédiatement avec le code ${server.exitCode}.\nStderr: ${stderrOutput}`);
+    }
     await new Promise(r => setTimeout(r, 400));
     if (await isServerUp()) {
       console.log('[TEST] Serveur CyberLab opérationnel et prêt pour les tests.');
@@ -34,8 +43,8 @@ async function ensureServerRunning() {
     }
   }
 
-  try { server.kill('SIGKILL'); } catch {}
-  throw new Error('Impossible de se connecter au serveur CyberLab après 12 secondes.');
+  try { server.kill(); } catch {}
+  throw new Error('Impossible de se connecter au serveur CyberLab après 12 secondes.\nStderr: ' + stderrOutput);
 }
 
 async function testAll() {
