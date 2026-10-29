@@ -25,21 +25,7 @@ jobs:
           node-version: 22
 
       - name: 🧪 Exécution de la suite de tests de validation
-        shell: powershell
-        run: |
-          $server = Start-Process node -ArgumentList "server.js" -WorkingDirectory (Get-Location) -PassThru -RedirectStandardError "server_err.log" -RedirectStandardOutput "server_out.log"
-          Start-Sleep -Seconds 4
-          node test_suite.js
-          $testExit = $LASTEXITCODE
-          if ($testExit -ne 0) {
-            Write-Host "=== SERVER ERROR LOG ==="
-            if (Test-Path "server_err.log") { Get-Content "server_err.log" }
-            Write-Host "=== SERVER OUTPUT LOG ==="
-            if (Test-Path "server_out.log") { Get-Content "server_out.log" }
-            Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue
-            exit $testExit
-          }
-          Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue
+        run: node test_suite.js
 
       - name: 🔨 Compilation des exécutables Windows (.EXE)
         shell: powershell
