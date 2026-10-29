@@ -44,6 +44,7 @@ echo.
 start "" cmd /c "timeout /t 1 /nobreak >nul & start http://localhost:3333"
 
 :RUN_LOOP
+set CYBERRANGE_SUPERVISOR=1
 :: Lancer le serveur
 "%NODE_EXEC%" server.js
 

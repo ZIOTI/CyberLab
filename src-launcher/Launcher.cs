@@ -95,6 +95,7 @@ namespace CyberRangeLauncher
                     psi.WorkingDirectory = workingDir;
                     psi.CreateNoWindow = true;
                     psi.UseShellExecute = false;
+                    psi.EnvironmentVariables["CYBERRANGE_SUPERVISOR"] = "1";
 
                     serverProcess = Process.Start(psi);
                     if (serverProcess == null) break;

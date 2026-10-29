@@ -917,9 +917,22 @@ const server = http.createServer(async (req, res) => {
     try {
       const result = await updater.applyUpdate();
       sendJSON(res, 200, result);
-      // Redémarrage automatique du serveur après 1.5s (code 42 capturé par start.bat)
+      // Redémarrage automatique du serveur après 1.5s (code 42 ou respawn autonome)
       setTimeout(() => {
         console.log('[*] Redémarrage automatique du serveur suite à la mise à jour...');
+        try {
+          if (!process.env.CYBERRANGE_SUPERVISOR) {
+            const { spawn } = require('node:child_process');
+            const child = spawn(process.execPath, [path.join(__dirname, 'server.js')], {
+              detached: true,
+              stdio: 'ignore',
+              cwd: __dirname
+            });
+            child.unref();
+          }
+        } catch (e) {
+          console.warn('[!] Erreur respawn autonome :', e.message);
+        }
         process.exit(42);
       }, 1500);
       return;

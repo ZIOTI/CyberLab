@@ -449,6 +449,13 @@ class TrainingSystem {
       this.renderRoom();
       if (this.activeInstance && this.activeInstance.status === 'RUNNING') {
         this.startCountdownTimer();
+
+      // Bascule automatique vers le navigateur intégré pour les labs web/API
+      if (this.getLocalWebTarget(challengeId)) {
+        setTimeout(() => {
+          this.switchRoomTab('browser');
+        }, 300);
+      }
       }
     } catch (e) {
       console.error('Erreur ouverture room:', e);
@@ -704,36 +711,51 @@ class TrainingSystem {
           <span id="target-countdown-display" class="text-xs font-black text-amber-400">--:--</span>
         </div>
 
-        <!-- IP & Accès Cible -->
+        <!-- Accès Direct & URL Réelle du Lab -->
         <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2.5">
-          <div class="flex items-center justify-between text-[10px]">
-            <span class="text-slate-400 font-bold uppercase tracking-wider">IP VIRTUELLE CTF :</span>
-            <span class="text-amber-400 font-mono font-bold bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-800/60">VPN THM / HTB</span>
-          </div>
-          <div class="flex items-center justify-between bg-slate-900/80 px-2.5 py-1.5 rounded-lg border border-slate-800">
-            <code class="text-xs font-black text-cyan-300 select-all font-mono">${ip}</code>
-            <button onclick="navigator.clipboard.writeText('${ip}')" class="text-slate-400 hover:text-white p-1 rounded" title="Copier l'IP Virtuelle">
-              ${window.CyberIcons ? window.CyberIcons.get('copy', 'w-3.5 h-3.5') : '📋'}
-            </button>
-          </div>
-
           ${localWebTarget ? `
-            <div class="pt-2 border-t border-slate-800 space-y-2">
-              <button onclick="window.trainingSystem.switchRoomTab('browser')" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 text-xs font-black transition-all shadow-lg shadow-cyan-950 flex items-center justify-center gap-2 group">
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-[10px]">
+                <span class="text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <span>🟢</span>
+                  <span>URL D'ACCÈS LOCALE (Port 3333) :</span>
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">Prêt</span>
+              </div>
+              <div class="flex items-center justify-between bg-slate-900 px-2.5 py-1.5 rounded-lg border border-emerald-950/80">
+                <code class="text-xs font-black text-emerald-300 select-all font-mono truncate mr-2">${localWebTarget}</code>
+                <button onclick="navigator.clipboard.writeText('${localWebTarget}'); alert('URL copiée dans le presse-papier !');" class="text-slate-400 hover:text-white p-1 rounded transition" title="Copier l'URL Locale">
+                  ${window.CyberIcons ? window.CyberIcons.get('copy', 'w-3.5 h-3.5') : '📋'}
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800/80 space-y-2">
+              <button onclick="window.trainingSystem.switchRoomTab('browser')" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 text-xs font-black transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 group">
                 <span>🌐</span>
                 <span>OUVRIR DANS LE LAB INTÉGRÉ</span>
               </button>
 
               <a href="${localWebTarget}" target="_blank" class="w-full py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-bold transition flex items-center justify-center gap-1.5">
-                <span>Ouvrir dans un nouvel onglet</span>
+                <span>Ouvrir dans un nouvel onglet Chrome</span>
                 <span>${window.CyberIcons ? window.CyberIcons.get('externalLink', 'w-3 h-3') : '↗'}</span>
               </a>
 
-              <div class="p-2 rounded-lg bg-cyan-950/40 border border-cyan-800/40 text-[10px] text-cyan-200/90 leading-tight font-sans">
-                💡 <strong>Important</strong> : Sur votre PC, le serveur répond sur le port local (3333). Ne collez pas l'IP <code class="text-amber-300 font-mono">${ip}</code> dans Chrome, utilisez le bouton ci-dessus !
+              <div class="p-2 rounded-lg bg-slate-900/90 border border-slate-800 text-[10px] text-slate-400 leading-snug font-sans space-y-1">
+                <div class="flex items-center justify-between text-slate-500 font-mono">
+                  <span>IP VPN Virtuelle (simulation CTF) :</span>
+                  <code class="text-cyan-400 font-bold">${ip}</code>
+                </div>
+                <div class="text-[9.5px] text-slate-500">
+                  ℹ️ L'adresse 10.10.x.x est un repère virtuel CTF. Sur ton PC, utilise toujours le bouton vert ou localhost:3333.
+                </div>
               </div>
             </div>
           ` : `
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="text-slate-400 font-bold uppercase tracking-wider">IP VIRTUELLE CTF :</span>
+              <span class="text-cyan-400 font-mono font-bold bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-800/60">${ip}</span>
+            </div>
             <div class="text-[10px] text-slate-400 pt-1 border-t border-slate-800">
               Lab basé sur artefacts / fichiers téléchargeables ci-dessous.
             </div>
@@ -959,6 +981,13 @@ class TrainingSystem {
       if (boxMount) boxMount.innerHTML = this.renderTargetBox();
 
       this.startCountdownTimer();
+
+      // Bascule automatique vers le navigateur intégré pour les labs web/API
+      if (this.getLocalWebTarget(challengeId)) {
+        setTimeout(() => {
+          this.switchRoomTab('browser');
+        }, 300);
+      }
     } catch (e) {
       alert('Impossible de lancer la machine : ' + e.message);
     }

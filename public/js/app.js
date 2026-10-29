@@ -370,13 +370,23 @@ class CyberAppPro {
         if (progFill) progFill.style.width = '25%';
 
         try {
-          setTimeout(() => {
-            if (progStatus) progStatus.innerText = '2/3 : Téléchargement & sauvegarde SQLite...';
-            if (progPct) progPct.innerText = '65%';
-            if (progFill) progFill.style.width = '65%';
-          }, 600);
+          if (progStatus) progStatus.innerText = '1/3 : Téléchargement du pack depuis GitHub...';
+          if (progPct) progPct.innerText = '30%';
+          if (progFill) progFill.style.width = '30%';
+
+          const step2Timer = setTimeout(() => {
+            if (progStatus) progStatus.innerText = '2/3 : Extraction & sécurisation SQLite (cyberrange.db)...';
+            if (progPct) progPct.innerText = '70%';
+            if (progFill) progFill.style.width = '70%';
+          }, 1200);
 
           const applyRes = await fetch('/api/apply-update', { method: 'POST' });
+          clearTimeout(step2Timer);
+
+          if (!applyRes.ok) {
+            const errData = await applyRes.json().catch(() => ({}));
+            throw new Error(errData.error || `Erreur serveur HTTP ${applyRes.status}`);
+          }
           const applyData = await applyRes.json();
 
           if (applyData.success) {
@@ -385,9 +395,23 @@ class CyberAppPro {
             if (progPct) progPct.innerText = '100%';
             if (progFill) progFill.style.width = '100%';
 
-            setTimeout(() => {
-              window.location.reload();
-            }, 1800);
+            // Polling automatique pour recharger la page dès que le serveur a redémarré
+            let attempts = 0;
+            const checkServerRestart = setInterval(async () => {
+              attempts++;
+              try {
+                const ping = await fetch('/api/version');
+                if (ping.ok) {
+                  clearInterval(checkServerRestart);
+                  window.location.reload();
+                }
+              } catch (e) {
+                if (attempts > 20) {
+                  clearInterval(checkServerRestart);
+                  window.location.reload();
+                }
+              }
+            }, 1000);
           } else {
             throw new Error(applyData.error || 'Échec de la mise à jour automatique.');
           }
