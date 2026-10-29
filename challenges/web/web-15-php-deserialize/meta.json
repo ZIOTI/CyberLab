@@ -1,0 +1,28 @@
+{
+  "id": "web-15-php-deserialize",
+  "title": "Magic Method RCE",
+  "category": "Web",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "web-beginner",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "php-unserialize",
+    "web",
+    "intermediate"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf"
+  ],
+  "narrative_story": "Scénario opérationnel pour Magic Method RCE : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (php-unserialize) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.29.113"
+}

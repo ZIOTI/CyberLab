@@ -1,0 +1,28 @@
+{
+  "id": "web-05-lfi-wrapper",
+  "title": "PHP Wrapper Portal",
+  "category": "Web",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 40,
+  "learning_path": "web-beginner",
+  "author": "Aegis Websec",
+  "tags": [
+    "lfi",
+    "php-wrappers",
+    "base64",
+    "path-traversal"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "curl",
+    "Burp Suite",
+    "CyberChef"
+  ],
+  "narrative_story": "Un portail documentaire interne charge ses pages dynamiquement via include($_GET['page']). Les fichiers PHP sensibles s'exécutent côté serveur sans afficher leur code source brut. Utilise les filtres de flux PHP (php://filter) pour encoder le code source de config.php en Base64 et révéler les identifiants codés en dur.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.44.59"
+}

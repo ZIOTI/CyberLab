@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Out-of-Band Exfiltration DTD)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à blind-xxe-oob.",
+    "points": 105,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WEB_24_BLIND_XXE_OOB_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 245,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{BLIND_XXE_EXTERNAL_PARAM_DTD_EXFILTRATION_WIN}"
+  }
+]

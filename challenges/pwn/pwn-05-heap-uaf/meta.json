@@ -1,0 +1,28 @@
+{
+  "id": "pwn-05-heap-uaf",
+  "title": "Use-After-Free Fastbin Poisoning",
+  "category": "Pwn & Binaire",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "heap-uaf-tcache",
+    "pwn",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "GDB-Peda",
+    "pwntools",
+    "checksec",
+    "ROPgadget"
+  ],
+  "narrative_story": "Scénario opérationnel pour Use-After-Free Fastbin Poisoning : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (heap-uaf-tcache) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.59.190"
+}

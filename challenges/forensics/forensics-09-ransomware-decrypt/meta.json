@@ -1,0 +1,28 @@
+{
+  "id": "forensics-09-ransomware-decrypt",
+  "title": "Decryption Key Recovery from RAM",
+  "category": "Forensics",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 60,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "ransomware-ram-key",
+    "forensics",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Wireshark",
+    "Volatility 3",
+    "Autopsy",
+    "FTK Imager"
+  ],
+  "narrative_story": "Scénario opérationnel pour Decryption Key Recovery from RAM : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (ransomware-ram-key) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.23.72"
+}

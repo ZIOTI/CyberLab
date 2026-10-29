@@ -1,0 +1,26 @@
+[
+  {
+    "id": "task-1",
+    "title": "Tâche 1 : Désobfuscation du Tableau de Chaînes",
+    "description": "Quel est le nom de la fonction de décalage de chaîne utilisée pour masquer les clés (ex: _0x4f12) ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "_0x4f12"
+  },
+  {
+    "id": "task-2",
+    "title": "Tâche 2 : Opération Cryptographique Élémentaire",
+    "description": "Quelle opération logique binaire (XOR, AND, OR, NOT) est appliquée pour masquer les caractères du token dans le validateur ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "XOR"
+  },
+  {
+    "id": "task-3",
+    "title": "Tâche 3 : Clé de Licence & Flag",
+    "description": "Exécute le décodage ou analyse les variables dans la console DevTools pour récupérer le drapeau de validation.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{JS_OBFUSCATION_DEPACKED_KEY_VERIFIED}"
+  }
+]

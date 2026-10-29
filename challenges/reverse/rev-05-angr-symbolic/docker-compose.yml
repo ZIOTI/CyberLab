@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  rev-05-angr-symbolic:
+    build: .
+    container_name: cyberlab_rev-05-angr-symbolic
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

@@ -1,0 +1,28 @@
+{
+  "id": "crypto-03-hash-crack",
+  "title": "Dictionary Warfare",
+  "category": "Crypto",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 45,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "hashcat-md5",
+    "crypto",
+    "beginner"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "CyberChef",
+    "Hashcat",
+    "John the Ripper",
+    "SageMath"
+  ],
+  "narrative_story": "Scénario opérationnel pour Dictionary Warfare : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (hashcat-md5) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.31.159"
+}

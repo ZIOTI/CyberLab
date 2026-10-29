@@ -1,0 +1,26 @@
+[
+  {
+    "id": "task-1",
+    "title": "Tâche 1 : Consultation du Profil Utilisateur Standard",
+    "description": "Interroge l'API pour ton propre profil (id: 42) avec l'en-tête X-User-Token: operator_token_99. Quel est le nom du patient renvoyé ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "Alex Dupont"
+  },
+  {
+    "id": "task-2",
+    "title": "Tâche 2 : Acronyme OWASP API Security",
+    "description": "Quel est l'acronyme officiel désignant la vulnérabilité n°1 de l'OWASP API Security Top 10 (Broken Object Level Authorization) ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "BOLA"
+  },
+  {
+    "id": "task-3",
+    "title": "Tâche 3 : Escalade BOLA & Extraction du Flag Médical",
+    "description": "Accède à la fiche protégée du Directeur Médical (id: 1) et saisis le code confidentiel (flag) du dossier médical.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{BOLA_API_DIRECT_OBJECT_MEDICAL_RECORD_LEAKED}"
+  }
+]

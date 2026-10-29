@@ -1,0 +1,16 @@
+{
+  "id": "web-02-sqli-login",
+  "title": "IronGate Auth Bypass",
+  "category": "Web",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "web-beginner",
+  "author": "Aegis RedOps",
+  "tags": ["sqli", "auth-bypass", "injection", "web"],
+  "prerequisites": ["Notions SQL SELECT", "Compréhension des opérateurs logiques OR / AND"],
+  "recommended_tools": ["Navigateur Web", "curl", "Burp Suite"],
+  "narrative_story": "La passerelle de sécurité 'IronGate' contrôle l'accès au réseau d'administration interne. Le formulaire de connexion concatène directement les saisies de l'utilisateur dans une chaîne de requête SQL sans utiliser de requêtes préparées. Exploite cette injection SQL classique pour tromper la logique d'authentification et t'identifier sous le compte administrateur.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.14.77"
+}

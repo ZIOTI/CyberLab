@@ -1,0 +1,28 @@
+{
+  "id": "crypto-02-xor-cracker",
+  "title": "Single-Byte Enigma",
+  "category": "Crypto",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 35,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Cipher Office",
+  "tags": [
+    "crypto",
+    "xor",
+    "frequency-analysis",
+    "cryptanalysis"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Python",
+    "CyberChef",
+    "xortool"
+  ],
+  "narrative_story": "Les services de renseignement ont intercepté un bloc binaire chiffré avec un algorithme XOR à clé unique d'un seul octet (0x00 à 0xFF). Sachant que le texte en clair est en anglais et contient des termes de sécurité informatique, développe un analyseur statistique de fréquence ou utilise CyberChef pour retrouver la clé et lire le message.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.35.157"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "phish-02-credential-harvest",
+  "title": "Fake Portal Analysis",
+  "category": "Social Engineering",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 45,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "phishing-source-audit",
+    "social-eng",
+    "beginner"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Gophish",
+    "MXToolbox",
+    "PhishTool"
+  ],
+  "narrative_story": "Scénario opérationnel pour Fake Portal Analysis : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (phishing-source-audit) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.34.20"
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "task-1",
+    "title": "Tâche 1 : Identification du Champ Vulnérable",
+    "description": "Quel caractère spécial en SQL permet de briser la délimitation de chaîne de caractères lors d'un test d'injection ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "'"
+  },
+  {
+    "id": "task-2",
+    "title": "Tâche 2 : Charge Utile d'Évaluation Tautologique",
+    "description": "Donne un exemple de payload d'authentification classique exploitant l'opérateur OR pour forcer une condition toujours vraie.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "' OR '1'='1"
+  },
+  {
+    "id": "task-3",
+    "title": "Tâche 3 : Connexion Admin & Flag de Session",
+    "description": "Injecte la charge utile dans la mire d'authentification IronGate pour te connecter sous le compte super-administrateur et récupérer le secret de session.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SQLI_AUTH_BYPASS_IRON_GATE_CLEARED}"
+  }
+]

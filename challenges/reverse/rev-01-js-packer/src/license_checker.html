@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Aegis Gateway - Contrôle de Licence</title>
+</head>
+<body style="background:#070a13; color:#f8fafc; font-family:monospace; text-align:center; padding:50px;">
+  <h2>Système de Validation de Licence Sécurisée</h2>
+  <p>Entrez votre clé d'activation officielle :</p>
+  <input type="text" id="license_input" style="padding:10px; width:400px; background:#0f172a; color:#38bdf8; border:1px solid #334155;">
+  <br><br>
+  <button onclick="checkKey()" style="padding:10px 20px; background:#10b981; color:#000; font-weight:bold; border:none; cursor:pointer;">Vérifier</button>
+  <p id="result"></p>
+
+  <script>
+    // Validateur obfusqué
+    var _0x4f12 = ['\x5f\x70\x61\x63\x6b\x65\x72', '\x43\x59\x42\x45\x52\x4c\x41\x42', '\x76\x61\x6c\x69\x64'];
+    function checkKey() {
+      var input = document.getElementById('license_input').value.trim();
+      var secret = atob('Q1lCRVJMQUJ7SlNfT0JGVVNDQVRJT05fREVQQUNLRURfS0VZX1ZFUklGSUVEfQ==');
+      if (input === secret) {
+        document.getElementById('result').innerText = '✔ Licence authentifiée ! Accès autorisé.';
+        document.getElementById('result').style.color = '#10b981';
+      } else {
+        document.getElementById('result').innerText = '❌ Clé de licence invalide.';
+        document.getElementById('result').style.color = '#f43f5e';
+      }
+    }
+  </script>
+</body>
+</html>

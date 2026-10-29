@@ -1,0 +1,28 @@
+{
+  "id": "web-04-stored-xss",
+  "title": "Comment Hijack",
+  "category": "Web",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 45,
+  "learning_path": "web-beginner",
+  "author": "Aegis Websec",
+  "tags": [
+    "xss",
+    "stored-xss",
+    "cookie-theft",
+    "javascript"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "DevTools",
+    "Burp Suite",
+    "Webhook.site"
+  ],
+  "narrative_story": "L'espace d'évaluation des clients sur la plateforme de support Aegis ne filtre pas correctement les balises HTML dans le corps des messages. Un bot administrateur consulte régulièrement les nouveaux commentaires. Exploite cette faille XSS stockée pour forcer l'administrateur à t'envoyer son jeton de session chiffré.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.17.174"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "osint-02-company-footprint",
+  "title": "Ghost Corporation",
+  "category": "OSINT",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Recon Unit",
+  "tags": [
+    "osint",
+    "footprinting",
+    "whois",
+    "dns",
+    "archive"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "whois",
+    "dig",
+    "Wayback Machine",
+    "Google Dorks"
+  ],
+  "narrative_story": "L'entreprise fictive \"Kestrel Aerospace\" semble avoir dissimulé un incident survenu en 2023. En inspectant les enregistrements DNS historiques, les archives web Wayback simulées et les certificats numériques, retrouve le nom du sous-domaine de pré-production qui a fait l'objet d'une fuite.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.15.158"
+}

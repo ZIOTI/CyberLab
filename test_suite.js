@@ -174,8 +174,43 @@ async function testAll() {
   assert(typeof checkData.updateAvailable === 'boolean', 'Check update returns updateAvailable boolean');
   console.log('✔ API /api/check-update test PASSED');
 
+  // 13. Test Zone d'Entraînement (Training Hub, 100 Labs, Room API, Flag Submission & Writeup)
+  const catData = await fetch(`${BASE_URL}/api/training/catalog`).then(r => r.json());
+  assert(catData.success === true, 'Catalog response success');
+  assert(catData.challenges && catData.challenges.length >= 100, 'All 100 challenges present in catalog');
+  console.log('✔ API /api/training/catalog test PASSED (Full ' + catData.challenges.length + ' challenges loaded)');
+
+  const lpData = await fetch(`${BASE_URL}/api/training/learning-paths`).then(r => r.json());
+  assert(lpData.success === true, 'Learning paths success');
+  assert(lpData.paths && lpData.paths.length >= 8, 'At least 8 learning paths present');
+  console.log('✔ API /api/training/learning-paths test PASSED (' + lpData.paths.length + ' paths loaded)');
+
+  // Test Room detail & downloadable files
+  const roomData = await fetch(`${BASE_URL}/api/training/challenge/net-01-wireshark-ftp`).then(r => r.json());
+  assert(roomData.success === true, 'Room detail success');
+  assert(roomData.room.tasks.length === 3, 'net-01 has 3 tasks');
+  assert(roomData.room.downloadable_files.length > 0, 'net-01 has downloadable pcap');
+  console.log('✔ API /api/training/challenge/:id test PASSED with downloadable files');
+
+  // Test Instance start/renew/stop
+  const instStart = await fetch(`${BASE_URL}/api/training/instance/start`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ challenge_id: 'web-01-robots' })
+  }).then(r => r.json());
+  assert(instStart.success === true, 'Instance started');
+  assert(instStart.instance.virtual_ip, 'Virtual IP assigned');
+
+  const instStop = await fetch(`${BASE_URL}/api/training/instance/stop`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ challenge_id: 'web-01-robots' })
+  }).then(r => r.json());
+  assert(instStop.success === true, 'Instance stopped');
+  console.log('✔ Training Instance lifecycle (Start/Stop) test PASSED');
+
   console.log('========================================================================');
-  console.log('🎉 100% DES 12 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
+  console.log('🎉 100% DES 13 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
   console.log('========================================================================');
 }
 

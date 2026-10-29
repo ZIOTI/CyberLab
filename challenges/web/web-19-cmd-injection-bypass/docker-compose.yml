@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web-19-cmd-injection-bypass:
+    build: .
+    container_name: cyberlab_web-19-cmd-injection-bypass
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

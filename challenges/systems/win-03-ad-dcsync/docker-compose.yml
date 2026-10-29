@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  win-03-ad-dcsync:
+    build: .
+    container_name: cyberlab_win-03-ad-dcsync
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

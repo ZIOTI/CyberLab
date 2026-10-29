@@ -1,0 +1,28 @@
+{
+  "id": "pwn-04-rop-x64-execve",
+  "title": "ROP Chain Syscall Construction",
+  "category": "Pwn & Binaire",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "rop-gadgets-x64",
+    "pwn",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "GDB-Peda",
+    "pwntools",
+    "checksec",
+    "ROPgadget"
+  ],
+  "narrative_story": "Scénario opérationnel pour ROP Chain Syscall Construction : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (rop-gadgets-x64) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.32.179"
+}

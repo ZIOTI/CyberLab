@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Confirmation de la vulnérabilité XSS",
+    "description": "Injecte une balise <script>alert(1)</script> ou <img src=x onerror=...> pour confirmer l'absence d'échappement HTML.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "XSS_TRIGGERED"
+  },
+  {
+    "id": "t2",
+    "title": "Identification du cookie d'administration",
+    "description": "Quel attribut manque cruellement sur le cookie de session de l'admin (permettant sa lecture en JavaScript) ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "HttpOnly"
+  },
+  {
+    "id": "t3",
+    "title": "Exfiltration du Cookie & Flag",
+    "description": "Capture le cookie admin via le récepteur HTTP et soumets le flag.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{STORED_XSS_COOKIE_HIJACK_ADMIN_BOT_SUCCESS}"
+  }
+]

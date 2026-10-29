@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  blue-05-memory-injection-ir:
+    build: .
+    container_name: cyberlab_blue-05-memory-injection-ir
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

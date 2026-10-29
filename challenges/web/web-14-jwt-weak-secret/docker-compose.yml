@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web-14-jwt-weak-secret:
+    build: .
+    container_name: cyberlab_web-14-jwt-weak-secret
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

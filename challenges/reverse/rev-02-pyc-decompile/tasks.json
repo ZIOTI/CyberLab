@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Version de Python utilisée pour compiler",
+    "description": "Quelle version de Python apparaît dans l'en-tête du fichier .pyc ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "Python 3.10"
+  },
+  {
+    "id": "t2",
+    "title": "Nom de la fonction de validation",
+    "description": "Quel est le nom de la fonction qui effectue la vérification cryptographique ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "verify_license_token"
+  },
+  {
+    "id": "t3",
+    "title": "Flag de la clé valide",
+    "description": "Décompile le fichier avec uncompyle6 ou pycdc et soumets le secret codé en dur.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{PYTHON_BYTECODE_DECOMPILED_PYC_SUCCESS_772}"
+  }
+]

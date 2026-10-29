@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  win-01-ad-asrep:
+    build: .
+    container_name: cyberlab_win-01-ad-asrep
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

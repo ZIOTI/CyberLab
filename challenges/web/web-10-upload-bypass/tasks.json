@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Polyglot Avatar)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à file-upload.",
+    "points": 45,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WEB_10_UPLOAD_BYPASS_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 105,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{FILE_UPLOAD_EXTENSION_BYPASS_PHP5_EXECUTED}"
+  }
+]

@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  pwn-02-ret2libc-x86:
+    build: .
+    container_name: cyberlab_pwn-02-ret2libc-x86
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

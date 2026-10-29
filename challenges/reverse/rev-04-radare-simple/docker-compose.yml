@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  rev-04-radare-simple:
+    build: .
+    container_name: cyberlab_rev-04-radare-simple
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  rev-09-kernel-driver-rootkit:
+    build: .
+    container_name: cyberlab_rev-09-kernel-driver-rootkit
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

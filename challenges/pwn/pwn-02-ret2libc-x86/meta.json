@@ -1,0 +1,28 @@
+{
+  "id": "pwn-02-ret2libc-x86",
+  "title": "Bypassing Non-Executable Stack",
+  "category": "Pwn & Binaire",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "ret2libc-system-binsh",
+    "pwn",
+    "hard"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "GDB-Peda",
+    "pwntools",
+    "checksec",
+    "ROPgadget"
+  ],
+  "narrative_story": "Scénario opérationnel pour Bypassing Non-Executable Stack : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (ret2libc-system-binsh) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.24.22"
+}

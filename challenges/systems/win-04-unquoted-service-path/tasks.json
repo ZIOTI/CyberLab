@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Space Injection Privilege)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à unquoted-service.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WIN_04_UNQUOTED_SERVICE_PATH_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 210,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{UNQUOTED_SERVICE_PATH_EXE_HIJACK_SYSTEM_ELEV}"
+  }
+]

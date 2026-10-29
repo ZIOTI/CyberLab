@@ -1,0 +1,28 @@
+{
+  "id": "web-25-java-spring4shell",
+  "title": "Class Loader Binding Exploit",
+  "category": "Web",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 60,
+  "learning_path": "web-beginner",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "spring4shell-cve",
+    "web",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf"
+  ],
+  "narrative_story": "Scénario opérationnel pour Class Loader Binding Exploit : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (spring4shell-cve) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.34.166"
+}

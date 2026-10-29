@@ -1,0 +1,28 @@
+{
+  "id": "cloud-04-k8s-service-account",
+  "title": "Kubernetes Cluster Role Escalation",
+  "category": "Cloud & Conteneurs",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "k8s-rbac-impersonate",
+    "cloud",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "AWS CLI",
+    "ScoutSuite",
+    "Pacu",
+    "Trivy"
+  ],
+  "narrative_story": "Scénario opérationnel pour Kubernetes Cluster Role Escalation : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (k8s-rbac-impersonate) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.49.81"
+}

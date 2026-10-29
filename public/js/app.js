@@ -58,6 +58,11 @@ class CyberAppPro {
     this.renderLearningPath();
     this.renderRightWidgets();
 
+    // Initialisation du module Zone d'Entraînement (100 Labs)
+    if (window.trainingSystem) {
+      window.trainingSystem.init();
+    }
+
     // Vérification de mise à jour au démarrage
     this.checkForUpdates();
   }
@@ -75,6 +80,7 @@ class CyberAppPro {
 
     // Navigation desktop
     setIcon('nav-icon-curriculum', 'curriculum', 'w-5 h-5');
+    setIcon('nav-icon-training', 'training', 'w-5 h-5');
     setIcon('nav-icon-badges', 'trophy', 'w-5 h-5');
     setIcon('nav-icon-profile', 'profile', 'w-5 h-5');
 
@@ -96,6 +102,7 @@ class CyberAppPro {
 
     // Navigation mobile dock
     setIcon('mob-dock-icon-learn', 'curriculum', 'w-5 h-5');
+    setIcon('mob-dock-icon-training', 'training', 'w-5 h-5');
     setIcon('mob-dock-icon-badges', 'trophy', 'w-5 h-5');
     setIcon('mob-dock-icon-profile', 'profile', 'w-5 h-5');
 
@@ -184,15 +191,36 @@ class CyberAppPro {
     document.getElementById('mob-nav-profile')?.addEventListener('click', () => this.openProfileModal());
     document.getElementById('btn-close-profile')?.addEventListener('click', () => document.getElementById('modal-profile')?.classList.add('hidden'));
 
-    // Navigation retour parcours
-    document.getElementById('nav-learn')?.addEventListener('click', () => {
+    // Basculement entre Vues Principales (Curriculum vs Zone Entraînement)
+    const switchToCurriculum = () => {
       this.closeAllModals();
+      document.getElementById('view-curriculum-container')?.classList.remove('hidden');
+      document.getElementById('view-training-hub')?.classList.add('hidden');
+      document.getElementById('nav-learn')?.classList.add('active');
+      document.getElementById('nav-training')?.classList.remove('active');
+      document.getElementById('mob-nav-learn')?.classList.add('active');
+      document.getElementById('mob-nav-training')?.classList.remove('active');
+      if (window.cyberAudio) window.cyberAudio.playTactileClick();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    document.getElementById('mob-nav-learn')?.addEventListener('click', () => {
+    };
+
+    const switchToTraining = () => {
       this.closeAllModals();
+      document.getElementById('view-curriculum-container')?.classList.add('hidden');
+      document.getElementById('view-training-hub')?.classList.remove('hidden');
+      document.getElementById('nav-learn')?.classList.remove('active');
+      document.getElementById('nav-training')?.classList.add('active');
+      document.getElementById('mob-nav-learn')?.classList.remove('active');
+      document.getElementById('mob-nav-training')?.classList.add('active');
+      if (window.cyberAudio) window.cyberAudio.playTactileClick();
+      if (window.trainingSystem) window.trainingSystem.renderHub();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    };
+
+    document.getElementById('nav-learn')?.addEventListener('click', switchToCurriculum);
+    document.getElementById('mob-nav-learn')?.addEventListener('click', switchToCurriculum);
+    document.getElementById('nav-training')?.addEventListener('click', switchToTraining);
+    document.getElementById('mob-nav-training')?.addEventListener('click', switchToTraining);
 
     // Réinitialisation du profil
     document.getElementById('btn-reset-data')?.addEventListener('click', async () => {
@@ -264,6 +292,36 @@ class CyberAppPro {
     }
   }
 
+  async checkUpdateManual() {
+    try {
+      const res = await fetch('/api/check-update');
+      const data = await res.json();
+      if (data && data.updateAvailable) {
+        this.displayUpdateModal(data);
+      } else {
+        const msg = `✅ Votre version de CyberLab (v${data.currentVersion || '1.0.1'}) est à jour !\nAucune version plus récente n'a été publiée sur GitHub.\n\nVoulez-vous afficher l'écran de mise à jour obligatoire (mode test/aperçu) ?`;
+        if (confirm(msg)) {
+          this.testUpdateModal();
+        }
+      }
+    } catch (e) {
+      alert('Erreur lors de la vérification de mise à jour : ' + e.message);
+    }
+  }
+
+  testUpdateModal() {
+    this.displayUpdateModal({
+      updateAvailable: true,
+      currentVersion: '1.0.1',
+      latestVersion: '1.1.0',
+      isTest: true,
+      releaseName: 'CyberRange PRO v1.1.0 (Mode Test & Simulation)',
+      releaseNotes: '⚡ SIMULATION DE MISE À JOUR OBLIGATOIRE :\n- Déploiement des 100 labs d\'entraînement réalistes\n- 10 sites cibles refaits à neuf avec identités uniques\n- Navigateur web intégré dans la plateforme (Split-Screen CTF)\n- Sauvegarde intégrale et rétention de cyberrange.db garantie !',
+      downloadUrl: 'https://github.com/ZIOTI/CyberLab/releases/latest',
+      htmlUrl: 'https://github.com/ZIOTI/CyberLab/releases'
+    });
+  }
+
   displayUpdateModal(updateData) {
     const modal = document.getElementById('modal-update-required');
     if (!modal) return;
@@ -277,12 +335,21 @@ class CyberAppPro {
     const progStatus = document.getElementById('update-progress-status');
     const progPct = document.getElementById('update-progress-pct');
     const progFill = document.getElementById('update-progress-bar-fill');
+    const closeTestBtn = document.getElementById('btn-close-test-update');
 
     if (currVer) currVer.innerText = `v${updateData.currentVersion}`;
     if (targetVer) targetVer.innerText = `v${updateData.latestVersion}`;
     if (notesEl) notesEl.innerText = updateData.releaseNotes || 'Nouvelle version critique disponible.';
     if (manualLink) {
       manualLink.href = updateData.htmlUrl || updateData.downloadUrl || '#';
+    }
+
+    if (closeTestBtn) {
+      if (updateData.isTest) {
+        closeTestBtn.classList.remove('hidden');
+      } else {
+        closeTestBtn.classList.add('hidden');
+      }
     }
 
     if (window.cyberAudio) window.cyberAudio.playError();

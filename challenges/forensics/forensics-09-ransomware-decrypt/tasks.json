@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Decryption Key Recovery from RAM)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à ransomware-ram-key.",
+    "points": 135,
+    "task_type": "flag",
+    "canonical_flag": "VULN_FORENSICS_09_RANSOMWARE_DECRYPT_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 315,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{AES_EXPANDED_KEY_SCHEDULE_IN_RAM_CARVED_CLEARED}"
+  }
+]

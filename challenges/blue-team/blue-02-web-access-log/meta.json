@@ -1,0 +1,28 @@
+{
+  "id": "blue-02-web-access-log",
+  "title": "Web Attack Profiling",
+  "category": "Blue Team & SOC",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 45,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "nginx-log-analysis",
+    "blue-team",
+    "easy"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Splunk",
+    "ELK Stack",
+    "Sigma",
+    "Suricata"
+  ],
+  "narrative_story": "Scénario opérationnel pour Web Attack Profiling : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (nginx-log-analysis) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.11.26"
+}

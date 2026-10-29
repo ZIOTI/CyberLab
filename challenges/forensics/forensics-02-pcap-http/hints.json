@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Filtre d'affichage Wireshark",
+    "cost": 10,
+    "content": "Applique le filtre http.request.method == \"POST\" et utilise \"Follow TCP Stream\"."
+  }
+]

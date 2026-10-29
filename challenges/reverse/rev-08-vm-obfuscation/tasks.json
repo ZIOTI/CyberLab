@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Custom Virtual Machine Bytecode)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à vm-bytecode-deobf.",
+    "points": 135,
+    "task_type": "flag",
+    "canonical_flag": "VULN_REV_08_VM_OBFUSCATION_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 315,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{VIRTUAL_MACHINE_DISPATCHER_EMULATION_CRACKED}"
+  }
+]

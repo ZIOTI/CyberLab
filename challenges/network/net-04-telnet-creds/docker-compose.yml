@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  net-04-telnet-creds:
+    build: .
+    container_name: cyberlab_net-04-telnet-creds
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

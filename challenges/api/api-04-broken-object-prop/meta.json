@@ -1,0 +1,28 @@
+{
+  "id": "api-04-broken-object-prop",
+  "title": "BOPLA Hidden Parameter Injection",
+  "category": "Mobile & API",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 60,
+  "learning_path": "web-beginner",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "bopla-owasp-api3",
+    "api",
+    "hard"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Postman",
+    "Insomnia",
+    "Kiterunner",
+    "Burp Suite"
+  ],
+  "narrative_story": "Scénario opérationnel pour BOPLA Hidden Parameter Injection : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (bopla-owasp-api3) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.45.59"
+}

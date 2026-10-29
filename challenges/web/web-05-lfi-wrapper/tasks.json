@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Détection du paramètre vulnérable",
+    "description": "Quel paramètre GET contrôle l'inclusion dynamique des fichiers locaux ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "page"
+  },
+  {
+    "id": "t2",
+    "title": "Nom du filtre PHP d'encodage",
+    "description": "Quel filtre PHP permet de transformer le contenu du fichier en chaîne Base64 avant inclusion ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "convert.base64-encode"
+  },
+  {
+    "id": "t3",
+    "title": "Déchiffrement et Flag",
+    "description": "Télécharge le dump Base64 de config.php, décode-le et soumets le mot de passe secret découvert.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{PHP_FILTER_BASE64_ENCODE_LFI_CLEARED_881}"
+  }
+]

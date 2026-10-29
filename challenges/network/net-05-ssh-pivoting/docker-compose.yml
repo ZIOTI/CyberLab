@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  net-05-ssh-pivoting:
+    build: .
+    container_name: cyberlab_net-05-ssh-pivoting
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

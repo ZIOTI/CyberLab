@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  linux-06-nfs-no-root-squash:
+    build: .
+    container_name: cyberlab_linux-06-nfs-no-root-squash
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

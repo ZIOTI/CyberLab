@@ -1,0 +1,28 @@
+{
+  "id": "api-03-graphql-introspection",
+  "title": "Hidden Schema Discovery",
+  "category": "Mobile & API",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "web-beginner",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "graphql-introspection",
+    "api",
+    "intermediate"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Postman",
+    "Insomnia",
+    "Kiterunner",
+    "Burp Suite"
+  ],
+  "narrative_story": "Scénario opérationnel pour Hidden Schema Discovery : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (graphql-introspection) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.13.177"
+}

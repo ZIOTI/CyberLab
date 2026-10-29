@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  blue-01-auth-log-brute:
+    build: .
+    container_name: cyberlab_blue-01-auth-log-brute
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

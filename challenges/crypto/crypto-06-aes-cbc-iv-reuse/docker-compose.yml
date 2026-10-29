@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  crypto-06-aes-cbc-iv-reuse:
+    build: .
+    container_name: cyberlab_crypto-06-aes-cbc-iv-reuse
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

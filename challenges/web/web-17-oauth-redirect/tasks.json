@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Token Stealer Flow)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à oauth-redirect-uri.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WEB_17_OAUTH_REDIRECT_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 140,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{OAUTH2_STATE_MISSING_REDIRECT_TOKEN_THEFT}"
+  }
+]

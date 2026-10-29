@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Test de colonnes",
+    "cost": 10,
+    "content": "Utilise ' ORDER BY 1 --, ' ORDER BY 2 -- jusqu'à obtenir une erreur HTTP 500 pour trouver le nombre de colonnes."
+  },
+  {
+    "title": "Schéma SQLite",
+    "cost": 15,
+    "content": "La table système de SQLite est sqlite_master. Effectue un UNION SELECT 1,tbl_name,sql,4 FROM sqlite_master WHERE type='table' --."
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (DKOM Process Hiding Analysis)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à dkom-kernel-driver.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "VULN_REV_09_KERNEL_DRIVER_ROOTKIT_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 350,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{DKOM_EPROCESS_ACTIVE_PROCESS_LINKS_UNLINKED}"
+  }
+]

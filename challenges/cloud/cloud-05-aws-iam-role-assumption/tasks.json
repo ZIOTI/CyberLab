@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Multi-Account Lateral Pivot)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à iam-sts-assume-role.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "VULN_CLOUD_05_AWS_IAM_ROLE_ASSUMPTION_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 350,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{AWS_STS_ASSUME_ROLE_CROSS_ACCOUNT_ORGANIZATION_ROOT}"
+  }
+]

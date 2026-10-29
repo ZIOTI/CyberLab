@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Commande shell d'analyse",
+    "cost": 10,
+    "content": "Utilise `grep \"Accepted password\" auth.log` pour trouver l'accès qui a abouti."
+  }
+]

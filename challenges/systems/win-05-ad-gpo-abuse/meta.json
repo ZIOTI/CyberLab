@@ -1,0 +1,28 @@
+{
+  "id": "win-05-ad-gpo-abuse",
+  "title": "Domain Controller Policy Hijack",
+  "category": "Linux & Windows",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "gpo-permissions-abuse",
+    "systems",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "GTFOBins",
+    "PowerUp",
+    "Mimikatz"
+  ],
+  "narrative_story": "Scénario opérationnel pour Domain Controller Policy Hijack : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (gpo-permissions-abuse) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.12.141"
+}

@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  forensics-03-stego-lsb:
+    build: .
+    container_name: cyberlab_forensics-03-stego-lsb
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

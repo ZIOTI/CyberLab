@@ -1,0 +1,28 @@
+{
+  "id": "crypto-10-zkp-elliptic",
+  "title": "Elliptic Curve Nonce Leakage",
+  "category": "Crypto",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 60,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "ecdsa-nonce-reuse",
+    "crypto",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "CyberChef",
+    "Hashcat",
+    "John the Ripper",
+    "SageMath"
+  ],
+  "narrative_story": "Scénario opérationnel pour Elliptic Curve Nonce Leakage : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (ecdsa-nonce-reuse) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.24.138"
+}

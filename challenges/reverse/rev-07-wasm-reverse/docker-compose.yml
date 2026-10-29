@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  rev-07-wasm-reverse:
+    build: .
+    container_name: cyberlab_rev-07-wasm-reverse
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

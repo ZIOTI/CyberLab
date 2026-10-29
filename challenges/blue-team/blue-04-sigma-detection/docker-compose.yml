@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  blue-04-sigma-detection:
+    build: .
+    container_name: cyberlab_blue-04-sigma-detection
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

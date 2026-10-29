@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web-15-php-deserialize:
+    build: .
+    container_name: cyberlab_web-15-php-deserialize
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

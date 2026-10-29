@@ -1,0 +1,29 @@
+{
+  "id": "linux-02-cron-wildcard",
+  "title": "The Midnight Backup",
+  "category": "Linux",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 45,
+  "learning_path": "systems-reversing",
+  "author": "Aegis SysOps",
+  "tags": [
+    "linux",
+    "cron",
+    "wildcard-injection",
+    "tar",
+    "privesc"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Bash",
+    "crontab",
+    "GTFOBins"
+  ],
+  "narrative_story": "Une tâche planifiée dans /etc/cron.d/nightly_backup exécute chaque minute la commande tar -czf /backup/archive.tar.gz * dans le répertoire /opt/app/data avec les privilèges ROOT. L'utilisation du métacaractère wildcard (*) te permet d'injecter des paramètres dans la ligne de commande de tar (checkpoint-action) pour déclencher l'exécution d'un script arbitraire.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.51.32"
+}

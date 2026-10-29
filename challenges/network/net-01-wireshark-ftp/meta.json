@@ -1,0 +1,16 @@
+{
+  "id": "net-01-wireshark-ftp",
+  "title": "Cleartext Infiltration",
+  "category": "Réseau",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Cyber Defense",
+  "tags": ["network", "pcap", "wireshark", "ftp", "cleartext"],
+  "prerequisites": ["Notions sur le protocole FTP", "Analyse de trafic avec Wireshark ou tshark"],
+  "recommended_tools": ["Wireshark", "tshark", "tcpdump", "NetworkMiner"],
+  "narrative_story": "Lors d'une surveillance de routine sur le réseau interne, la sonde d'intrusion a enregistré une capture de paquets 'ftp_session_capture.pcap'. L'opérateur a utilisé le protocole FTP standard (port 21) non chiffré pour transférer un document confidentiel. En tant qu'analyste réseau, ouvre la capture, rejoue le flux TCP, isole les identifiants d'authentification et extrait le contenu du fichier transféré.",
+  "target_port": null,
+  "virtual_ip": null
+}

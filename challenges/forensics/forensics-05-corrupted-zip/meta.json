@@ -1,0 +1,28 @@
+{
+  "id": "forensics-05-corrupted-zip",
+  "title": "The Mended Archive",
+  "category": "Forensics",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 45,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "zip-header-repair",
+    "forensics",
+    "easy"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Wireshark",
+    "Volatility 3",
+    "Autopsy",
+    "FTK Imager"
+  ],
+  "narrative_story": "Scénario opérationnel pour The Mended Archive : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (zip-header-repair) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.24.70"
+}

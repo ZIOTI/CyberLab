@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-[#fdfbf7]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Institut d'Histoire &amp; Archives Numériques | Université Panthéon-Sorbonne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            body: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            parchment: '#fcfaf2',
+            creme: '#f5efe0',
+            burgundy: {
+              900: '#4c0519',
+              800: '#881337',
+              700: '#9f1239',
+              600: '#be123c',
+            },
+            sepia: {
+              800: '#78350f',
+              700: '#92400e',
+              600: '#b45309',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .paper-texture {
+      background-color: #fdfbf7;
+      background-image: radial-gradient(#e5dfcf 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .wax-seal {
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 4px 10px rgba(76,5,25,0.3);
+    }
+  </style>
+</head>
+<body class="h-full paper-texture text-stone-900 font-body text-lg antialiased flex flex-col selection:bg-burgundy-800 selection:text-white">
+
+  <!-- TOP ACADEMIC HEADER -->
+  <header class="bg-[#f7f2e4] border-b border-[#e2d8be] shadow-xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <!-- University & Seal -->
+      <div class="flex items-center gap-4 text-center sm:text-left">
+        <!-- Wax Seal Embleme -->
+        <div class="w-14 h-14 rounded-full bg-burgundy-900 border-2 border-sepia-600 text-amber-200 flex items-center justify-center font-serif font-black text-2xl wax-seal shrink-0">
+          🏛️
+        </div>
+        <div>
+          <span class="text-xs uppercase tracking-widest font-mono text-sepia-800 font-bold block">
+            RÉPUBLIQUE FRANÇAISE • MINISTÈRE DE L'ENSEIGNEMENT SUPÉRIEUR
+          </span>
+          <h1 class="font-serif font-extrabold text-xl sm:text-2xl text-burgundy-900 tracking-tight leading-tight">
+            Institut d'Histoire &amp; Archives Numériques
+          </h1>
+          <span class="text-xs font-serif italic text-stone-600 block">
+            Portail de consultation des manuscrits, fonds patrimoniaux et thèses doctorales (Fonds 1840-2026)
+          </span>
+        </div>
+      </div>
+
+      <!-- Academic Metadata -->
+      <div class="text-right hidden md:block font-mono text-xs text-stone-600 bg-white/70 p-2.5 rounded border border-[#e2d8be]">
+        <div>Serveur d'Archivage : <strong>arch-sorbonne.univ-paris1.fr</strong></div>
+        <div>Moteur d'indexation : <span class="text-burgundy-800 font-bold">PHP/8.2.14 FastCGI</span></div>
+      </div>
+    </div>
+
+    <!-- Academic Navigation Ribbon -->
+    <nav class="bg-burgundy-900 text-amber-100 font-serif text-sm tracking-wide border-t border-burgundy-800">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center gap-6 py-2.5 overflow-x-auto">
+        <a href="?page=fonds_anciens" class="hover:text-white transition font-semibold">Manuscrits &amp; Incunables</a>
+        <a href="?page=theses_sciences" class="hover:text-white transition font-semibold">Thèses &amp; Mémoires</a>
+        <a href="?page=charte_institution" class="hover:text-white transition font-semibold">Charte Académique</a>
+        <a href="?page=inventaire_general" class="hover:text-white transition font-semibold">Inventaire Général</a>
+        <a href="?page=aide_recherche" class="hover:text-white transition font-semibold">Aide aux Chercheurs</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN DOCUMENT VIEWER INTERFACE -->
+  <main class="max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 flex-1 grid grid-cols-1 md:grid-cols-12 gap-8">
+    
+    <!-- LEFT COLUMN: ARCHIVAL DIRECTORY / SOMMAIRE -->
+    <aside class="md:col-span-4 bg-[#f8f4e9] rounded-xl border border-[#ded4bd] p-5 space-y-6 shadow-sm">
+      <div>
+        <h2 class="font-serif font-bold text-base uppercase tracking-wider text-burgundy-900 border-b border-[#ded4bd] pb-2">
+          Sommaire des Manuscrits
+        </h2>
+        <ul class="space-y-1.5 mt-3 text-sm font-serif">
+          <li>
+            <button onclick="loadDocument('fonds_anciens')" class="w-full text-left p-2 rounded hover:bg-[#eee4cf] text-stone-800 transition flex items-center justify-between">
+              <span>📜 Fonds Ancien : Actes Royaux (1680)</span>
+              <span class="text-xs text-stone-400 font-mono">01.php</span>
+            </button>
+          </li>
+          <li>
+            <button onclick="loadDocument('theses_sciences')" class="w-full text-left p-2 rounded hover:bg-[#eee4cf] text-stone-800 transition flex items-center justify-between">
+              <span>🔬 Faculté des Sciences : Thèse 1922</span>
+              <span class="text-xs text-stone-400 font-mono">02.php</span>
+            </button>
+          </li>
+          <li>
+            <button onclick="loadDocument('charte_institution')" class="w-full text-left p-2 rounded hover:bg-[#eee4cf] text-stone-800 transition flex items-center justify-between">
+              <span>🏛️ Charte Fondatrice de l'Institut</span>
+              <span class="text-xs text-stone-400 font-mono">03.php</span>
+            </button>
+          </li>
+          <li>
+            <button onclick="loadDocument('inventaire_general')" class="w-full text-left p-2 rounded hover:bg-[#eee4cf] text-stone-800 transition flex items-center justify-between">
+              <span>📚 Inventaire Général Numérisé</span>
+              <span class="text-xs text-stone-400 font-mono">04.php</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Administration & PHP Config Notice (Target of LFI) -->
+      <div class="p-3.5 bg-amber-50 rounded-lg border border-amber-200/80 text-xs text-stone-700 space-y-2">
+        <div class="font-bold font-serif text-sepia-800 flex items-center gap-1.5">
+          <span>⚙️ Administration des Collections :</span>
+        </div>
+        <p class="leading-relaxed">
+          Le visualiseur de manuscrit charge dynamiquement les fiches documentaires au format PHP.
+          Pour des raisons de sécurité, les paramètres de configuration du serveur sont hébergés dans le fichier interne <code>config.php</code>.
+        </p>
+      </div>
+
+      <!-- Real Base64 Decoder Tool for Convenience -->
+      <div class="p-3.5 bg-white/80 rounded-lg border border-[#ded4bd] text-xs font-mono space-y-2">
+        <div class="font-bold text-stone-700">DÉCODEUR BASE64 INTÉGRÉ</div>
+        <textarea id="b64-input" placeholder="Collez votre flux base64 ici..." class="w-full h-16 p-2 rounded border border-stone-300 text-[11px] outline-none"></textarea>
+        <button onclick="decodeBase64()" class="w-full py-1.5 bg-burgundy-900 text-amber-100 rounded font-bold hover:bg-burgundy-800 transition">
+          Décoder le Flux
+        </button>
+        <pre id="b64-output" class="p-2 bg-stone-100 rounded text-[10px] text-stone-800 overflow-x-auto hidden select-all"></pre>
+      </div>
+    </aside>
+
+    <!-- RIGHT COLUMN: MANUSCRIPT VIEWER & READER -->
+    <section class="md:col-span-8 flex flex-col space-y-4">
+      <!-- URL Parameter Bar -->
+      <div class="bg-white rounded-lg border border-[#ded4bd] p-3 flex items-center justify-between gap-3 font-mono text-xs shadow-xs">
+        <div class="flex items-center gap-2 flex-1 min-w-0">
+          <span class="text-stone-400 select-none">GET</span>
+          <span class="text-burgundy-900 font-bold select-none">/targets/training/web-05/view?page=</span>
+          <input 
+            type="text" 
+            id="page-param-input" 
+            value="fonds_anciens" 
+            class="flex-1 bg-stone-50 border border-stone-200 px-2 py-1 rounded text-stone-800 font-mono outline-none focus:border-burgundy-800"
+            onkeydown="if(event.key==='Enter') loadDocument(this.value)"
+          >
+        </div>
+        <button onclick="loadDocument(document.getElementById('page-param-input').value)" class="px-3 py-1 bg-burgundy-900 text-amber-100 rounded hover:bg-burgundy-800 font-bold transition">
+          Consulter
+        </button>
+      </div>
+
+      <!-- Archival Document Reading Box -->
+      <div class="bg-white rounded-xl border border-[#ded4bd] p-8 shadow-sm flex-1 flex flex-col justify-between space-y-6">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between border-b border-[#ded4bd] pb-3">
+            <div>
+              <span class="text-xs uppercase font-mono text-sepia-800 tracking-wider font-bold">MANUSCRIT HISTORIQUE NUMÉRISÉ</span>
+              <h3 id="doc-title" class="font-serif font-black text-2xl text-burgundy-900 mt-1">
+                Fonds Ancien : Recueil des Actes et Ordonnances Royales
+              </h3>
+            </div>
+            <span id="doc-status-badge" class="px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 text-xs font-mono font-bold">
+              Archivage OK
+            </span>
+          </div>
+
+          <!-- Document Render Area -->
+          <div id="doc-content-area" class="prose font-body text-base text-stone-800 leading-relaxed min-h-[250px]">
+            Chargement de la notice archivistique...
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#ded4bd] flex flex-wrap items-center justify-between text-xs text-stone-500 font-serif italic">
+          <span>Département de Conservation et Numérisation des Manuscrits Anciens • Référence BNF/Sorbonne-Arc-491</span>
+          <span>Protocole de consultation OAI-PMH v2.0</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ACADEMIC FOOTER -->
+  <footer class="bg-[#f7f2e4] border-t border-[#e2d8be] py-6 px-4 sm:px-6 text-center text-xs font-serif text-stone-600 mt-auto">
+    <div class="max-w-6xl mx-auto space-y-2">
+      <p>&copy; 2026 Institut d'Histoire des Sciences &amp; de la Philosophie • Université Panthéon-Sorbonne. Tous droits réservés.</p>
+      <p class="font-mono text-[10px] text-stone-400">Bibliothèque Interuniversitaire de la Sorbonne • 17 Rue de la Sorbonne, 75005 Paris</p>
+    </div>
+  </footer>
+
+  <script>
+    const sampleDocs = {
+      'fonds_anciens': {
+        title: "Fonds Ancien : Recueil des Actes et Ordonnances Royales (1680)",
+        content: `
+          <p>Ce volume relié en veau moucheté contient l'ensemble des édits et déclarations promulgués sous le règne de Louis XIV concernant la gestion des eaux et forêts ainsi que l'administration judiciaire de la capitale.</p>
+          <p>Le document a été restauré en 1984 à l'atelier de reliure de la Bibliothèque Nationale de France.</p>
+          <blockquote class="border-l-4 border-burgundy-800 pl-4 my-3 italic text-stone-700">
+            "De par le Roy, nul ne pourra chasser ni pêcher esdictes rivières sans commission expresse et scellée du grand sceau."
+          </blockquote>
+        `
+      },
+      'theses_sciences': {
+        title: "Faculté des Sciences de Paris : Thèse Doctorale (1922)",
+        content: `
+          <p>Thèse présentée pour obtenir le grade de docteur ès sciences physiques par devant la Faculté des Sciences de l'Université de Paris, sous la présidence de Jean Perrin.</p>
+          <p>Étude approfondie sur la diffusion des particules colloïdales et la constante d'Avogadro.</p>
+        `
+      },
+      'charte_institution': {
+        title: "Charte Fondatrice et Statuts de l'Institut d'Archives",
+        content: `
+          <p>L'Institut a pour mission la collecte, la préservation et la mise à disposition des documents scientifiques et historiques au bénéfice des chercheurs de toutes disciplines.</p>
+          <p>Les consultations physiques nécessitent une accréditation de lecteur délivrée par la direction des bibliothèques universitaires.</p>
+        `
+      },
+      'inventaire_general': {
+        title: "Inventaire Général des Collections Rares (Édition 2026)",
+        content: `
+          <p>Plus de 450 000 monographies, 12 000 manuscrits enluminés et 3 500 rouleaux d'archives notariales sont répertoriés dans les bases documentaires de l'université.</p>
+        `
+      }
+    };
+
+    async function loadDocument(pageName) {
+      document.getElementById('page-param-input').value = pageName;
+      const titleEl = document.getElementById('doc-title');
+      const contentEl = document.getElementById('doc-content-area');
+      const badgeEl = document.getElementById('doc-status-badge');
+
+      contentEl.innerHTML = '<span class="text-stone-400 font-mono text-sm">Chargement du fichier par le moteur PHP...</span>';
+
+      try {
+        const res = await fetch(`/targets/training/web-05/view?page=${encodeURIComponent(pageName)}`);
+        const data = await res.json();
+
+        // 1. Détection de faille PHP filter wrapper (base64)
+        if (data.filter_applied === 'convert.base64-encode') {
+          titleEl.innerText = `Flux Exfiltré : ${data.filename} (Encodage Base64)`;
+          badgeEl.className = "px-2.5 py-1 rounded bg-amber-100 text-amber-800 text-xs font-mono font-bold";
+          badgeEl.innerText = "PHP Filter Stream";
+
+          contentEl.innerHTML = `
+            <div class="p-4 bg-stone-900 text-amber-300 rounded-lg font-mono text-xs space-y-2">
+              <div class="flex items-center justify-between text-stone-400 border-b border-stone-800 pb-2">
+                <span>FLUX PHP://FILTER CONVERT.BASE64-ENCODE INTERCEPTÉ</span>
+                <button onclick="navigator.clipboard.writeText('${data.raw_stream}'); alert('Base64 copié !');" class="px-2 py-0.5 bg-amber-600 text-black font-bold rounded">
+                  Copier Base64
+                </button>
+              </div>
+              <div class="break-all select-all font-mono text-amber-200">
+                ${data.raw_stream}
+              </div>
+            </div>
+            <p class="text-xs text-stone-500 mt-2 font-serif italic">
+              Collez ce code dans le décodeur Base64 à gauche pour lire les secrets de configuration et le drapeau.
+            </p>
+          `;
+
+          // Remplir automatiquement le décodeur à gauche
+          document.getElementById('b64-input').value = data.raw_stream;
+          decodeBase64();
+          return;
+        }
+
+        // 2. Inclusion locale de /etc/passwd ou fichier système
+        if (data.filename && (data.filename.includes('passwd') || data.content.includes('root:x:0:0'))) {
+          titleEl.innerText = `Fichier Système Inclus : ${data.filename}`;
+          badgeEl.className = "px-2.5 py-1 rounded bg-rose-100 text-rose-800 text-xs font-mono font-bold";
+          badgeEl.innerText = "LFI Système";
+
+          contentEl.innerHTML = `
+            <pre class="p-4 bg-stone-900 text-emerald-400 rounded-lg font-mono text-xs overflow-x-auto select-all">${data.content}</pre>
+          `;
+          return;
+        }
+
+        // 3. Inclusion directe de config.php sans filtre (exécuté par PHP, pas de source affichée)
+        if (pageName === 'config' || pageName === 'config.php') {
+          titleEl.innerText = "Notice : config.php (Script PHP Exécuté)";
+          badgeEl.className = "px-2.5 py-1 rounded bg-stone-200 text-stone-700 text-xs font-mono font-bold";
+          badgeEl.innerText = "PHP Evaluated";
+
+          contentEl.innerHTML = `
+            <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm font-serif space-y-2">
+              <p><strong>Remarque de sécurité :</strong> Le fichier <code>config.php</code> a été inclus et exécuté par l'interpréteur PHP du serveur. Ses variables ont été chargées en mémoire, mais le code source PHP n'est pas envoyé au navigateur car il ne produit pas d'affichage standard (echo/print).</p>
+              <p class="font-mono text-xs text-burgundy-900">Astuce : Utilisez les wrappers PHP de flux pour forcer l'encodage du fichier en texte brut avant qu'il ne soit interprété (ex: <code>php://filter/convert.base64-encode/resource=config</code>).</p>
+            </div>
+          `;
+          return;
+        }
+
+        // 4. Document documentaire standard
+        const sample = sampleDocs[pageName] || {
+          title: `Notice Documentaire : ${pageName}`,
+          content: `<p>${data.content || 'Notice archivistique introuvable pour ce fonds.'}</p>`
+        };
+
+        titleEl.innerText = sample.title;
+        badgeEl.className = "px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 text-xs font-mono font-bold";
+        badgeEl.innerText = "Archivage OK";
+        contentEl.innerHTML = sample.content;
+
+      } catch (err) {
+        titleEl.innerText = "Erreur de consultation";
+        contentEl.innerHTML = `<p class="text-rose-700 font-mono text-xs">Erreur lors de la requête : ${err.message}</p>`;
+      }
+    }
+
+    function decodeBase64() {
+      const input = document.getElementById('b64-input').value.trim();
+      const out = document.getElementById('b64-output');
+      if (!input) return;
+      try {
+        const decoded = atob(input);
+        out.classList.remove('hidden');
+        out.innerText = decoded;
+      } catch (e) {
+        out.classList.remove('hidden');
+        out.innerText = "Erreur de décodage base64 : " + e.message;
+      }
+    }
+
+    // Chargement initial
+    loadDocument('fonds_anciens');
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "id": "blue-01-auth-log-brute",
+  "title": "The Midnight Intrusion",
+  "category": "Blue Team",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "soc-forensics",
+  "author": "Aegis SOC Team",
+  "tags": [
+    "blue-team",
+    "auth-log",
+    "ssh",
+    "brute-force",
+    "incident-response"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "grep",
+    "awk",
+    "cut",
+    "sort"
+  ],
+  "narrative_story": "Le serveur bastion de l'entreprise a subi une tentative d'intrusion automatisée par force brute sur le port SSH. Analyse le fichier de journalisation /var/log/auth.log pour identifier l'adresse IP de l'attaquant, le nombre total de tentatives échouées, et le compte utilisateur qui a finalement été compromis.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.41.193"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "rev-02-pyc-decompile",
+  "title": "Bytecode Secrets",
+  "category": "Reverse",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 45,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Malware Unit",
+  "tags": [
+    "reverse",
+    "python",
+    "bytecode",
+    "decompilation",
+    "pyc"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "uncompyle6",
+    "decompyle++ (pycdc)",
+    "Python"
+  ],
+  "narrative_story": "Un script Python compilé (.pyc) a été découvert sur un poste de travail compromis. Le code source original a été effacé par le logiciel malveillant. Ta tâche est de décompiler ce bytecode Python pour comprendre son algorithme de validation et générer une clé valide.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.28.7"
+}

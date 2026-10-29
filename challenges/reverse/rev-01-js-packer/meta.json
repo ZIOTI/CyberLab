@@ -1,0 +1,16 @@
+{
+  "id": "rev-01-js-packer",
+  "title": "The Obfuscated Key",
+  "category": "Reverse",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Malware Unit",
+  "tags": ["reverse", "javascript", "obfuscation", "deobfuscation", "packer"],
+  "prerequisites": ["Notions JavaScript", "Utilisation de la console DevTools (F12)"],
+  "recommended_tools": ["Chrome / Firefox DevTools", "js-beautify", "CyberChef"],
+  "narrative_story": "Un script malveillant de vérification d'activation utilise une chaîne obfusquée avec un tableau de dictionnaires décalé et une opération de décodage hexadécimal. L'attaquant pensait dissimuler la clé maîtresse sous plusieurs couches d'indirection. Désobfusque le script JavaScript client et extrait la clé de licence légitime.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.18.99"
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Replication Rights Abused)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à ad-dcsync-mimikatz.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WIN_03_AD_DCSYNC_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 210,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{MIMIKATZ_DCSYNC_KRBTGT_NTLM_HASH_REPLICATED}"
+  }
+]

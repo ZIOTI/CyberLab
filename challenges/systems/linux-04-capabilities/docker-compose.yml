@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  linux-04-capabilities:
+    build: .
+    container_name: cyberlab_linux-04-capabilities
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

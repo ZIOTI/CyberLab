@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  osint-02-company-footprint:
+    build: .
+    container_name: cyberlab_osint-02-company-footprint
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

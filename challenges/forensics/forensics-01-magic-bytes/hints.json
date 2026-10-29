@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Indice 1 : Signature PNG standard",
+    "cost": 10,
+    "content": "La signature PNG en hexadécimal est toujours '89 50 4E 47 0D 0A 1A 0A'. En ASCII, cela correspond à '.PNG....'."
+  },
+  {
+    "title": "Indice 2 : Utilisation de CyberChef ou xxd",
+    "cost": 20,
+    "content": "Sous Linux : 'printf \"\\x89\\x50\\x4e\\x47\\x0d\\x0a\\x1a\\x0a\" | dd conv=notrunc bs=1 count=8 of=corrupted_evidence.bin' remplace les 8 octets en place."
+  }
+]

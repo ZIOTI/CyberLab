@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-slate-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AeroCloud Ops // Flight Dispatch &amp; Maintenance Invoice Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            aero: {
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full bg-[#0a0f18] text-slate-200 font-mono text-xs flex flex-col selection:bg-aero-500 selection:text-black">
+
+  <!-- TOP AVIONICS TICKER -->
+  <div class="border-b border-slate-800 bg-slate-950 px-6 py-2 flex items-center justify-between text-slate-400">
+    <div class="flex items-center gap-4">
+      <span class="inline-flex items-center gap-1.5 text-aero-400 font-bold">
+        <span class="w-2 h-2 rounded-full bg-aero-400 animate-ping"></span>
+        <span>ACARS FLIGHT DISPATCH NETWORK : CONNECTÉ</span>
+      </span>
+      <span class="hidden md:inline text-slate-600">|</span>
+      <span class="hidden md:inline">RADAR HUB : PARIS CDG (LFPG) • SECTOR NORTH</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span>SERVEUR LINUX : <strong class="text-slate-200">aero-srv-04.internal</strong></span>
+      <span>OS : Ubuntu 24.04 LTS</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-aero-600 flex items-center justify-center text-white shadow-md shadow-aero-600/30">
+          ✈️
+        </div>
+        <div>
+          <span class="font-heading font-black text-xl text-white tracking-tight block">
+            AERO<span class="text-aero-400">CLOUD</span> OPS
+          </span>
+          <span class="text-[9px] uppercase tracking-widest text-slate-400 block -mt-1 font-mono">
+            Flight Maintenance &amp; Invoicing Dispatch
+          </span>
+        </div>
+      </div>
+
+      <div class="hidden sm:flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-[11px] text-slate-300">
+          Agent : Ops-Dispatcher #991
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN OPERATIONAL VIEW -->
+  <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full space-y-6">
+    
+    <!-- TOP FLIGHTS STATUS TABLE -->
+    <div class="rounded-xl bg-slate-900 border border-slate-800 p-5 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h2 class="font-heading font-bold text-sm text-white uppercase tracking-wider">
+          Vols Cargo Internationaux en Transit
+        </h2>
+        <span class="text-[11px] text-emerald-400 font-bold">● TOUS SYSTÈMES NOMINAUX</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="text-slate-400 border-b border-slate-800 text-[11px]">
+            <tr>
+              <th class="pb-2">VOL</th>
+              <th class="pb-2">APPAREIL</th>
+              <th class="pb-2">ORIGINE &rarr; DESTINATION</th>
+              <th class="pb-2">STATUT FLIGHT</th>
+              <th class="pb-2">ACTION RAPIDE</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 text-slate-300 text-[11px]">
+            <tr>
+              <td class="py-2.5 font-bold text-white">AF-9021</td>
+              <td>Boeing 777F (F-GZTA)</td>
+              <td>Paris CDG &rarr; New York JFK</td>
+              <td><span class="text-emerald-400 font-bold">EN VOL (FL360)</span></td>
+              <td><button onclick="loadFile('invoices/inv_AF9021.txt')" class="text-aero-400 hover:underline">Voir Facture</button></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-bold text-white">BA-4410</td>
+              <td>Airbus A350F (G-XWBD)</td>
+              <td>Londres LHR &rarr; Tokyo HND</td>
+              <td><span class="text-emerald-400 font-bold">APPROCHE FINALE</span></td>
+              <td><button onclick="loadFile('invoices/inv_BA4410.txt')" class="text-aero-400 hover:underline">Voir Facture</button></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 font-bold text-white">EK-8812</td>
+              <td>Boeing 747-8F (A6-EFS)</td>
+              <td>Dubaï DXB &rarr; Singapour SIN</td>
+              <td><span class="text-amber-400 font-bold">AU SOL / EMBARQUEMENT</span></td>
+              <td><button onclick="loadFile('invoices/inv_EK8812.txt')" class="text-aero-400 hover:underline">Voir Facture</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DOCUMENT VIEWER (PATH TRAVERSAL TARGET) -->
+    <div class="rounded-xl bg-slate-900 border border-slate-800 p-6 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="font-heading font-bold text-base text-white">Visionneuse de Fichiers Techniques &amp; Factures</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Téléchargement sécurisé des rapports d'intervention et bordereaux ACARS</p>
+        </div>
+        <span class="px-2.5 py-1 rounded bg-aero-950 text-aero-300 border border-aero-800 text-[10px] font-bold">
+          ENDPOINT : /api/download?file=...
+        </span>
+      </div>
+
+      <!-- File URL Bar -->
+      <form id="file-form" class="space-y-3">
+        <label for="file-path" class="block text-slate-400">
+          Chemin du fichier sur le serveur d'exploitation :
+        </label>
+        <div class="flex items-center gap-3">
+          <input 
+            type="text" 
+            id="file-path" 
+            value="invoices/inv_AF9021.txt" 
+            placeholder="invoices/... ou ../../../../etc/passwd" 
+            class="flex-1 px-4 py-2.5 rounded-lg bg-slate-950 border border-slate-700 text-slate-100 font-mono text-xs focus:border-aero-400 outline-none"
+          >
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-lg bg-aero-600 hover:bg-aero-500 text-white font-bold transition"
+          >
+            Télécharger Fichier
+          </button>
+        </div>
+      </form>
+
+      <!-- Traversal Shortcut Buttons -->
+      <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 flex flex-wrap items-center gap-2">
+        <span class="text-slate-500">Exemples de chemins d'audit :</span>
+        <button onclick="loadFile('invoices/inv_AF9021.txt')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">Facture Normale</button>
+        <button onclick="loadFile('../../../../etc/passwd')" class="px-2 py-0.5 rounded bg-rose-950 border border-rose-800 hover:bg-rose-900 text-rose-300 font-bold">Traversal: ../../../../etc/passwd</button>
+        <button onclick="loadFile('../../../../var/secret/flag.txt')" class="px-2 py-0.5 rounded bg-amber-950 border border-amber-800 hover:bg-amber-900 text-amber-300">Flag: /var/secret/flag.txt</button>
+      </div>
+
+      <!-- File Content Display Box -->
+      <div class="space-y-2 pt-2">
+        <div class="flex items-center justify-between text-slate-400 text-[11px]">
+          <span>CONTENU DU FICHIER RETOURNÉ PAR LE SERVEUR :</span>
+          <button onclick="navigator.clipboard.writeText(document.getElementById('file-output').innerText); alert('Copié !');" class="text-aero-400 hover:underline">
+            Copier
+          </button>
+        </div>
+        <pre id="file-output" class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-emerald-400 overflow-x-auto min-h-[160px] text-xs leading-relaxed select-all">
+Chargement du fichier...
+        </pre>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800 py-6 px-6 text-center text-slate-500 text-[11px] mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>&copy; 2026 AeroCloud Flight Operations Corp. Aviation Compliance EASA / FAA Part 121.</div>
+      <div>Système d'Archivage ACARS v3.8</div>
+    </div>
+  </footer>
+
+  <script>
+    async function loadFile(path) {
+      document.getElementById('file-path').value = path;
+      const out = document.getElementById('file-output');
+      out.innerText = 'Lecture du flux en cours...';
+
+      try {
+        const res = await fetch(`/targets/training/web-09/api/download?file=${encodeURIComponent(path)}`);
+        const text = await res.text();
+        out.innerText = text;
+      } catch (err) {
+        out.innerText = 'Erreur réseau : ' + err.message;
+      }
+    }
+
+    document.getElementById('file-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      loadFile(document.getElementById('file-path').value.trim());
+    });
+
+    // Initial load
+    loadFile('invoices/inv_AF9021.txt');
+  </script>
+</body>
+</html>

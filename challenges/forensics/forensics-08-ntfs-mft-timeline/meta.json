@@ -1,0 +1,28 @@
+{
+  "id": "forensics-08-ntfs-mft-timeline",
+  "title": "Master File Table Reconstruction",
+  "category": "Forensics",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 60,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "mft-timestomping",
+    "forensics",
+    "hard"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Wireshark",
+    "Volatility 3",
+    "Autopsy",
+    "FTK Imager"
+  ],
+  "narrative_story": "Scénario opérationnel pour Master File Table Reconstruction : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (mft-timestomping) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.37.192"
+}

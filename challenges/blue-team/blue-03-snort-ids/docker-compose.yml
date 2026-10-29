@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  blue-03-snort-ids:
+    build: .
+    container_name: cyberlab_blue-03-snort-ids
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

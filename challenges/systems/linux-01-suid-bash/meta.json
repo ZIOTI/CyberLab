@@ -1,0 +1,16 @@
+{
+  "id": "linux-01-suid-bash",
+  "title": "The Lost Privilege",
+  "category": "Linux",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "systems-reversing",
+  "author": "Aegis SysOps",
+  "tags": ["linux", "privesc", "suid", "gtfobins", "permissions"],
+  "prerequisites": ["Commandes de base Linux", "Permissions octales et bits spéciaux SUID"],
+  "recommended_tools": ["Bash", "find", "strings", "GTFOBins"],
+  "narrative_story": "Tu disposes d'un accès avec des privilèges restreints en tant qu'utilisateur 'operator' sur un serveur Linux d'entreprise. L'équipe d'administration a développé un outil d'archivage interne '/usr/local/bin/sysbackup_tool' et a positionné le bit SUID (Set Owner User ID upon execution) pour lui permettre de lire certains dossiers système. Cependant, ce binaire appelle des commandes système sans spécifier de chemin absolu ou permet l'invocation d'un shell. Élève tes privilèges au niveau root (UID 0) pour capturer le drapeau dans /root/flag.txt.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.15.22"
+}

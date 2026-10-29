@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Méthode et URI de la requête d'exfiltration",
+    "description": "Vers quel endpoint HTTP les données ont-elles été envoyées (ex: /upload/data) ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "/api/v1/telemetry/push"
+  },
+  {
+    "id": "t2",
+    "title": "Nom du fichier archive transféré",
+    "description": "Quel est le nom du fichier joint dans le corps multipart/form-data ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "payroll_confidential.zip"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction du contenu & Flag",
+    "description": "Extrais les octets du fichier et trouve la clé d'exfiltration.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{WIRESHARK_HTTP_MULTIPART_EXFILTRATION_CAUGHT}"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Indice 1 : Protocole Robots Exclusion",
+    "cost": 10,
+    "content": "Le fichier standard se trouve généralement à la racine du serveur web : http://<TARGET_IP>/robots.txt. Il utilise la directive 'Disallow:'."
+  },
+  {
+    "title": "Indice 2 : Fichiers de Sauvegarde Résiduels",
+    "cost": 20,
+    "content": "Une fois dans le répertoire secret, liste son contenu ou teste les extensions classiques de backup comme .bak, .old, .save ou .tmp."
+  }
+]

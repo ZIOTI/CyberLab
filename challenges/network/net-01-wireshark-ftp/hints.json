@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Indice 1 : Filtre Wireshark FTP",
+    "cost": 10,
+    "content": "Dans Wireshark, utilise le filtre d'affichage 'ftp' pour voir les commandes de contrôle (USER, PASS, RETR) et 'ftp-data' pour le contenu transféré."
+  },
+  {
+    "title": "Indice 2 : Suivre le flux TCP",
+    "cost": 20,
+    "content": "Fais un clic droit sur un paquet FTP puis 'Follow' -> 'TCP Stream'. Les échanges apparaîtront en texte clair (rouge pour le client, bleu pour le serveur)."
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Kubernetes Cluster Role Escalation)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à k8s-rbac-impersonate.",
+    "points": 135,
+    "task_type": "flag",
+    "canonical_flag": "VULN_CLOUD_04_K8S_SERVICE_ACCOUNT_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 315,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{K8S_SERVICEACCOUNT_RBAC_CLUSTER_ADMIN_TAKEOVER}"
+  }
+]

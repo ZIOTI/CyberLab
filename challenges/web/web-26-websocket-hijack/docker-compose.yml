@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web-26-websocket-hijack:
+    build: .
+    container_name: cyberlab_web-26-websocket-hijack
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

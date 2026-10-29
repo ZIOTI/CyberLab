@@ -1,0 +1,29 @@
+{
+  "id": "forensics-02-pcap-http",
+  "title": "Exfiltrated Credentials",
+  "category": "Forensics",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 40,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Forensics Lab",
+  "tags": [
+    "forensics",
+    "pcap",
+    "wireshark",
+    "http-post",
+    "credentials"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Wireshark",
+    "tshark",
+    "strings"
+  ],
+  "narrative_story": "Un flux réseau suspect a été intercepté lors d'un incident de sécurité. Un attaquant a exfiltré un fichier d'archives confidentiel via une requête HTTP POST non chiffrée. Ouvre la capture dans Wireshark, filtre sur les flux HTTP, recompose le fichier transféré dans le flux TCP et analyse son contenu.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.50.198"
+}

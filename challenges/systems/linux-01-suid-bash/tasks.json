@@ -1,0 +1,26 @@
+[
+  {
+    "id": "task-1",
+    "title": "Tâche 1 : Énumération des Binaires SUID",
+    "description": "Quelle commande standard 'find' permet d'énumérer sur tout le système les fichiers possédant la permission SUID appartenant à root ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "find / -perm -u=s -type f 2>/dev/null"
+  },
+  {
+    "id": "task-2",
+    "title": "Tâche 2 : Binaire Anormal Détecté",
+    "description": "Quel binaire non standard situé dans /usr/local/bin a été identifié avec le bit SUID actif ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "/usr/local/bin/sysbackup_tool"
+  },
+  {
+    "id": "task-3",
+    "title": "Tâche 3 : Obtention du Shell Root & Flag",
+    "description": "Exploite le binaire SUID pour obtenir un shell avec l'EUID 0 (root) et lis le contenu de /root/flag.txt.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SUID_ROOT_SHELL_GTFOBINS_PRIVILEGE_ESCALATED}"
+  }
+]

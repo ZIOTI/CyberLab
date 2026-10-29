@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  forensics-08-ntfs-mft-timeline:
+    build: .
+    container_name: cyberlab_forensics-08-ntfs-mft-timeline
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

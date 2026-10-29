@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web-18-sqli-time-based:
+    build: .
+    container_name: cyberlab_web-18-sqli-time-based
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

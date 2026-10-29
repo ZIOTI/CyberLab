@@ -1,0 +1,16 @@
+{
+  "id": "phish-01-ceo-fraud",
+  "title": "Operation Wire Transfer",
+  "category": "Social Engineering",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 30,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Threat Intel",
+  "tags": ["social-engineering", "phishing", "email-analysis", "spf", "dkim", "bec"],
+  "prerequisites": ["Compréhension des en-têtes d'e-mail RFC822", "Mécanismes SPF et DKIM"],
+  "recommended_tools": ["Éditeur de texte", "CyberChef", "MXToolbox", "mailheader.org"],
+  "narrative_story": "La directrice financière d'Aegis a reçu un courriel urgent prétendant provenir du PDG en déplacement, lui ordonnant de virer 450 000 EUR sous peine de rupture d'un contrat stratégique. En tant qu'analyste de cyberdéfense, analyse le fichier 'urgent_transfer_request.eml', dissèque les en-têtes de routage (Received, SPF, DKIM), identifie l'adresse IP de l'attaquant et décode la charge utile du lien malveillant pour neutraliser la campagne.",
+  "target_port": null,
+  "virtual_ip": null
+}

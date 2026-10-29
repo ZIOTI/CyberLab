@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  crypto-10-zkp-elliptic:
+    build: .
+    container_name: cyberlab_crypto-10-zkp-elliptic
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

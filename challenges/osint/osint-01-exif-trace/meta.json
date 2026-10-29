@@ -1,0 +1,16 @@
+{
+  "id": "osint-01-exif-trace",
+  "title": "Flight of the Hawk",
+  "category": "OSINT",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 35,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Recon Unit",
+  "tags": ["osint", "exif", "metadata", "geoint"],
+  "prerequisites": ["Compréhension des métadonnées d'image", "Utilisation d'outils d'extraction (exiftool, strings)"],
+  "recommended_tools": ["exiftool", "CyberChef", "Google Maps / OpenStreetMap"],
+  "narrative_story": "Un drone inconnu a survolé une zone d'exclusion militaire et a transmis une photographie d'un relais de télécommunication avant d'être neutralisé. Les analystes ont extrait l'image brute 'recon_relay_alpha.jpg'. Ton objectif d'officier de renseignement est d'extraire les métadonnées EXIF, de déterminer le modèle précis du drone et de calculer les coordonnées GPS pour localiser le site d'atterrissage.",
+  "target_port": null,
+  "virtual_ip": null
+}

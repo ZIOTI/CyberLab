@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Option Nmap recommandée",
+    "cost": 10,
+    "content": "Exécute nmap -sV -sC -p- <TARGET_IP> pour sonder l'ensemble des 65535 ports et capturer les bannières."
+  }
+]

@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  b2r-01-enterprise-alpha:
+    build: .
+    container_name: cyberlab_b2r-01-enterprise-alpha
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

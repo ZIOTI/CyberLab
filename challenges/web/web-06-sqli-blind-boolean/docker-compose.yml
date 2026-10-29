@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web-06-sqli-blind-boolean:
+    build: .
+    container_name: cyberlab_web-06-sqli-blind-boolean
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

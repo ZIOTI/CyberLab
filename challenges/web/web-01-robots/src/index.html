@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Global Logistics & Maritime Freight | Port de Rotterdam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            navy: {
+              900: '#071626',
+              800: '#0c223c',
+              700: '#143459',
+              600: '#1d4677',
+            },
+            cargo: {
+              500: '#ea580c',
+              600: '#c2410c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gradient-hero {
+      background: linear-gradient(135deg, rgba(7, 22, 38, 0.95) 0%, rgba(12, 34, 60, 0.92) 100%),
+                  radial-gradient(ellipse at 80% 20%, rgba(234, 88, 12, 0.15) 0%, transparent 50%);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-orange-500 selection:text-white">
+
+  <!-- 1. TOP UTILITY TICKER -->
+  <div class="bg-navy-900 text-slate-300 text-xs border-b border-navy-700/60 py-2 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-6">
+        <span class="flex items-center gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="font-medium text-slate-200">Terminal Rotterdam Maasvlakte II :</span>
+          <span class="text-emerald-400 font-semibold font-mono">OPÉRATIONNEL (100% FLUX)</span>
+        </span>
+        <span class="hidden md:inline-block text-slate-500">|</span>
+        <span class="hidden md:flex items-center gap-1.5 text-slate-400">
+          <svg class="w-3.5 h-3.5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Temps de transit Asie-Europe moyen : <strong>23.4 jours</strong></span>
+        </span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-300">
+        <span class="font-mono text-[11px] text-slate-400">DISPATCH 24/7 : +31 10 798 4400</span>
+        <span class="text-slate-600">|</span>
+        <a href="#tracking-widget" class="text-orange-400 hover:text-orange-300 font-semibold text-xs transition">Suivi Express B/L</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN CORPORATE HEADER -->
+  <header class="bg-white/95 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-xl bg-navy-900 flex items-center justify-center text-white shadow-md group-hover:bg-navy-800 transition">
+          <svg class="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M3.75 3a.75.75 0 00-.75.75v.5c0 .414.336.75.75.75H4v14h-.25a.75.75 0 00-.75.75v.5c0 .414.336.75.75.75h16.5a.75.75 0 00.75-.75v-.5a.75.75 0 00-.75-.75H20V5h.25a.75.75 0 00.75-.75v-.5a.75.75 0 00-.75-.75H3.75zM6 5h3v4H6V5zm5 0h3v4h-3V5zm5 0h2v4h-2V5zm-10 6h3v4H6v-4zm5 0h3v4h-3v-4zm5 0h2v4h-2v-4z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight text-navy-900 flex items-center gap-1.5">
+            APEX <span class="text-orange-600 font-normal">LOGISTICS</span>
+          </span>
+          <span class="text-[10px] tracking-wider text-slate-500 uppercase font-semibold block -mt-1">
+            Global Maritime & Freight Carrier
+          </span>
+        </div>
+      </a>
+
+      <!-- Primary Navigation -->
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-700">
+        <a href="#services" class="hover:text-orange-600 transition">Services de Fret</a>
+        <a href="#flotte" class="hover:text-orange-600 transition">Flotte & Terminaux</a>
+        <a href="#calculateur" class="hover:text-orange-600 transition">Cotation Instantanée</a>
+        <a href="#conformite" class="hover:text-orange-600 transition">Conformité Douanière</a>
+        <a href="#contact" class="hover:text-orange-600 transition">Réseau Mondial</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="#tracking-widget" class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition">
+          <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          Suivre Fret
+        </a>
+        <a href="#contact" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold shadow-md shadow-orange-600/20 transition">
+          <span>Espace Client Pro</span>
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. HERO SECTION WITH SHIPMENT TRACKER -->
+  <section class="gradient-hero text-white relative py-20 lg:py-28 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        <!-- Left Hero Content -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-navy-800/80 border border-slate-700 text-orange-400 text-xs font-bold">
+            <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+            <span>Certification OEA-F (Opérateur Économique Agréé Plein Droit)</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
+            Précision Industrielle dans le <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">Fret Multimodal</span> Mondial.
+          </h1>
+
+          <p class="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
+            Apex Logistics orchestre l'acheminement sécurisé de plus de 1,8 million d'EVP par an. Connectivité continue entre 42 terminaux portuaires en eau profonde, corridors ferroviaires automatisés et stockage sous température dirigée.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="#services" class="px-6 py-3.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm shadow-lg shadow-orange-600/30 transition">
+              Découvrir nos solutions
+            </a>
+            <a href="#flotte" class="px-6 py-3.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 text-slate-200 font-bold text-sm transition">
+              Consulter le réseau portuaire
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="pt-6 border-t border-slate-800 flex flex-wrap items-center gap-6 text-xs text-slate-400">
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              ISO 9001:2015 &amp; ISO 28000
+            </span>
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Accréditation IATA Cargo Agent
+            </span>
+            <span class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Traçabilité Télémétrique 24/7
+            </span>
+          </div>
+        </div>
+
+        <!-- Right Live Tracking Interactive Card -->
+        <div class="lg:col-span-5" id="tracking-widget">
+          <div class="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+              <div>
+                <h3 class="text-lg font-extrabold text-navy-900">Suivi Télémétrique en Direct</h3>
+                <p class="text-xs text-slate-500">Saisissez un N° de Connaissement (B/L) ou Conteneur</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-[11px] font-bold font-mono">
+                LIVE AIS
+              </span>
+            </div>
+
+            <!-- Form -->
+            <form id="track-form" class="space-y-4">
+              <div>
+                <label for="track-input" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                  Numéro d'Expédition / B/L
+                </label>
+                <div class="relative">
+                  <input type="text" id="track-input" value="APX-882194-NL" placeholder="ex: APX-882194-NL ou MSCU9201"
+                         class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-sm font-mono font-bold text-slate-800 outline-none transition uppercase">
+                  <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs text-slate-500">
+                <span>Suggestions rapides :</span>
+                <div class="flex gap-2">
+                  <button type="button" onclick="setTrack('APX-882194-NL')" class="font-mono text-orange-600 hover:underline">APX-882194-NL</button>
+                  <button type="button" onclick="setTrack('APX-994102-SG')" class="font-mono text-orange-600 hover:underline">APX-994102-SG</button>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-extrabold text-sm shadow-md transition flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <span>Localiser le Fret Maritime</span>
+              </button>
+            </form>
+
+            <!-- Result Box -->
+            <div id="track-result" class="mt-6 pt-5 border-t border-slate-100 space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Navire Assigne</span>
+                  <p class="text-sm font-bold text-navy-900" id="res-vessel">Apex Navigator IX (IMO 9821034)</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold" id="res-status">
+                  EN TRANSIT MARITIME
+                </span>
+              </div>
+
+              <!-- Route Progression -->
+              <div class="space-y-2">
+                <div class="flex justify-between text-xs font-medium text-slate-600">
+                  <span id="res-origin">Rotterdam, NL (RTM)</span>
+                  <span class="font-bold text-orange-600">68% du trajet</span>
+                  <span id="res-dest">Singapour (SIN)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-navy-800 to-orange-500 rounded-full w-2/3"></div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+                  <span class="text-[10px] text-slate-500 block">Dernier Pointage AIS :</span>
+                  <span class="font-mono font-bold text-slate-800" id="res-pos">Lat 12.38° N, Lon 45.12° E (Mer Rouge)</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+                  <span class="text-[10px] text-slate-500 block">ETA Estimée :</span>
+                  <span class="font-mono font-bold text-slate-800" id="res-eta">04 Nov 2026, 14:00 UTC</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CORE SERVICES GRID -->
+  <section id="services" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <h2 class="text-xs font-bold tracking-widest text-orange-600 uppercase font-mono">Nos Métiers d'Expertise</h2>
+        <p class="text-3xl sm:text-4xl font-extrabold text-navy-900 tracking-tight">
+          Solutions Logistiques Conçues pour l'Industrie de Pointe
+        </p>
+        <p class="text-slate-600 text-base">
+          De l'acheminement de composants électroniques sous atmosphère régulée aux convois industriels exceptionnels.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Service 1 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:shadow-xl hover:border-orange-200 transition group">
+          <div class="w-12 h-12 rounded-xl bg-navy-900 text-orange-500 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Fret Maritime FCL &amp; LCL</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Conteneurs complets et groupage maritime régulier avec départs hebdomadaires garantis sur les axes transatlantiques et Asie.
+          </p>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:shadow-xl hover:border-orange-200 transition group">
+          <div class="w-12 h-12 rounded-xl bg-navy-900 text-orange-500 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Aérien Express &amp; Affrètement</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Solutions d'urgence Door-to-Door sous 24/48h, vols charters dédiés et traitement sécurisé des matières classifiées ICAO.
+          </p>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:shadow-xl hover:border-orange-200 transition group">
+          <div class="w-12 h-12 rounded-xl bg-navy-900 text-orange-500 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Douanes &amp; Réglementation</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Télé-dédouanement automatisé DELTA-T, gestion des régimes fiscaux suspensifs et stockage en entrepôt sous douane sécurisé.
+          </p>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:shadow-xl hover:border-orange-200 transition group">
+          <div class="w-12 h-12 rounded-xl bg-navy-900 text-orange-500 flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-navy-900 mb-2">Pharma &amp; Température Dirigée</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Conteneurs Reefer haute technologie avec enregistrement télémétrique continu (-25°C à +25°C) conforme aux normes GDP.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FLEET & TELEMETRY NUMBERS -->
+  <section id="flotte" class="py-16 bg-navy-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="space-y-2">
+          <div class="text-3xl sm:text-4xl font-extrabold text-orange-500 font-mono">485</div>
+          <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Navires en Flotte Active</div>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono">1.84M</div>
+          <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">EVP Acheminés / An</div>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl sm:text-4xl font-extrabold text-orange-500 font-mono">99.4%</div>
+          <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Ponctualité d'Accostage</div>
+        </div>
+        <div class="space-y-2">
+          <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono">42</div>
+          <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Terminaux Connectés</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. INSTANT FREIGHT CALCULATOR -->
+  <section id="calculateur" class="py-20 bg-slate-100">
+    <div class="max-w-5xl mx-auto px-4 sm:px-8">
+      <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-200">
+        <div class="max-w-2xl mb-8">
+          <h2 class="text-xs font-bold tracking-widest text-orange-600 uppercase font-mono mb-2">Simulateur Tarifaire B2B</h2>
+          <h3 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Estimez vos Coûts de Fret Port-à-Port</h3>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-6 mb-8">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Port de Départ</label>
+            <select id="calc-origin" class="w-full p-3 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 bg-white">
+              <option value="RTM">Rotterdam, Pays-Bas (Maasvlakte)</option>
+              <option value="ANR">Anvers, Belgique</option>
+              <option value="HAM">Hambourg, Allemagne</option>
+              <option value="LEH">Le Havre, France</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Port de Destination</label>
+            <select id="calc-dest" class="w-full p-3 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 bg-white">
+              <option value="NYC">New York / New Jersey, USA</option>
+              <option value="SIN">Singapour, Port Central</option>
+              <option value="SHA">Shanghai / Ningbo, Chine</option>
+              <option value="DXB">Jebel Ali / Dubaï, EAU</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Type d'Unité</label>
+            <select id="calc-type" class="w-full p-3 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 bg-white">
+              <option value="40hc">Conteneur 40' High-Cube (Dry)</option>
+              <option value="20dry">Conteneur standard 20' (Dry)</option>
+              <option value="reefer">Conteneur Réfrigéré 40' Reefer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-navy-900 text-white flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold block">Tarif indicatif FCL (Taux BAF inclus) :</span>
+            <span class="text-3xl font-extrabold text-orange-400 font-mono" id="calc-price">2,450.00 EUR</span>
+          </div>
+          <button type="button" onclick="alert('Demande de cotation ferme transmise au bureau de dispatching de Rotterdam.')" class="px-6 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold transition">
+            Confirmer la Demande de Booking
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CORPORATE FOOTER (CLEAN & REALISTIC - NO ROBOTS LINK) -->
+  <footer id="contact" class="bg-navy-900 text-slate-400 text-sm pt-16 pb-12 border-t border-navy-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12 border-b border-navy-800">
+        <!-- Col 1 -->
+        <div class="col-span-2 space-y-4">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-orange-600 text-white flex items-center justify-center font-extrabold text-sm">
+              AL
+            </div>
+            <span class="text-lg font-extrabold text-white tracking-tight">APEX LOGISTICS GROUP</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
+            Siège européen : Maasvlakte Haven 8820, 3199 LK Rotterdam, Pays-Bas.<br>
+            Immatriculation KvK 88219401 | N° TVA Intracommunautaire : NL88219401B01.
+          </p>
+          <div class="text-xs text-slate-500 font-mono">
+            Système d'exploitation : Apex Maritime Portal Core v3.12 (Build 2026.10)
+          </div>
+        </div>
+
+        <!-- Col 2 -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Services</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#services" class="hover:text-white transition">Fret Maritime FCL/LCL</a></li>
+            <li><a href="#services" class="hover:text-white transition">Liaisons Aériennes</a></li>
+            <li><a href="#services" class="hover:text-white transition">Pharma &amp; Reefer</a></li>
+            <li><a href="#services" class="hover:text-white transition">Intermodal Ferroviaire</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3 -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Conformité</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" class="hover:text-white transition">Agrément OEA-F</a></li>
+            <li><a href="#" class="hover:text-white transition">Règles Incoterms 2020</a></li>
+            <li><a href="#" class="hover:text-white transition">Déclarations SOLAS VGM</a></li>
+            <li><a href="#" class="hover:text-white transition">Certificats Phytosanitaires</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4 -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Compagnie</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" class="hover:text-white transition">Rapport RSE 2026</a></li>
+            <li><a href="#" class="hover:text-white transition">Terminaux Fluviaux</a></li>
+            <li><a href="#" class="hover:text-white transition">Carrières Maritimes</a></li>
+            <li><a href="#" class="hover:text-white transition">Relations Presse</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>&copy; 2026 Apex Global Logistics B.V. Tous droits réservés. Conditions Générales de Transport (CMR/Hague-Visby).</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-slate-300">Mentions Légales</a>
+          <a href="#" class="hover:text-slate-300">Politique de Confidentialité</a>
+          <a href="#" class="hover:text-slate-300">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const sampleShipments = {
+      'APX-882194-NL': {
+        vessel: 'Apex Navigator IX (IMO 9821034)',
+        origin: 'Rotterdam, NL (RTM)',
+        dest: 'Singapour (SIN)',
+        status: 'EN TRANSIT MARITIME',
+        pos: 'Lat 12.38° N, Lon 45.12° E (Golfe d\'Aden)',
+        eta: '04 Nov 2026, 14:00 UTC'
+      },
+      'APX-994102-SG': {
+        vessel: 'Apex Discovery V (IMO 9904122)',
+        origin: 'Singapour, SG (SIN)',
+        dest: 'Le Havre, FR (LEH)',
+        status: 'EN TRANSIT DEEP SEA',
+        pos: 'Lat 34.12° N, Lon 18.44° E (Méditerranée Occidentale)',
+        eta: '01 Nov 2026, 08:30 UTC'
+      }
+    };
+
+    function setTrack(code) {
+      document.getElementById('track-input').value = code;
+      triggerTrack(code);
+    }
+
+    function triggerTrack(code) {
+      const data = sampleShipments[code] || {
+        vessel: 'Apex Transporter III (IMO 9732100)',
+        origin: 'Anvers, BE',
+        dest: 'New York, US',
+        status: 'EN ATTENTE DÉDOUANEMENT',
+        pos: 'Terminal Gateway New Jersey',
+        eta: '29 Oct 2026, 18:00 UTC'
+      };
+
+      document.getElementById('res-vessel').innerText = data.vessel;
+      document.getElementById('res-origin').innerText = data.origin;
+      document.getElementById('res-dest').innerText = data.dest;
+      document.getElementById('res-status').innerText = data.status;
+      document.getElementById('res-pos').innerText = data.pos;
+      document.getElementById('res-eta').innerText = data.eta;
+    }
+
+    document.getElementById('track-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = document.getElementById('track-input').value.trim().toUpperCase();
+      triggerTrack(code);
+    });
+
+    // Dynamic price calculator
+    const basePrices = {
+      'RTM-NYC': 2450, 'RTM-SIN': 2890, 'RTM-SHA': 3100, 'RTM-DXB': 2200,
+      'ANR-NYC': 2400, 'ANR-SIN': 2850, 'ANR-SHA': 3050, 'ANR-DXB': 2150,
+      'HAM-NYC': 2500, 'HAM-SIN': 2950, 'HAM-SHA': 3180, 'HAM-DXB': 2280,
+      'LEH-NYC': 2380, 'LEH-SIN': 2820, 'LEH-SHA': 3010, 'LEH-DXB': 2120
+    };
+
+    function updatePrice() {
+      const orig = document.getElementById('calc-origin').value;
+      const dest = document.getElementById('calc-dest').value;
+      const type = document.getElementById('calc-type').value;
+
+      let base = basePrices[`${orig}-${dest}`] || 2500;
+      if (type === '20dry') base *= 0.65;
+      if (type === 'reefer') base *= 1.45;
+
+      document.getElementById('calc-price').innerText = base.toLocaleString('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + ' EUR';
+    }
+
+    document.getElementById('calc-origin').addEventListener('change', updatePrice);
+    document.getElementById('calc-dest').addEventListener('change', updatePrice);
+    document.getElementById('calc-type').addEventListener('change', updatePrice);
+  </script>
+</body>
+</html>

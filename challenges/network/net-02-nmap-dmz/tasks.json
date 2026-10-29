@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Port du service de maintenance",
+    "description": "Sur quel port TCP inhabituel le service de débogage écoute-t-il ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "8088"
+  },
+  {
+    "id": "t2",
+    "title": "Nom et version du démon",
+    "description": "Quelle est la version du démon HTTP/Admin affichée dans le Server header ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "MicroSrv/2.4.1-rc3"
+  },
+  {
+    "id": "t3",
+    "title": "Flag de configuration de bannière",
+    "description": "Connecte-toi en direct avec netcat sur le port 8088 et lis le message d'accueil.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{DMZ_PERIMETER_RECON_NMAP_BANNER_DISCOVERED}"
+  }
+]

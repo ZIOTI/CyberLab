@@ -1,0 +1,28 @@
+{
+  "id": "rev-09-kernel-driver-rootkit",
+  "title": "DKOM Process Hiding Analysis",
+  "category": "Reverse Engineering",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "dkom-kernel-driver",
+    "reverse",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Ghidra",
+    "radare2",
+    "IDA Free",
+    "x64dbg"
+  ],
+  "narrative_story": "Scénario opérationnel pour DKOM Process Hiding Analysis : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (dkom-kernel-driver) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.40.69"
+}

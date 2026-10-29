@@ -52,6 +52,8 @@ jobs:
 
           # Copie des fichiers d'application propres
           Copy-Item -Recurse -Force public dist\CyberRange-PRO\
+          Copy-Item -Recurse -Force challenges dist\CyberRange-PRO\
+          Copy-Item -Recurse -Force platform dist\CyberRange-PRO\
           Copy-Item -Force CyberRange-PRO.exe dist\CyberRange-PRO\
           Copy-Item -Force CyberRange-PRO-Setup.exe dist\CyberRange-PRO\
           Copy-Item -Force server.js dist\CyberRange-PRO\

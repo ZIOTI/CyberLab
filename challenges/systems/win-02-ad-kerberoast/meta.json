@@ -1,0 +1,28 @@
+{
+  "id": "win-02-ad-kerberoast",
+  "title": "SPN Ticket Cracking",
+  "category": "Linux & Windows",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "kerberoasting-tgs",
+    "systems",
+    "intermediate"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "GTFOBins",
+    "PowerUp",
+    "Mimikatz"
+  ],
+  "narrative_story": "Scénario opérationnel pour SPN Ticket Cracking : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (kerberoasting-tgs) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.45.166"
+}

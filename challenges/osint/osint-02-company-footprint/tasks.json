@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Adresse IP du serveur de noms DNS historique",
+    "description": "Quelle était l'adresse IP du serveur NS primaire de l'organisation ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "198.51.100.25"
+  },
+  {
+    "id": "t2",
+    "title": "Sous-domaine caché découvert",
+    "description": "Quel est le sous-domaine de test découvert dans les archives de 2023 ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "staging-corp-internal.kestrel.lab"
+  },
+  {
+    "id": "t3",
+    "title": "Drapeau de confirmation de l'enquête",
+    "description": "Trouve la directive confidentielle archivée dans la page d'accueil du staging.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{OSINT_WAYBACK_HISTORICAL_DNS_FOOTPRINT_UNCOVERED}"
+  }
+]

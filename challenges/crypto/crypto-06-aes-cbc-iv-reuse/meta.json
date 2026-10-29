@@ -1,0 +1,28 @@
+{
+  "id": "crypto-06-aes-cbc-iv-reuse",
+  "title": "Two Time Pad CBC",
+  "category": "Crypto",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "aes-cbc-iv-reuse",
+    "crypto",
+    "intermediate"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "CyberChef",
+    "Hashcat",
+    "John the Ripper",
+    "SageMath"
+  ],
+  "narrative_story": "Scénario opérationnel pour Two Time Pad CBC : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (aes-cbc-iv-reuse) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.21.37"
+}

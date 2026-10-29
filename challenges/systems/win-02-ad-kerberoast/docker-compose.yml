@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  win-02-ad-kerberoast:
+    build: .
+    container_name: cyberlab_win-02-ad-kerberoast
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

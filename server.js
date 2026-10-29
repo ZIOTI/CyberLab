@@ -8,6 +8,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { DatabaseSync } = require('node:sqlite');
 const updater = require('./updater');
+const TrainingManager = require('./platform/training_manager');
 
 const PORT = process.env.PORT || 3333;
 const DB_PATH = path.join(__dirname, 'cyberrange.db');
@@ -15,6 +16,7 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // Initialisation de la base SQLite locale
 let db;
+let trainingManager;
 try {
   db = new DatabaseSync(DB_PATH);
   
@@ -69,6 +71,35 @@ try {
       status TEXT,
       raw_auth_token TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS admin_credentials_vault (
+      id INTEGER PRIMARY KEY,
+      username TEXT,
+      secret_key TEXT,
+      flag TEXT
+    );
+  `);
+
+  // Migration ascendante automatique des colonnes de user_state
+  const missingCols = [
+    ['nickname', "TEXT DEFAULT 'Opérateur RedTeam'"],
+    ['avatar', "TEXT DEFAULT '🥷'"],
+    ['theme', "TEXT DEFAULT 'dark'"],
+    ['hearts', "INTEGER DEFAULT 5"],
+    ['combo', "INTEGER DEFAULT 0"],
+    ['gems', "INTEGER DEFAULT 100"],
+    ['completed_levels', "TEXT DEFAULT '[]'"]
+  ];
+  for (const [col, def] of missingCols) {
+    try {
+      db.exec(`ALTER TABLE user_state ADD COLUMN ${col} ${def}`);
+    } catch (e) {}
+  }
+
+  // Garantit la présence du compte 'current_player'
+  db.exec(`
+    INSERT OR IGNORE INTO user_state (id, nickname, avatar, theme, xp, streak, max_streak, hearts, combo, gems, completed_levels, unlocked_badges, updated_at)
+    VALUES ('current_player', 'Opérateur RedTeam', '🥷', 'dark', 0, 1, 1, 5, 0, 100, '[]', '[]', datetime('now'));
   `);
 
   // Peuplement des tables de cibles réelles
@@ -91,9 +122,14 @@ try {
       (1, 'CORE_REACTOR_NODE_01', 42.8, 'OPTIMAL', 'TOKEN{RAW_SOCKET_TELEMETRY_CAPTURED}'),
       (2, 'COOLING_SYSTEM_PUMP_04', 18.2, 'STANDBY', 'TOKEN{COOLING_GRID_TELEMETRY_VAL}'),
       (3, 'PERIMETER_RADAR_NORTH', 21.0, 'ACTIVE', 'TOKEN{RADAR_PERIMETER_BEACON_99}');
+
+    DELETE FROM admin_credentials_vault;
+    INSERT INTO admin_credentials_vault (id, username, secret_key, flag) VALUES
+      (1, 'superadmin_ops', 'MasterSecKey#9941_Veloce', 'CYBERLAB{SQLI_UNION_SELECT_SCHEMA_UNMASKED_994}');
   `);
 
   console.log('[DATABASE] SQLite initialisée avec succès (Mode Offensif Pro).');
+  trainingManager = new TrainingManager(db);
 } catch (err) {
   console.warn('[DATABASE] Erreur SQLite :', err.message);
 }
@@ -186,6 +222,13 @@ const OFFICIAL_FLAGS = {
   'm5-boss': 'CYBER{M5_BOSS_ROOT_COMPROMISE_FINAL_FLAG}'
 };
 
+// Données en mémoire pour Web-04 (DevSphere Community Stored XSS)
+let web04Posts = [
+  { id: 1, author: 'sarah_m', role: 'Security Engineer', time: 'Il y a 1 heure', comment: 'Super initiative pour les balises de commentaires. Avez-vous validé que le parseur échappe bien les attributs d\'événements onload et onerror ?' },
+  { id: 2, author: 'kane_pentest', role: 'Code Reviewer', time: 'Il y a 45 minutes', comment: 'J\'ai effectué quelques tests de formatage Markdown, tout semble fluide pour l\'instant.' }
+];
+let web04Loot = [];
+
 // Utilitaires de réponse HTTP
 function sendJSON(res, statusCode, data) {
   res.writeHead(statusCode, {
@@ -238,6 +281,610 @@ const server = http.createServer(async (req, res) => {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Custom-Auth'
     });
     return res.end();
+  }
+
+  // ==========================================================================
+  // API TRAINING ZONE // TRYHACKME & HACKTHEBOX STYLE
+  // ==========================================================================
+
+  if (pathname === '/api/training/catalog' && method === 'GET') {
+    try {
+      const filters = {
+        category: parsedUrl.searchParams.get('category'),
+        difficulty: parsedUrl.searchParams.get('difficulty'),
+        learning_path: parsedUrl.searchParams.get('learning_path'),
+        search: parsedUrl.searchParams.get('search')
+      };
+      const items = trainingManager ? trainingManager.getCatalog(filters) : [];
+      return sendJSON(res, 200, { success: true, challenges: items });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/learning-paths' && method === 'GET') {
+    try {
+      if (db) {
+        const rows = db.prepare('SELECT * FROM training_learning_paths').all();
+        const paths = rows.map(r => ({
+          ...r,
+          challenge_ids: JSON.parse(r.challenge_ids || '[]')
+        }));
+        return sendJSON(res, 200, { success: true, paths });
+      }
+      return sendJSON(res, 200, { success: true, paths: [] });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname.startsWith('/api/training/challenge/') && method === 'GET') {
+    try {
+      const challengeId = pathname.replace('/api/training/challenge/', '').trim();
+      const user = db ? db.prepare('SELECT nickname FROM user_state WHERE id = ?').get('current_player') : null;
+      const nick = user ? user.nickname : 'Opérateur RedTeam';
+      const room = trainingManager ? trainingManager.getChallengeRoom(challengeId, nick) : null;
+      if (!room) return sendJSON(res, 404, { success: false, error: 'Challenge introuvable.' });
+      return sendJSON(res, 200, { success: true, room });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/instance/start' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const chId = body.challenge_id;
+      if (!trainingManager) throw new Error('Moteur d\'entraînement non initialisé.');
+      const inst = trainingManager.startInstance(chId);
+      return sendJSON(res, 200, { success: true, instance: inst });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/instance/stop' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const resStop = trainingManager.stopInstance(body.challenge_id);
+      return sendJSON(res, 200, resStop);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/instance/renew' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const inst = trainingManager.renewInstance(body.challenge_id);
+      return sendJSON(res, 200, { success: true, instance: inst });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/submit-flag' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const user = db ? db.prepare('SELECT nickname FROM user_state WHERE id = ?').get('current_player') : null;
+      const nick = user ? user.nickname : 'Opérateur RedTeam';
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const result = trainingManager.submitFlag(
+        body.challenge_id,
+        body.task_id,
+        body.flag,
+        nick,
+        req.socket.remoteAddress
+      );
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/unlock-hint' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const result = trainingManager.unlockHint(body.challenge_id, parseInt(body.hint_index, 10));
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 400, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname.startsWith('/api/training/writeup/') && method === 'GET') {
+    try {
+      const challengeId = pathname.replace('/api/training/writeup/', '').trim();
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const result = trainingManager.getWriteup(challengeId);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 403, { success: false, error: e.message });
+    }
+  }
+
+  // ==========================================================================
+  // CIBLES D'EXPLOITATION DU LAB D'ENTRAÎNEMENT (/targets/training/*)
+  // ==========================================================================
+
+  // Téléchargement sécurisé des fichiers de challenges (.pcap, .bin, .eml, .jpg)
+  if (pathname.startsWith('/targets/training/download/')) {
+    const parts = pathname.replace('/targets/training/download/', '').split('/');
+    if (parts.length >= 3) {
+      const [cat, chId, fileName] = parts;
+      const filePath = path.join(__dirname, 'challenges', cat, chId, 'files', fileName);
+      const safePath = path.resolve(filePath);
+      if (safePath.startsWith(path.resolve(path.join(__dirname, 'challenges'))) && fs.existsSync(safePath)) {
+        res.writeHead(200, {
+          'Content-Type': 'application/octet-stream',
+          'Content-Disposition': `attachment; filename="${fileName}"`
+        });
+        return fs.createReadStream(safePath).pipe(res);
+      }
+    }
+    return sendJSON(res, 404, { error: 'Fichier d\'artefact introuvable.' });
+  }
+
+  // --- Cible Challenge 1 : web-01-robots (Apex Logistics) ---
+  if (pathname === '/targets/training/web-01' || pathname === '/targets/training/web-01/' ||
+      pathname === '/targets/training/web-01-robots' || pathname === '/targets/training/web-01-robots/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-01-robots', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-01/robots.txt' || pathname === '/targets/training/web-01-robots/robots.txt') {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    return res.end("User-agent: *\nDisallow: /hidden_admin_vault_9041/\n");
+  }
+
+  if (pathname === '/robots.txt') {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    return res.end("User-agent: *\nDisallow: /hidden_admin_vault_9041/\n# FLAG: CYBER{HTTP_GET_ROBOTS_TXT_FOUND}\n");
+  }
+
+  if (pathname === '/targets/training/web-01/hidden_admin_vault_9041' ||
+      pathname === '/targets/training/web-01/hidden_admin_vault_9041/' ||
+      pathname === '/targets/training/web-01-robots/hidden_admin_vault_9041' ||
+      pathname === '/targets/training/web-01-robots/hidden_admin_vault_9041/' ||
+      pathname === '/hidden_admin_vault_9041' ||
+      pathname === '/hidden_admin_vault_9041/') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(`<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /hidden_admin_vault_9041</title>
+ </head>
+ <body>
+<h1>Index of /hidden_admin_vault_9041</h1>
+  <table>
+   <tr><th valign="top">Type</th><th>Name</th><th>Last modified</th><th>Size</th><th>Description</th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+<tr><td valign="top">[DIR]</td><td><a href="/targets/training/web-01/">Parent Directory</a></td><td>&nbsp;</td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top">[TXT]</td><td><a href="/targets/training/web-01/hidden_admin_vault_9041/backup_config.bak">backup_config.bak</a></td><td align="right">2026-10-28 03:14  </td><td align="right">142 </td><td>System Configuration &amp; Master Keys</td></tr>
+<tr><td valign="top">[BIN]</td><td><a href="#">internal_db_dump.sql.gz</a></td><td align="right">2026-10-27 12:00  </td><td align="right">4.8M</td><td>PostgreSQL Dump</td></tr>
+<tr><td valign="top">[TXT]</td><td><a href="#">audit_trace.log</a></td><td align="right">2026-10-29 01:22  </td><td align="right"> 12K</td><td>Daily SecOps Log</td></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<address>Apache/2.4.58 (Ubuntu) Server at 10.10.12.44 Port 3333</address>
+</body></html>`);
+  }
+
+  if (pathname === '/targets/training/web-01/hidden_admin_vault_9041/backup_config.bak' ||
+      pathname === '/targets/training/web-01-robots/hidden_admin_vault_9041/backup_config.bak' ||
+      pathname === '/targets/training/web-01/backup_config.bak' ||
+      pathname === '/targets/training/web-01-robots/backup_config.bak' ||
+      pathname === '/hidden_admin_vault_9041/backup_config.bak') {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    return res.end("[SYSTEM_BACKUP]\nDATABASE_HOST=10.10.1.5\nADMIN_API_KEY=KEY_SEC_9941\nFLAG=CYBERLAB{ROBOTS_TXT_HIDDEN_BACKUP_DISCOVERED}\n");
+  }
+
+  // --- Cible Challenge 2 : web-02-sqli-login (Aegis Identity Cloud IAM) ---
+  if (pathname === '/targets/training/web-02' || pathname === '/targets/training/web-02/' ||
+      pathname === '/targets/training/web-02-sqli-login' || pathname === '/targets/training/web-02-sqli-login/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-02-sqli-login', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if ((pathname === '/targets/training/web-02/login' || pathname === '/targets/training/web-02-sqli-login/login') && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const username = (body.username || '').trim();
+      const password = (body.password || '').trim();
+
+      const isSqlInjection = (
+        username.includes("' --") ||
+        username.includes("'--") ||
+        username.includes("' OR 1=1") ||
+        username.includes("' or 1=1") ||
+        username.includes("' OR '1'='1") ||
+        username.includes("' or '1'='1") ||
+        username.includes("admin'/*")
+      );
+
+      if (isSqlInjection || (username === 'admin' && password === 'SuperSecretMaster#2026')) {
+        return sendJSON(res, 200, {
+          success: true,
+          authenticated: true,
+          role: 'SuperAdministrator',
+          welcome: 'Accès Administrateur Déverrouillé.',
+          flag: 'CYBERLAB{SQLI_AUTH_BYPASS_IRON_GATE_CLEARED}'
+        });
+      }
+
+      return sendJSON(res, 401, {
+        success: false,
+        authenticated: false,
+        error: 'Identifiants invalides. Accès refusé par la passerelle IronGate.'
+      });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- Cible Challenge 3 : web-03-sqli-union (Veloce Billing & CRM) ---
+  if (pathname === '/targets/training/web-03' || pathname === '/targets/training/web-03/' ||
+      pathname === '/targets/training/web-03-sqli-union' || pathname === '/targets/training/web-03-sqli-union/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-03-sqli-union', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-03/api/search' || pathname === '/targets/training/web-03-sqli-union/api/search') {
+    const q = parsedUrl.searchParams.get('q') || '';
+    if (!q) {
+      try {
+        const rows = db ? db.prepare('SELECT id, company, contact_name, contract_value FROM crm_customers LIMIT 10').all() : [];
+        return sendJSON(res, 200, { results: rows });
+      } catch (e) {
+        return sendJSON(res, 500, { error: e.message });
+      }
+    }
+
+    try {
+      const rawSql = `SELECT id, company, contact_name, contract_value FROM crm_customers WHERE company LIKE '%${q}%' OR contact_name LIKE '%${q}%'`;
+      if (db) {
+        const rows = db.prepare(rawSql).all();
+        return sendJSON(res, 200, { results: rows });
+      }
+      return sendJSON(res, 200, { results: [] });
+    } catch (e) {
+      return sendJSON(res, 500, {
+        error: 'Database Query Error: ' + e.message,
+        hint: 'SQLite syntax check failed'
+      });
+    }
+  }
+
+  // --- Cible Challenge 4 : web-04-stored-xss (DevSphere Community Forum) ---
+  if (pathname === '/targets/training/web-04' || pathname === '/targets/training/web-04/' ||
+      pathname === '/targets/training/web-04-stored-xss' || pathname === '/targets/training/web-04-stored-xss/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-04-stored-xss', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-04/api/posts' || pathname === '/targets/training/web-04-stored-xss/api/posts') {
+    if (method === 'GET') {
+      return sendJSON(res, 200, web04Posts);
+    }
+    if (method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const author = (body.author || 'guest').trim();
+        const comment = (body.comment || '').trim();
+        if (!comment) return sendJSON(res, 400, { error: 'Commentaire vide' });
+
+        const newPost = {
+          id: Date.now(),
+          author,
+          role: 'Community Member',
+          time: 'À l\'instant',
+          comment
+        };
+        web04Posts.push(newPost);
+        return sendJSON(res, 200, { success: true, post: newPost });
+      } catch (e) {
+        return sendJSON(res, 500, { error: e.message });
+      }
+    }
+  }
+
+  if (pathname === '/targets/training/web-04/api/simulate-admin' || pathname === '/targets/training/web-04-stored-xss/api/simulate-admin') {
+    const hasXss = web04Posts.some(p => {
+      const c = (p.comment || '').toLowerCase();
+      return c.includes('<script') || c.includes('onerror') || c.includes('onload') || c.includes('fetch') || c.includes('cookie') || c.includes('loot') || c.includes('<img');
+    });
+
+    if (hasXss) {
+      web04Loot.unshift({
+        timestamp: new Date().toLocaleTimeString('fr-FR'),
+        ip: '10.10.17.1 (SecOps Admin Bot Headless)',
+        cookie: 'admin_session=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.adm994; secret_flag=CYBERLAB{STORED_XSS_COOKIE_HIJACK_ADMIN_BOT_SUCCESS}'
+      });
+    }
+
+    return sendJSON(res, 200, {
+      success: true,
+      bot_visited: true,
+      xss_triggered: hasXss,
+      message: 'Admin bot a inspecté le fil avec les cookies de session SecOps (HttpOnly: false).'
+    });
+  }
+
+  if (pathname === '/targets/training/web-04/api/loot' || pathname === '/targets/training/web-04-stored-xss/api/loot' ||
+      pathname === '/targets/training/web-04/webhook') {
+    if (method === 'GET') {
+      const c = parsedUrl.searchParams.get('c') || parsedUrl.searchParams.get('cookie');
+      if (c) {
+        web04Loot.unshift({
+          timestamp: new Date().toLocaleTimeString('fr-FR'),
+          ip: req.socket.remoteAddress || '10.10.17.44',
+          cookie: c
+        });
+      }
+      return sendJSON(res, 200, { success: true, loot: web04Loot });
+    }
+    if (method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const c = body.cookie || body.c || body.raw || 'empty';
+        web04Loot.unshift({
+          timestamp: new Date().toLocaleTimeString('fr-FR'),
+          ip: req.socket.remoteAddress || '10.10.17.44',
+          cookie: c
+        });
+        return sendJSON(res, 200, { success: true, loot: web04Loot });
+      } catch (e) {
+        return sendJSON(res, 500, { error: e.message });
+      }
+    }
+  }
+
+  // --- Cible Challenge 5 : web-05-lfi-wrapper (CloudDocs Documentation Portal) ---
+  if (pathname === '/targets/training/web-05' || pathname === '/targets/training/web-05/' ||
+      pathname === '/targets/training/web-05-lfi-wrapper' || pathname === '/targets/training/web-05-lfi-wrapper/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-05-lfi-wrapper', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-05/view' || pathname === '/targets/training/web-05-lfi-wrapper/view') {
+    const page = parsedUrl.searchParams.get('page') || 'overview';
+
+    // Faille PHP Wrappers (php://filter)
+    if (page.includes('convert.base64-encode') || page.includes('base64') || page.includes('php://filter')) {
+      const phpSource = `<?php\n// Aegis CloudDocs -- Production Environment Configuration\ndefine('DB_HOST', '10.10.44.59');\ndefine('DB_USER', 'cloud_admin');\ndefine('DB_PASSWORD', 'CYBERLAB{PHP_FILTER_BASE64_ENCODE_LFI_CLEARED_881}');\ndefine('API_SECRET_KEY', 'kk_9941_secret_prod_token');\n?>`;
+      const base64Content = Buffer.from(phpSource).toString('base64');
+      return sendJSON(res, 200, {
+        filename: 'config.php',
+        encoding: 'base64',
+        filter_applied: 'convert.base64-encode',
+        raw_stream: base64Content
+      });
+    }
+
+    if (page === 'config' || page === 'config.php') {
+      return sendJSON(res, 200, {
+        filename: 'config.php',
+        status: 'included',
+        content: '<?php // [PHP Runtime]: config.php inclus avec succès. Constantes de production chargées dans la portée globale. Aucune sortie standard retournée. ?>'
+      });
+    }
+
+    if (page.includes('passwd') || page.includes('..')) {
+      return sendJSON(res, 200, {
+        filename: '/etc/passwd',
+        content: 'root:x:0:0:root:/root:/bin/bash\noperator:x:1001:1001:SecOps Operator:/home/operator:/bin/bash\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\n'
+      });
+    }
+
+    return sendJSON(res, 200, {
+      filename: page + '.php',
+      content: `Documentation technique chargée pour le module ${page}.`
+    });
+  }
+
+  // --- Cible Challenge 9 : api-01-bola-profile (DocuHealth EHR) ---
+  if (pathname === '/targets/training/api-01' || pathname === '/targets/training/api-01/' ||
+      pathname === '/targets/training/api-01-bola-profile' || pathname === '/targets/training/api-01-bola-profile/') {
+    const indexPath = path.join(__dirname, 'challenges', 'api', 'api-01-bola-profile', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname.startsWith('/targets/training/api-01/patients/') || pathname.startsWith('/targets/training/api-01-bola-profile/patients/')) {
+    const id = pathname.replace(/^\/targets\/training\/(api-01|api-01-bola-profile)\/patients\//, '').trim();
+    const token = req.headers['x-user-token'];
+
+    if (!token || token !== 'operator_token_99') {
+      return sendJSON(res, 401, {
+        error: 'Unauthorized: Header X-User-Token manquant ou session expirée.'
+      });
+    }
+
+    if (id === '1' || id === '01') {
+      return sendJSON(res, 200, {
+        id: 1,
+        patient_name: 'Dr. Helmut Vance (Directeur Médical)',
+        blood_group: 'O-',
+        confidential_memo: 'Dossier Médical Confidentiel Défense - Suivi clinique classifié',
+        medical_record_flag: 'CYBERLAB{BOLA_API_DIRECT_OBJECT_MEDICAL_RECORD_LEAKED}'
+      });
+    }
+
+    if (id === '42') {
+      return sendJSON(res, 200, {
+        id: 42,
+        patient_name: 'Alex Dupont',
+        blood_group: 'A+',
+        consultation_notes: 'Visite médicale de routine annuelle. Apte au service.'
+      });
+    }
+
+    if (id === '2' || id === '02') {
+      return sendJSON(res, 200, {
+        id: 2,
+        patient_name: 'Claire Moreau',
+        blood_group: 'B+',
+        consultation_notes: 'Surveillance post-opératoire cardiologie. Évolution clinique favorable.'
+      });
+    }
+
+    return sendJSON(res, 404, { error: `Fiche patient #${id} introuvable.` });
+  }
+
+  // --- Cible Challenge 6 : web-06-sqli-blind-boolean (Aura Privatbank AG) ---
+  if (pathname === '/targets/training/web-06' || pathname === '/targets/training/web-06/' ||
+      pathname === '/targets/training/web-06-sqli-blind-boolean' || pathname === '/targets/training/web-06-sqli-blind-boolean/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-06-sqli-blind-boolean', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-06/api/check' || pathname === '/targets/training/web-06-sqli-blind-boolean/api/check') {
+    const rawId = parsedUrl.searchParams.get('id') || '';
+    const flagValue = "CYBERLAB{BOOLEAN_BLIND_SQLI_BINARY_SEARCH_WIN}";
+    
+    // Évaluation booléenne simplifiée pour la simulation
+    let isTrue = false;
+    const lower = rawId.toLowerCase();
+
+    if (rawId === '1042' || rawId.includes('1042 and 1=1') || rawId.includes('1042 and true')) {
+      isTrue = true;
+    } else if (rawId.includes('1=2') || rawId.includes('and false') || rawId.includes('1=0')) {
+      isTrue = false;
+    } else if (lower.includes('substr') || lower.includes('substring')) {
+      // Extraction de la condition
+      if (lower.includes("'c'") || lower.includes('"c"') || lower.includes("='c'") || lower.includes("= 'c'")) {
+        isTrue = true;
+      } else {
+        isTrue = false;
+      }
+    } else if (rawId.startsWith('1042')) {
+      isTrue = true;
+    }
+
+    if (isTrue) {
+      return sendJSON(res, 200, {
+        status: 'active',
+        client_name: 'Privatbank Mandat #1042',
+        tier: 'Ultra-High-Net-Worth VIP',
+        message: 'Dossier de gestion de fortune certifié conforme.',
+        flag: flagValue
+      });
+    } else {
+      return sendJSON(res, 200, {
+        status: 'not_found',
+        message: 'Aucun compte actif ne correspond à cette référence confidentielle.'
+      });
+    }
+  }
+
+  // --- Cible Challenge 7 : web-07-reflected-xss (Skyline Riviera Luxury Real Estate) ---
+  if (pathname === '/targets/training/web-07' || pathname === '/targets/training/web-07/' ||
+      pathname === '/targets/training/web-07-reflected-xss' || pathname === '/targets/training/web-07-reflected-xss/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-07-reflected-xss', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  // --- Cible Challenge 8 : web-08-csrf-bank (Novus Pay NeoBank) ---
+  if (pathname === '/targets/training/web-08' || pathname === '/targets/training/web-08/' ||
+      pathname === '/targets/training/web-08-csrf-bank' || pathname === '/targets/training/web-08-csrf-bank/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-08-csrf-bank', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-08/api/transfer' || pathname === '/targets/training/web-08-csrf-bank/api/transfer') {
+    return sendJSON(res, 200, {
+      success: true,
+      message: 'Virement SEPA instantané de fonds exécuté sans vérification anti-CSRF.',
+      flag: 'CYBERLAB{CSRF_SAME_SITE_NONE_TRANSFER_PWNED}'
+    });
+  }
+
+  // --- Cible Challenge 9 : web-09-path-traversal (AeroCloud Ops Flight Dispatch) ---
+  if (pathname === '/targets/training/web-09' || pathname === '/targets/training/web-09/' ||
+      pathname === '/targets/training/web-09-path-traversal' || pathname === '/targets/training/web-09-path-traversal/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-09-path-traversal', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-09/api/download' || pathname === '/targets/training/web-09-path-traversal/api/download') {
+    const filePath = parsedUrl.searchParams.get('file') || '';
+    if (filePath.includes('passwd')) {
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end("root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\naerops:x:1001:1001:AeroCloud Dispatch Operator:/home/aerops:/bin/bash\nFLAG=CYBERLAB{PATH_TRAVERSAL_PASSWD_DOWNLOAD_CONFIRMED}\n");
+    }
+    if (filePath.includes('flag')) {
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end("CYBERLAB{PATH_TRAVERSAL_PASSWD_DOWNLOAD_CONFIRMED}\n");
+    }
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    return res.end(`[AEROCLOUD CARGO INVOICE]\nFLIGHT=AF9021 (CDG-JFK)\nCARGO_WEIGHT=42,500 KG\nHANDLING_FEE=14,200.00 EUR\nSTATUS=CLEARED\n`);
+  }
+
+  // --- Cible Challenge 10 : web-10-upload-bypass (PixelForge 3D Avatar Studio) ---
+  if (pathname === '/targets/training/web-10' || pathname === '/targets/training/web-10/' ||
+      pathname === '/targets/training/web-10-upload-bypass' || pathname === '/targets/training/web-10-upload-bypass/') {
+    const indexPath = path.join(__dirname, 'challenges', 'web', 'web-10-upload-bypass', 'src', 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return fs.createReadStream(indexPath).pipe(res);
+    }
+  }
+
+  if (pathname === '/targets/training/web-10/api/upload' || pathname === '/targets/training/web-10-upload-bypass/api/upload') {
+    return sendJSON(res, 200, {
+      success: true,
+      saved_path: '/var/www/pixelforge/uploads/avatars/shell.php5',
+      url: '/targets/training/web-10/uploads/shell.php5',
+      execution_output: 'uid=33(www-data) gid=33(www-data) groups=33(www-data)\nLinux pixelforge-srv 6.8.0-31-generic #31-Ubuntu SMP x86_64\nFLAG=CYBERLAB{FILE_UPLOAD_EXTENSION_BYPASS_PHP5_EXECUTED}'
+    });
+  }
+
+  // --- ROUTEUR GÉNÉRIQUE POUR TOUTES LES AUTRES CIBLES DU LAB (/targets/training/:id/*) ---
+  if (pathname.startsWith('/targets/training/')) {
+    const sub = pathname.replace('/targets/training/', '');
+    const chId = sub.split('/')[0];
+    if (chId) {
+      // Chercher dans challenges/*/<chId>/src/index.html
+      const categories = ['web', 'api', 'osint', 'crypto', 'forensics', 'network', 'linux', 'reverse', 'pwn', 'cloud', 'social', 'blue'];
+      for (const cat of categories) {
+        const candidate = path.join(__dirname, 'challenges', cat, chId, 'src', 'index.html');
+        if (fs.existsSync(candidate)) {
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+          return fs.createReadStream(candidate).pipe(res);
+        }
+      }
+    }
   }
 
   // ==========================================================================

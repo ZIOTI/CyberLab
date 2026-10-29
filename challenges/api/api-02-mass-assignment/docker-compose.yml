@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  api-02-mass-assignment:
+    build: .
+    container_name: cyberlab_api-02-mass-assignment
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  forensics-06-usb-device-log:
+    build: .
+    container_name: cyberlab_forensics-06-usb-device-log
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

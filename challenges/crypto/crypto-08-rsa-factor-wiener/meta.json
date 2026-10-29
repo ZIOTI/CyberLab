@@ -1,0 +1,28 @@
+{
+  "id": "crypto-08-rsa-factor-wiener",
+  "title": "Small Private Exponent d",
+  "category": "Crypto",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 60,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "wiener-attack-d",
+    "crypto",
+    "hard"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "CyberChef",
+    "Hashcat",
+    "John the Ripper",
+    "SageMath"
+  ],
+  "narrative_story": "Scénario opérationnel pour Small Private Exponent d : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (wiener-attack-d) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.29.124"
+}

@@ -1,0 +1,28 @@
+{
+  "id": "web-08-csrf-bank",
+  "title": "Phantom Wire Transfer",
+  "category": "Web",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 45,
+  "learning_path": "web-beginner",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "csrf",
+    "web",
+    "easy"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf"
+  ],
+  "narrative_story": "Scénario opérationnel pour Phantom Wire Transfer : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (csrf) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.33.72"
+}

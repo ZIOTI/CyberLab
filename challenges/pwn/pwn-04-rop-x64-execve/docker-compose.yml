@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  pwn-04-rop-x64-execve:
+    build: .
+    container_name: cyberlab_pwn-04-rop-x64-execve
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

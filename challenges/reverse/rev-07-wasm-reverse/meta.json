@@ -1,0 +1,28 @@
+{
+  "id": "rev-07-wasm-reverse",
+  "title": "WebAssembly Logic Decompile",
+  "category": "Reverse Engineering",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "wasm2wat-disasm",
+    "reverse",
+    "hard"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Ghidra",
+    "radare2",
+    "IDA Free",
+    "x64dbg"
+  ],
+  "narrative_story": "Scénario opérationnel pour WebAssembly Logic Decompile : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (wasm2wat-disasm) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.14.151"
+}

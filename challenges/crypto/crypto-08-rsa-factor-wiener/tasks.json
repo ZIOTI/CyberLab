@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Small Private Exponent d)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à wiener-attack-d.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "VULN_CRYPTO_08_RSA_FACTOR_WIENER_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 210,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{WIENER_ATTACK_CONTINUED_FRACTIONS_FACTOR_N}"
+  }
+]

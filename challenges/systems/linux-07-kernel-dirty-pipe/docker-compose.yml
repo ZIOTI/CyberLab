@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  linux-07-kernel-dirty-pipe:
+    build: .
+    container_name: cyberlab_linux-07-kernel-dirty-pipe
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Autonomous System Route Poison)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à bgp-as-path-poison.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "VULN_NET_07_BGP_HIJACK_SIMULATION_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 350,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{BGP_PREFIX_HIJACK_MED_METRIC_ROUTING_POISONED}"
+  }
+]

@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  osint-03-domain-recon:
+    build: .
+    container_name: cyberlab_osint-03-domain-recon
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

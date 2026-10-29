@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Sudo Without Password)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à sudo-l.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "VULN_LINUX_03_SUDO_RIGHTS_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 70,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SUDO_NOPASSWD_GTFOBINS_EASY_ROOT}"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "id": "rev-03-strings-crackme",
+  "title": "Hardcoded Validation",
+  "category": "Reverse Engineering",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 45,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "strings-elf",
+    "reverse",
+    "beginner"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Ghidra",
+    "radare2",
+    "IDA Free",
+    "x64dbg"
+  ],
+  "narrative_story": "Scénario opérationnel pour Hardcoded Validation : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (strings-elf) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.35.121"
+}

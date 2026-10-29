@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-neutral-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KICKSVAULT // Exclusive Streetwear, Limited Sneakers &amp; Cyber Drops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Syne', 'sans-serif'],
+            sans: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            acid: '#bef264',
+            volt: '#d9f99d',
+            carbon: '#111111',
+            smoke: '#18181b',
+            offwhite: '#f4f4f5'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .noise-bg {
+      background-color: #0c0c0e;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+    .neon-border:hover {
+      box-shadow: 0 0 25px rgba(190, 242, 100, 0.25);
+    }
+  </style>
+</head>
+<body class="h-full noise-bg text-neutral-100 font-sans flex flex-col selection:bg-acid selection:text-black">
+
+  <!-- TOP TICKER BAR -->
+  <div class="bg-acid text-neutral-950 font-mono text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-neutral-800">
+    <div class="flex items-center justify-between max-w-7xl mx-auto">
+      <div class="flex items-center gap-4 animate-pulse">
+        <span>⚡ DROP VAULT #402 : LIVRAISON EXPRESS OFFERTE DÈS 180€ D'ACHATS</span>
+        <span class="hidden md:inline">• TOUS LES ARTICLES SONT 100% AUTHENTIFIÉS PAR EXPERTS</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4">
+        <span>DEVISE : EUR (€)</span>
+        <span>MAGASIN : PARIS / SHIBUYA / NYC</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER / NAVBAR -->
+  <header class="sticky top-0 z-40 bg-carbon/90 backdrop-blur-md border-b border-neutral-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded bg-acid text-black flex items-center justify-center font-heading font-black text-xl group-hover:rotate-6 transition-transform">
+          KV
+        </div>
+        <div>
+          <span class="font-heading font-extrabold text-2xl tracking-tighter text-white block">
+            KICKS<span class="text-acid">VAULT</span>
+          </span>
+          <span class="font-mono text-[9px] uppercase tracking-widest text-neutral-400 block -mt-1">
+            Rare Apparel &amp; Footwear
+          </span>
+        </div>
+      </a>
+
+      <!-- Category Links -->
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold tracking-wide">
+        <a href="#catalog" class="text-white hover:text-acid transition">TOUT LE CATALOGUE</a>
+        <a href="#catalog" onclick="filterCategory('Sneakers')" class="text-neutral-400 hover:text-white transition">SNEAKERS</a>
+        <a href="#catalog" onclick="filterCategory('Apparel')" class="text-neutral-400 hover:text-white transition">APPAREL &amp; HOODIES</a>
+        <a href="#catalog" onclick="filterCategory('Collabs')" class="text-neutral-400 hover:text-white transition">COLLABS EXCLUSIVES</a>
+        <a href="#about" class="text-neutral-400 hover:text-white transition">AUTHENTICITÉ</a>
+      </nav>
+
+      <!-- Search & Cart -->
+      <div class="flex items-center gap-3">
+        <a href="#catalog" class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-smoke border border-neutral-700 text-xs text-neutral-300 hover:border-acid transition">
+          <svg class="w-4 h-4 text-acid" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <span>Recherche Catalogue</span>
+        </a>
+
+        <button onclick="toggleCart()" class="relative p-2.5 rounded-lg bg-smoke border border-neutral-700 hover:border-acid transition flex items-center gap-2">
+          <svg class="w-5 h-5 text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          <span id="cart-count" class="w-5 h-5 rounded-full bg-acid text-black font-mono font-bold text-[10px] flex items-center justify-center">2</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="relative py-16 sm:py-24 border-b border-neutral-800 overflow-hidden bg-gradient-to-b from-carbon to-neutral-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 grid lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-neutral-800 border border-neutral-700 font-mono text-xs text-acid">
+          <span class="w-2 h-2 rounded-full bg-acid"></span>
+          <span>COLLECTION SÉRIE LIMITÉE 2026 // EDITION #09</span>
+        </div>
+        <h1 class="font-heading text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] text-white">
+          THE VAULT IS OPEN. <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-volt to-white">
+            GRAILS ONLY.
+          </span>
+        </h1>
+        <p class="text-neutral-300 text-base sm:text-lg leading-relaxed max-w-xl">
+          Éditions limitées introuvables, prototypes exclusifs et collaborations iconiques certifiés par notre laboratoire d'authentification physique.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a href="#catalog" class="px-7 py-4 rounded bg-acid hover:bg-volt text-black font-heading font-extrabold text-sm uppercase tracking-wider transition shadow-lg shadow-acid/20">
+            Explorer les Drops
+          </a>
+          <a href="#about" class="px-7 py-4 rounded bg-smoke hover:bg-neutral-800 border border-neutral-700 text-white font-bold text-sm transition">
+            Process d'Authentification
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Visual Card -->
+      <div class="lg:col-span-5 relative">
+        <div class="p-6 rounded-2xl bg-smoke/80 border border-neutral-700/80 shadow-2xl space-y-4">
+          <div class="flex items-center justify-between text-xs font-mono text-neutral-400">
+            <span>DROP DU JOUR #884</span>
+            <span class="text-rose-400 font-bold">12 PAIRES RESTANTES</span>
+          </div>
+          <div class="h-56 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center p-4 relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-tr from-acid/10 to-transparent opacity-60"></div>
+            <!-- Sneaker SVG graphic -->
+            <svg class="w-48 h-48 text-acid group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_15px_25px_rgba(190,242,100,0.3)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l2.5-3 4 1 5.5-5 3.5 1 2.5 3.5v4.5l-2.5 2H4l-1-4z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 17.5h16M7 11.5l1.5 2m3-3l1.5 2m3-3l1.5 2"/>
+            </svg>
+            <div class="absolute bottom-3 left-3 bg-black/80 backdrop-blur px-2.5 py-1 rounded text-[10px] font-mono text-acid font-bold">
+              CYBER-RUNNER V3 "NEO-TOKYO"
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm font-bold text-white">Cyber-Runner V3 Prototype</div>
+              <div class="text-xs text-neutral-400 font-mono">StockX Ref: #CR-9902</div>
+            </div>
+            <div class="text-right">
+              <div class="font-heading font-black text-xl text-acid">490,00 €</div>
+              <div class="text-[10px] text-neutral-500 font-mono">Prix Retail 220€</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORE CATALOG WITH REAL LIVE SQL INJECTION SEARCH BAR -->
+  <main id="catalog" class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-12 w-full space-y-8">
+    <!-- Catalog Header & Search Controls -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-neutral-800">
+      <div>
+        <span class="font-mono text-xs uppercase tracking-wider text-acid">Inventaire En Direct</span>
+        <h2 class="font-heading text-3xl font-extrabold text-white mt-1">Catalogue Produits &amp; Grails</h2>
+        <p class="text-xs text-neutral-400 mt-1">Recherchez parmi nos collections par nom, marque, créateur ou modèle</p>
+      </div>
+
+      <!-- Real Live Vulnerable Search Bar -->
+      <form id="search-form" class="w-full md:w-96 space-y-2">
+        <label for="search-input" class="block text-xs font-mono text-neutral-400 uppercase">
+          Recherche Rapide (SQL Backend) :
+        </label>
+        <div class="relative flex items-center">
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="ex: Cyber, Runner, Jordan..." 
+            class="w-full pl-10 pr-24 py-3 rounded-lg bg-smoke border border-neutral-700 text-sm font-mono text-white focus:border-acid focus:ring-1 focus:ring-acid outline-none transition placeholder:text-neutral-600"
+          >
+          <svg class="w-4 h-4 text-neutral-500 absolute left-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <button 
+            type="submit" 
+            id="btn-search"
+            class="absolute right-1.5 px-3 py-1.5 rounded bg-acid hover:bg-volt text-black font-mono font-bold text-xs transition"
+          >
+            Chercher
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- SQL Query Inspector Box (Visible on Error or Attack) -->
+    <div id="sql-debug-panel" class="hidden p-4 rounded-xl bg-rose-950/40 border border-rose-800/80 text-xs font-mono space-y-2">
+      <div class="flex items-center justify-between text-rose-300 font-bold">
+        <span>⚠️ EXCEPTION MOTEUR SQLITE (Code 500)</span>
+        <span id="sql-error-code">SQLITE_ERROR</span>
+      </div>
+      <div class="text-neutral-300 bg-neutral-950 p-2.5 rounded border border-neutral-800 overflow-x-auto text-[11px]" id="sql-error-msg">
+        Erreur de syntaxe SQLite...
+      </div>
+      <div class="text-[10px] text-neutral-400">
+        Requête vulnérable exécutée : <code class="text-acid" id="sql-raw-query">SELECT id, name, brand, price, stock FROM products WHERE name LIKE '%...%'</code>
+      </div>
+    </div>
+
+    <!-- Product Grid Mount -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="products-grid">
+      <!-- Default Loaded Products via JS -->
+    </div>
+  </main>
+
+  <!-- CART FLYOUT MODAL -->
+  <div id="cart-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex justify-end">
+    <div class="w-full max-w-md bg-carbon h-full border-l border-neutral-800 p-6 flex flex-col justify-between">
+      <div class="space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-neutral-800">
+          <h3 class="font-heading font-extrabold text-xl text-white">Votre Panier Vault (2)</h3>
+          <button onclick="toggleCart()" class="text-neutral-400 hover:text-white text-xl">&times;</button>
+        </div>
+        <div class="space-y-3 text-xs font-mono">
+          <div class="p-3 rounded-lg bg-smoke border border-neutral-800 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-white">Cyber-Runner V3 (Size 43)</div>
+              <div class="text-neutral-400">Ref: CR-9902 • 1x</div>
+            </div>
+            <div class="font-bold text-acid">490,00 €</div>
+          </div>
+          <div class="p-3 rounded-lg bg-smoke border border-neutral-800 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-white">Heavyweight Oversized Hoodie</div>
+              <div class="text-neutral-400">Ref: HD-0021 • 1x</div>
+            </div>
+            <div class="font-bold text-acid">160,00 €</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-neutral-800 space-y-4">
+        <div class="flex justify-between font-heading font-black text-lg text-white">
+          <span>TOTAL :</span>
+          <span class="text-acid">650,00 €</span>
+        </div>
+        <button onclick="alert('Commande de démonstration verrouillée pour le lab.')" class="w-full py-3.5 rounded bg-acid hover:bg-volt text-black font-heading font-extrabold text-sm uppercase tracking-wider transition">
+          Valider la Commande (Stripe)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORPORATE STREETWEAR FOOTER -->
+  <footer class="bg-carbon border-t border-neutral-800 py-12 px-4 sm:px-6 mt-16 text-xs text-neutral-400 font-mono">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <div class="font-heading font-black text-xl text-white mb-2">KICKS<span class="text-acid">VAULT</span></div>
+        <p class="text-neutral-500 leading-relaxed font-sans text-xs">
+          Plateforme mondiale de négoce et de certification de streetwear haut de gamme et d'artefacts urbains rares.
+        </p>
+      </div>
+      <div>
+        <div class="font-bold text-white uppercase tracking-wider mb-3">Service Client</div>
+        <ul class="space-y-1.5">
+          <li><a href="#" class="hover:text-acid">Suivre ma commande</a></li>
+          <li><a href="#" class="hover:text-acid">Guide des tailles</a></li>
+          <li><a href="#" class="hover:text-acid">Retours sous 14 jours</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-bold text-white uppercase tracking-wider mb-3">Sécurité &amp; Vault</div>
+        <ul class="space-y-1.5">
+          <li><a href="#" class="hover:text-acid">Certificat d'Authenticité NFC</a></li>
+          <li><a href="#" class="hover:text-acid">Chiffrement SSL 256-bit</a></li>
+          <li><a href="#" class="hover:text-acid">Paiement Garanti Escrow</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-bold text-white uppercase tracking-wider mb-3">Boutiques Physiques</div>
+        <p class="text-neutral-500 font-sans">
+          Paris : 14 Rue du Faubourg Saint-Honoré<br>
+          Tokyo : 5-7-22 Minami-Aoyama, Minato-ku<br>
+          New York : 112 Mercer St, SoHo
+        </p>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto pt-8 mt-8 border-t border-neutral-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-600">
+      <div>&copy; 2026 KicksVault Global Trading Inc. All rights reserved.</div>
+      <div>Backend Engine: Node / SQLite3 (Search API v2.4)</div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleCart() {
+      const modal = document.getElementById('cart-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    function addToCart(name) {
+      alert(name + ' a été ajouté au panier !');
+    }
+
+    // Default products loader
+    async function loadProducts(query = '') {
+      const grid = document.getElementById('products-grid');
+      const debugPanel = document.getElementById('sql-debug-panel');
+      const errorMsg = document.getElementById('sql-error-msg');
+      const rawQuery = document.getElementById('sql-raw-query');
+
+      try {
+        const url = `/targets/training/web-03/api/search?q=${encodeURIComponent(query)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!res.ok) {
+          debugPanel.classList.remove('hidden');
+          errorMsg.innerText = data.error || 'Erreur d\'exécution de la requête SQL.';
+          rawQuery.innerText = `SELECT id, name, brand, price, stock FROM products WHERE name LIKE '%${query}%'`;
+          return;
+        }
+
+        debugPanel.classList.add('hidden');
+
+        if (!data.results || data.results.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full p-8 text-center bg-smoke rounded-xl border border-neutral-800 text-neutral-400 font-mono text-xs">
+              Aucun produit ou résultat trouvé pour la recherche : "${query}".
+            </div>
+          `;
+          return;
+        }
+
+        // Render rows
+        grid.innerHTML = data.results.map(item => {
+          // Si injection SQL UNION avec colonnes utilisateurs ou table dump
+          const strDump = JSON.stringify(item);
+          const isLeaked = strDump.includes('CYBERLAB') || strDump.includes('admin') || strDump.includes('@');
+          
+          return `
+            <div class="p-4 rounded-xl ${isLeaked ? 'bg-emerald-950/40 border-2 border-emerald-500 shadow-xl' : 'bg-smoke border border-neutral-800'} hover:border-acid transition flex flex-col justify-between">
+              <div class="space-y-3">
+                <div class="h-36 rounded-lg ${isLeaked ? 'bg-emerald-900/30 text-emerald-400' : 'bg-neutral-900 text-neutral-600'} border border-neutral-800 flex items-center justify-center font-mono text-xs p-3 text-center">
+                  ${isLeaked ? '⚡ DONNÉES EXTRAITES VIA UNION SQLi' : '[ SNEAKER / APPAREL ITEM ]'}
+                </div>
+                <div>
+                  <span class="text-[10px] font-mono ${isLeaked ? 'text-emerald-400 font-bold' : 'text-acid'} uppercase">
+                    ${isLeaked ? 'COMPTE FUITE / FLAG' : (item.brand || item.company || 'VAULT EXCLUSIVE')}
+                  </span>
+                  <h3 class="font-bold text-sm text-white select-all">
+                    ${item.name || item.company || 'Article Inconnu'}
+                  </h3>
+                  <p class="text-xs text-neutral-400 font-mono mt-0.5 select-all">
+                    ${item.contact_name || item.brand || item.stock || ''}
+                  </p>
+                </div>
+              </div>
+              <div class="mt-4 pt-3 border-t border-neutral-800 flex items-center justify-between">
+                <span class="font-heading font-black ${isLeaked ? 'text-emerald-400 text-sm' : 'text-acid text-base'} font-mono select-all">
+                  ${item.price || item.contract_value || '0.00 €'}
+                </span>
+                <button onclick="addToCart('${(item.name || item.company || '').replace(/'/g, "\\'")}')" class="px-3 py-1.5 rounded ${isLeaked ? 'bg-emerald-600 hover:bg-emerald-500 text-black' : 'bg-neutral-800 hover:bg-neutral-700 text-white'} text-xs font-bold transition">
+                  ${isLeaked ? 'Inspecter' : '+ Panier'}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        debugPanel.classList.remove('hidden');
+        errorMsg.innerText = 'Erreur réseau : ' + err.message;
+      }
+    }
+
+    document.getElementById('search-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = document.getElementById('search-input').value.trim();
+      loadProducts(val);
+    });
+
+    // Initial load
+    loadProducts();
+  </script>
+</body>
+</html>

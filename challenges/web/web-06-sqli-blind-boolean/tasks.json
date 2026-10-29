@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (True or False Blind)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à sqli-blind.",
+    "points": 45,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WEB_06_SQLI_BLIND_BOOLEAN_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 105,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{BOOLEAN_BLIND_SQLI_BINARY_SEARCH_WIN}"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "id": "b2r-01-enterprise-alpha",
+  "title": "Full Kill Chain Compromise Alpha",
+  "category": "Linux & Windows",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "boot2root-killchain",
+    "systems",
+    "insane"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "GTFOBins",
+    "PowerUp",
+    "Mimikatz"
+  ],
+  "narrative_story": "Scénario opérationnel pour Full Kill Chain Compromise Alpha : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (boot2root-killchain) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.58.160"
+}

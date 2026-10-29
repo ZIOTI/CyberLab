@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Kerberos Without Preauth)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à asreproast.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WIN_01_AD_ASREP_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 140,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{ASREP_ROAST_TGT_OFFLINE_HASHCAT_CRACKED}"
+  }
+]

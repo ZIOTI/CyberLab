@@ -1,0 +1,16 @@
+{
+  "id": "crypto-01-rot-vault",
+  "title": "Caesar's Legacy",
+  "category": "Crypto",
+  "difficulty": "beginner",
+  "points": 100,
+  "duration_min": 30,
+  "learning_path": "crypto-osint-core",
+  "author": "Aegis Cipher Office",
+  "tags": ["crypto", "rot13", "vigenere", "substitution"],
+  "prerequisites": ["Compréhension du décalage César", "Chiffre de Vigenère"],
+  "recommended_tools": ["CyberChef", "dcode.fr", "Python"],
+  "narrative_story": "Les services d'écoute ont intercepté une dépêche chiffrée issue d'un canal diplomatique militaire. La notice indique une double couche de protection : un décalage rotatif ROT13 standard appliqué sur un chiffrement de Vigenère dont la clé secrète est le nom du consortium de défense. Reconstitue la chaîne cryptographique pour déchiffrer l'ordre et récupérer le drapeau.",
+  "target_port": null,
+  "virtual_ip": null
+}

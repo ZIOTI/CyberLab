@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Clé hexadécimale de chiffrement",
+    "description": "Quelle est la valeur de la clé XOR 1-byte (format 0xXX) ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "0x5B"
+  },
+  {
+    "id": "t2",
+    "title": "Caractère ASCII de la clé",
+    "description": "Quel est le caractère imprimable correspondant à cette clé ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "["
+  },
+  {
+    "id": "t3",
+    "title": "Message déchiffré & Flag",
+    "description": "Déchiffre le payload et soumets le drapeau confidentiel.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SINGLE_BYTE_XOR_FREQUENCY_ANALYSIS_SOLVED}"
+  }
+]

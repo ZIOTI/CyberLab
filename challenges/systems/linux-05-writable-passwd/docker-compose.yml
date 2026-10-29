@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  linux-05-writable-passwd:
+    build: .
+    container_name: cyberlab_linux-05-writable-passwd
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

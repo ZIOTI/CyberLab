@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  rev-06-anti-debug-pe:
+    build: .
+    container_name: cyberlab_rev-06-anti-debug-pe
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

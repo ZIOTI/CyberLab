@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  win-05-ad-gpo-abuse:
+    build: .
+    container_name: cyberlab_win-05-ad-gpo-abuse
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

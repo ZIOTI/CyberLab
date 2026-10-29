@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  net-07-bgp-hijack-simulation:
+    build: .
+    container_name: cyberlab_net-07-bgp-hijack-simulation
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

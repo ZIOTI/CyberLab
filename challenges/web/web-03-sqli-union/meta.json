@@ -1,0 +1,28 @@
+{
+  "id": "web-03-sqli-union",
+  "title": "Union of Secrets",
+  "category": "Web",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 40,
+  "learning_path": "web-beginner",
+  "author": "Aegis RedOps",
+  "tags": [
+    "sqli",
+    "union-select",
+    "database-enumeration",
+    "sqlite"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap"
+  ],
+  "narrative_story": "Le portail e-commerce de fournitures industrielles Aegis Store utilise un filtre de recherche vulnérable aux injections SQL de type UNION. Ton objectif est de déterminer le nombre de colonnes de la requête originale, d'extraire les tables du schéma SQLite et de récupérer les mots de passe de la table secrète admin_credentials.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.59.130"
+}

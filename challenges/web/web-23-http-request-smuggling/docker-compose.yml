@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web-23-http-request-smuggling:
+    build: .
+    container_name: cyberlab_web-23-http-request-smuggling
+    ports:
+      - "3333:3333"
+    restart: unless-stopped

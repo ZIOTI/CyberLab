@@ -1,0 +1,28 @@
+{
+  "id": "web-26-websocket-hijack",
+  "title": "Cross-Site WebSocket Hijacking",
+  "category": "Web",
+  "difficulty": "hard",
+  "points": 350,
+  "duration_min": 60,
+  "learning_path": "web-beginner",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "cswsh-origin",
+    "web",
+    "hard"
+  ],
+  "prerequisites": [
+    "Connaissances fondamentales en sécurité informatique",
+    "Utilisation de la ligne de commande Linux / Web"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf"
+  ],
+  "narrative_story": "Scénario opérationnel pour Cross-Site WebSocket Hijacking : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (cswsh-origin) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.58.199"
+}

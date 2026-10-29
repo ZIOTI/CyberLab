@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DocuHealth // Dossier Patient Informatisé &amp; Console Clinique</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            medical: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased flex flex-col selection:bg-sky-500 selection:text-white">
+
+  <!-- TOP CLINICAL BAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 h-16 px-6 flex items-center justify-between shrink-0 shadow-xs">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-medical-600 flex items-center justify-center text-white shadow-sm font-bold">
+        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+        </svg>
+      </div>
+      <div>
+        <span class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+          DOCU<span class="text-medical-600">HEALTH</span>
+        </span>
+        <span class="text-[9px] font-mono text-slate-400 uppercase tracking-wider block -mt-1">
+          Centre Hospitalier Universitaire // Service Cardiologie &amp; Soins Intensifs
+        </span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4 text-xs">
+      <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-mono text-[11px]">HDS / HIPAA Compliant Gateway v1.8</span>
+      </div>
+      <span class="text-slate-300">|</span>
+      <div class="flex items-center gap-2">
+        <div class="text-right">
+          <span class="text-xs font-bold text-slate-800 block">Dr. Alex Dupont</span>
+          <span class="text-[10px] text-slate-500 font-mono">ID Session: #42</span>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-medical-100 text-medical-700 font-extrabold flex items-center justify-center text-xs">
+          AD
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CLINICAL WORKSPACE -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- LEFT PATIENT LIST SIDEBAR -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 hidden md:flex">
+      <div class="p-4 space-y-4">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block mb-2">Patients Hospitalisés (Unité B)</span>
+          <div class="space-y-1.5" id="patients-list">
+            <!-- Patient 42 (Current Operator) -->
+            <button onclick="selectPatient(42)" class="patient-btn w-full p-3 rounded-xl border border-medical-500 bg-medical-50 text-left transition flex items-center justify-between" data-id="42">
+              <div>
+                <div class="text-xs font-bold text-slate-900">Alex Dupont</div>
+                <div class="text-[10px] text-slate-500 font-mono">Dossier #42 • Chambre 204</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-medical-600 text-white">Actif</span>
+            </button>
+
+            <!-- Patient 1 (Classified / Vulnerable to BOLA) -->
+            <button onclick="selectPatient(1)" class="patient-btn w-full p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-center justify-between" data-id="1">
+              <div>
+                <div class="text-xs font-bold text-slate-900">Dr. Helmut Vance</div>
+                <div class="text-[10px] text-slate-500 font-mono">Dossier #01 • Direction Médicale</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200">Sensible</span>
+            </button>
+
+            <!-- Patient 2 -->
+            <button onclick="selectPatient(2)" class="patient-btn w-full p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-center justify-between" data-id="2">
+              <div>
+                <div class="text-xs font-bold text-slate-900">Claire Moreau</div>
+                <div class="text-[10px] text-slate-500 font-mono">Dossier #02 • Chambre 108</div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-600">Stable</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token Status Box -->
+      <div class="p-4 border-t border-slate-200 bg-slate-50 space-y-1.5 text-xs font-mono">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Jeton X-User-Token Attribué :</span>
+        <code class="text-medical-700 bg-white p-2 rounded border border-slate-200 block text-[11px] truncate select-all">operator_token_99</code>
+      </div>
+    </aside>
+
+    <!-- MAIN CLINICAL VIEW -->
+    <main class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6">
+
+      <!-- TOP PATIENT BANNER -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-medical-50 border border-medical-100 flex items-center justify-center text-medical-600 font-extrabold text-xl font-mono">
+            <span id="banner-avatar">AD</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-3">
+              <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight" id="banner-name">Alex Dupont</h1>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold font-mono" id="banner-badge">Patient Actif</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1 font-mono">
+              Identifiant Hospitalier National : <strong id="banner-id" class="text-slate-800">#42</strong> • Groupe Sanguin : <strong id="banner-blood" class="text-slate-800">A+</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="alert('Impression du dossier clinique transmise à l\'imprimante de garde.')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+            Imprimer Fiche
+          </button>
+        </div>
+      </div>
+
+      <!-- VITALS TELEMETRY WIDGET -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Fréquence Cardiaque</span>
+          <div class="text-2xl font-extrabold text-slate-900 font-mono flex items-baseline gap-1">
+            <span>72</span> <span class="text-xs text-slate-500 font-normal">bpm</span>
+          </div>
+          <span class="text-[10px] text-emerald-600 font-semibold">Rythme sinusal régulier</span>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pression Artérielle</span>
+          <div class="text-2xl font-extrabold text-slate-900 font-mono flex items-baseline gap-1">
+            <span>120 / 80</span> <span class="text-xs text-slate-500 font-normal">mmHg</span>
+          </div>
+          <span class="text-[10px] text-emerald-600 font-semibold">Normotension</span>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Saturation SpO2</span>
+          <div class="text-2xl font-extrabold text-slate-900 font-mono flex items-baseline gap-1">
+            <span>98%</span> <span class="text-xs text-slate-500 font-normal">air ambiant</span>
+          </div>
+          <span class="text-[10px] text-emerald-600 font-semibold">Oxygénation optimale</span>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Température Corporelle</span>
+          <div class="text-2xl font-extrabold text-slate-900 font-mono flex items-baseline gap-1">
+            <span>36.8°</span> <span class="text-xs text-slate-500 font-normal">Celsius</span>
+          </div>
+          <span class="text-[10px] text-emerald-600 font-semibold">Apyrétique</span>
+        </div>
+      </div>
+
+      <!-- MEDICAL NOTES & OBSERVATIONS -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
+          Observations Médicales &amp; Historique Clinique
+        </h3>
+        <div id="patient-notes-box" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700 leading-relaxed whitespace-pre-wrap">
+          Visite médicale de routine annuelle. Apte au service opérationnel.
+        </div>
+      </div>
+
+      <!-- CLASSIFIED RECORD ALERT / FLAG BANNER -->
+      <div id="flag-box" class="hidden p-5 rounded-2xl bg-rose-950/80 border border-rose-500 text-rose-200 space-y-2 shadow-lg">
+        <div class="flex items-center justify-between text-xs font-bold font-mono uppercase tracking-wider text-rose-400">
+          <span>⚠️ ALERTE DE SÉCURITÉ : FUITE DE DOSSIER MÉDICAL CLASSIFIÉ (BOLA EXPLOITÉ)</span>
+          <span class="px-2 py-0.5 rounded bg-rose-500 text-white font-mono text-[10px]">DIRECTEUR MÉDICAL</span>
+        </div>
+        <p class="text-xs leading-relaxed">
+          Le contrôle d'accès au niveau des objets de l'API (OWASP API Security #1 - BOLA) est défaillant : le serveur n'a pas vérifié si le jeton <code>operator_token_99</code> avait l'autorisation de consulter le dossier du patient #1.
+        </p>
+        <div class="pt-2 flex items-center justify-between gap-4">
+          <code class="text-sm font-mono font-black text-white select-all bg-slate-950 p-2.5 rounded-xl border border-rose-800 flex-1" id="flag-display">
+            CYBERLAB{BOLA_API_DIRECT_OBJECT_MEDICAL_RECORD_LEAKED}
+          </code>
+          <button onclick="navigator.clipboard.writeText(document.getElementById('flag-display').innerText); alert('Flag copié !');" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold font-mono">
+            Copier
+          </button>
+        </div>
+      </div>
+
+      <!-- REST API AUDIT TOOL & DIAGNOSTIC CONSOLE -->
+      <div class="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 shadow-lg space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400 font-mono">
+              Console d'Audit de l'API REST Clinique (OWASP API #1 // BOLA)
+            </h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Testez la robustesse de l'autorisation d'accès par ID d'objet direct</p>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400">Endpoint: <code>/targets/training/api-01/patients/:id</code></span>
+        </div>
+
+        <div class="grid sm:grid-cols-12 gap-3 text-xs font-mono">
+          <div class="sm:col-span-3">
+            <label class="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">ID Patient Cible</label>
+            <input type="text" id="api-patient-id" value="42"
+                   class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs outline-none focus:border-sky-400 font-mono">
+          </div>
+
+          <div class="sm:col-span-6">
+            <label class="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">Header X-User-Token</label>
+            <input type="text" id="api-user-token" value="operator_token_99"
+                   class="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sky-300 text-xs outline-none focus:border-sky-400 font-mono">
+          </div>
+
+          <div class="sm:col-span-3 flex items-end">
+            <button type="button" onclick="executeApiQuery()" class="w-full py-2 px-4 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition">
+              Exécuter Requête
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 pt-2">
+          <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Réponse JSON du Serveur de Santé :</span>
+          <pre id="api-response-pre" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">// Chargement initial...</pre>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+    async function selectPatient(id) {
+      document.querySelectorAll('.patient-btn').forEach(b => {
+        if (b.getAttribute('data-id') == id) {
+          b.className = 'patient-btn w-full p-3 rounded-xl border border-medical-500 bg-medical-50 text-left transition flex items-center justify-between';
+        } else {
+          b.className = 'patient-btn w-full p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white text-left transition flex items-center justify-between';
+        }
+      });
+
+      document.getElementById('api-patient-id').value = id;
+      await executeApiQuery();
+    }
+
+    async function executeApiQuery() {
+      const id = document.getElementById('api-patient-id').value.trim();
+      const token = document.getElementById('api-user-token').value.trim();
+      const pre = document.getElementById('api-response-pre');
+      const flagBox = document.getElementById('flag-box');
+
+      pre.innerText = 'Exécution de la requête HTTP en cours...';
+
+      try {
+        const res = await fetch(`/targets/training/api-01/patients/${id}`, {
+          headers: { 'X-User-Token': token }
+        });
+        const data = await res.json();
+        pre.innerText = JSON.stringify(data, null, 2);
+
+        if (res.ok) {
+          // Update patient view
+          document.getElementById('banner-name').innerText = data.patient_name || `Patient #${id}`;
+          document.getElementById('banner-id').innerText = `#${id}`;
+          document.getElementById('banner-blood').innerText = data.blood_group || 'O+';
+          document.getElementById('banner-avatar').innerText = (data.patient_name || 'PT').substring(0, 2).toUpperCase();
+
+          const notes = data.medical_record_flag ?
+            `[DOSSIER CONFIDENTIEL DÉFENSE]\n${data.confidential_memo || ''}\nFLAG EXTRAIT : ${data.medical_record_flag}` :
+            (data.consultation_notes || 'Dossier médical standard disponible.');
+
+          document.getElementById('patient-notes-box').innerText = notes;
+
+          if (data.medical_record_flag) {
+            flagBox.classList.remove('hidden');
+            document.getElementById('flag-display').innerText = data.medical_record_flag;
+          } else {
+            flagBox.classList.add('hidden');
+          }
+        } else {
+          document.getElementById('patient-notes-box').innerText = `Erreur HTTP ${res.status} : ${data.error || 'Accès refusé'}`;
+          flagBox.classList.add('hidden');
+        }
+      } catch (err) {
+        pre.innerText = 'Erreur réseau : ' + err.message;
+        flagBox.classList.add('hidden');
+      }
+    }
+
+    // Initial query for patient 42
+    executeApiQuery();
+  </script>
+</body>
+</html>

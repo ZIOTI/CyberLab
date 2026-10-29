@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Threat Hunting Rulebook)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à sigma-rules-sysmon.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "VULN_BLUE_04_SIGMA_DETECTION_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 210,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SIGMA_RULE_SYSMON_EVENT1_MIMIKATZ_TRIGGERED}"
+  }
+]

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-[#0a0b0e]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Privatbank AG // Swiss Wealth Management &amp; Private Equity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            gold: {
+              300: '#fef08a',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+              raw: '#d4af37',
+            },
+            obsidian: {
+              950: '#07080a',
+              900: '#0c0e12',
+              850: '#12151b',
+              800: '#191d26',
+              700: '#262c3a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fff 0%, #fae8b4 40%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gold-glow {
+      box-shadow: 0 0 35px rgba(212, 175, 55, 0.12);
+    }
+  </style>
+</head>
+<body class="h-full bg-obsidian-950 text-stone-200 font-sans flex flex-col selection:bg-gold-500 selection:text-black">
+
+  <!-- TOP PRIVATE BANK TICKER -->
+  <div class="border-b border-obsidian-800/80 bg-obsidian-900/90 text-stone-400 text-xs py-2 px-6 font-mono">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <span class="text-gold-raw font-bold">AURA PRIVATBANK AG</span>
+        <span class="hidden sm:inline text-stone-500">•</span>
+        <span class="hidden sm:inline">PARADEPLATZ 8, ZÜRICH (CHE)</span>
+        <span class="hidden md:inline text-stone-500">•</span>
+        <span class="hidden md:inline">FINMA REGULATED PRIVATE BANKING</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <span>CHF / EUR : 1.0542</span>
+        <span class="text-emerald-400">+0.22%</span>
+        <span class="text-stone-600">|</span>
+        <span class="text-gold-raw font-bold">VIP DESK 24/7</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <header class="border-b border-obsidian-800 bg-obsidian-900/60 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold-raw via-gold-600 to-obsidian-900 border border-gold-400/40 flex items-center justify-center font-heading font-black text-xl text-black">
+          A
+        </div>
+        <div>
+          <span class="font-heading font-black text-2xl tracking-wide text-white block">
+            AURA <span class="gold-gradient-text">PRIVATBANK</span>
+          </span>
+          <span class="font-mono text-[9px] uppercase tracking-widest text-stone-500 block -mt-1">
+            Genève • Zürich • Singapour
+          </span>
+        </div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="hidden lg:flex items-center gap-8 text-xs uppercase tracking-widest font-semibold text-stone-300">
+        <a href="#portfolio" class="hover:text-gold-raw transition">Gestion de Fortune</a>
+        <a href="#verify" class="hover:text-gold-raw transition text-gold-raw">Vérification de Mandat</a>
+        <a href="#funds" class="hover:text-gold-raw transition">Private Equity</a>
+        <a href="#contact" class="hover:text-gold-raw transition">Banquiers Privés</a>
+      </nav>
+
+      <!-- Client Portal Button -->
+      <div class="flex items-center gap-3">
+        <a href="#verify" class="px-5 py-2.5 rounded-lg border border-gold-500/50 bg-gold-raw/10 hover:bg-gold-raw/20 text-gold-raw text-xs font-bold tracking-wider uppercase transition">
+          Espace Mandataire VIP
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="py-16 sm:py-24 border-b border-obsidian-800 relative overflow-hidden bg-gradient-to-b from-obsidian-900 to-obsidian-950">
+    <div class="max-w-7xl mx-auto px-6 relative z-10 grid lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-obsidian-850 border border-obsidian-700 text-xs font-mono text-gold-raw">
+          <span class="w-1.5 h-1.5 rounded-full bg-gold-raw animate-pulse"></span>
+          <span>Finanzmarktaufsicht FINMA • Tier-1 Capital Ratio 28.4%</span>
+        </div>
+        <h1 class="font-heading text-4xl sm:text-6xl font-black tracking-tight leading-[1.1] text-white">
+          Souveraineté &amp; Rigueur dans la <br>
+          <span class="gold-gradient-text">Gestion Privée Suisse.</span>
+        </h1>
+        <p class="text-stone-300 text-base sm:text-lg leading-relaxed max-w-xl font-light">
+          Aura Privatbank structure le patrimoine de familles fondatrices, d'entrepreneurs et de trusts souverains depuis plus d'un siècle. Confidentialité absolue et allocation sur mesure.
+        </p>
+      </div>
+
+      <!-- Live Wealth Stats Card -->
+      <div class="lg:col-span-5">
+        <div class="p-6 rounded-2xl bg-obsidian-850/80 border border-gold-500/30 gold-glow space-y-4">
+          <div class="flex items-center justify-between border-b border-obsidian-700 pb-3 text-xs font-mono">
+            <span class="text-stone-400">ACTIFS SOUS MANDAT (AUM)</span>
+            <span class="text-gold-raw font-bold">CHF 14.8 MILLIARDS</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+            <div class="p-3 bg-obsidian-900 rounded-lg border border-obsidian-800">
+              <span class="text-stone-500 text-[10px]">ALLIAGES PRÉCIEUX (OR/PLATINE)</span>
+              <div class="text-base font-bold text-white mt-1">32.4%</div>
+            </div>
+            <div class="p-3 bg-obsidian-900 rounded-lg border border-obsidian-800">
+              <span class="text-stone-500 text-[10px]">PRIVATE DEBT &amp; REAL ESTATE</span>
+              <div class="text-base font-bold text-white mt-1">41.8%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIDENTIAL ACCOUNT VERIFIER (VULNERABLE BLIND SQLi) -->
+  <main id="verify" class="max-w-4xl mx-auto px-6 py-16 flex-1 w-full space-y-8">
+    <div class="text-center space-y-3">
+      <span class="font-mono text-xs uppercase tracking-widest text-gold-raw">FINMA Compliance Portal</span>
+      <h2 class="font-heading font-black text-3xl sm:text-4xl text-white">
+        Vérification Confidentielle de Mandat Suisse
+      </h2>
+      <p class="text-sm text-stone-400 max-w-xl mx-auto leading-relaxed">
+        Ce service permet aux tiers de confiance autorisés (notaires, fiduciaires suisses) de valider l'existence et la validité juridique d'un compte de gestion sous mandat chiffré.
+      </p>
+    </div>
+
+    <!-- Verification Form -->
+    <div class="p-8 rounded-2xl bg-obsidian-850 border border-obsidian-700/80 gold-glow space-y-6">
+      <form id="verify-form" class="space-y-4">
+        <div>
+          <label for="mandate-id" class="block text-xs font-mono uppercase tracking-wider text-stone-400 mb-2">
+            Identifiant Confidentiel du Mandat (ex: 1042)
+          </label>
+          <div class="flex items-center gap-3">
+            <input 
+              type="text" 
+              id="mandate-id" 
+              value="1042" 
+              placeholder="ex: 1042 ou injection booléenne" 
+              class="flex-1 px-4 py-3 rounded-xl bg-obsidian-950 border border-obsidian-700 text-stone-100 font-mono text-sm focus:border-gold-raw focus:outline-none transition"
+            >
+            <button 
+              type="submit" 
+              id="btn-verify"
+              class="px-6 py-3 rounded-xl bg-gradient-to-r from-gold-raw to-gold-600 hover:from-gold-400 hover:to-gold-500 text-black font-mono font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-gold-500/20"
+            >
+              Vérifier
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Status Indicator Result Box -->
+      <div id="result-box" class="p-6 rounded-xl border transition-all space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span id="status-icon" class="w-3 h-3 rounded-full bg-emerald-500"></span>
+            <span id="status-title" class="font-mono font-bold text-sm text-emerald-400">
+              MANDAT ACTIF ET CONFORME (FINMA 1042)
+            </span>
+          </div>
+          <span id="response-time" class="text-[10px] font-mono text-stone-500">Temps : 12ms</span>
+        </div>
+        <p id="status-desc" class="text-xs text-stone-300 font-sans leading-relaxed">
+          Le compte mandataire existe bien dans l'annuaire central et bénéficie du secret bancaire helvétique.
+        </p>
+      </div>
+
+      <!-- Exploit Helper Panel for Pen-testers -->
+      <div class="p-4 rounded-xl bg-obsidian-900 border border-obsidian-800 text-xs font-mono space-y-2">
+        <div class="flex items-center justify-between text-stone-400 text-[11px]">
+          <span>TESTS BOOLÉENS RAPIDES (POUR AUDIT DE SÉCURITÉ) :</span>
+          <span class="text-gold-raw">SQLi BLIND BOOLEAN</span>
+        </div>
+        <div class="flex flex-wrap gap-2 pt-1">
+          <button onclick="setTest('1042 AND 1=1')" class="px-2.5 py-1 rounded bg-obsidian-800 hover:bg-obsidian-700 text-stone-300 text-[10px] border border-obsidian-700">
+            Condition Vraie (AND 1=1)
+          </button>
+          <button onclick="setTest('1042 AND 1=2')" class="px-2.5 py-1 rounded bg-obsidian-800 hover:bg-obsidian-700 text-stone-300 text-[10px] border border-obsidian-700">
+            Condition Fausse (AND 1=2)
+          </button>
+          <button onclick="setTest('1042 AND (SUBSTR((SELECT flag FROM secrets),1,1)=\\'C\\')')" class="px-2.5 py-1 rounded bg-gold-raw/20 hover:bg-gold-raw/30 text-gold-300 text-[10px] border border-gold-500/30">
+            Test 1er caractère = 'C'
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-obsidian-800 py-8 px-6 text-center text-xs text-stone-500 font-mono mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>&copy; 2026 Aura Privatbank AG. All rights reserved. Member of the Swiss Bankers Association.</div>
+      <div class="flex gap-4">
+        <span>Confidentialité Chiffrée</span>
+        <span>Audit KPMG 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function setTest(query) {
+      document.getElementById('mandate-id').value = query;
+      checkMandate(query);
+    }
+
+    async function checkMandate(query) {
+      const box = document.getElementById('result-box');
+      const icon = document.getElementById('status-icon');
+      const title = document.getElementById('status-title');
+      const desc = document.getElementById('status-desc');
+      const timeEl = document.getElementById('response-time');
+
+      title.innerText = 'Vérification en cours...';
+      const t0 = performance.now();
+
+      try {
+        const res = await fetch(`/targets/training/web-06/api/check?id=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        const t1 = performance.now();
+        timeEl.innerText = `Temps : ${Math.round(t1 - t0)}ms`;
+
+        if (data.status === 'active') {
+          box.className = 'p-6 rounded-xl border border-emerald-500/50 bg-emerald-950/20 space-y-2';
+          icon.className = 'w-3 h-3 rounded-full bg-emerald-400';
+          title.className = 'font-mono font-bold text-sm text-emerald-400';
+          title.innerText = `RÉSULTAT : VRAI // ${data.message || 'Mandat actif et valide.'}`;
+          desc.innerText = `Dossier #${data.client_name || query} certifié conforme par la passerelle Aura Privatbank.`;
+        } else {
+          box.className = 'p-6 rounded-xl border border-rose-500/50 bg-rose-950/20 space-y-2';
+          icon.className = 'w-3 h-3 rounded-full bg-rose-500';
+          title.className = 'font-mono font-bold text-sm text-rose-400';
+          title.innerText = 'RÉSULTAT : FAUX // Mandat inexistant ou non conforme';
+          desc.innerText = 'Aucune référence mandataire ne correspond à la condition soumise.';
+        }
+      } catch (err) {
+        box.className = 'p-6 rounded-xl border border-rose-500/50 bg-rose-950/20 space-y-2';
+        title.innerText = 'Erreur réseau : ' + err.message;
+      }
+    }
+
+    document.getElementById('verify-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      checkMandate(document.getElementById('mandate-id').value.trim());
+    });
+
+    // Initial check
+    checkMandate('1042');
+  </script>
+</body>
+</html>

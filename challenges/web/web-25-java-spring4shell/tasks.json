@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Class Loader Binding Exploit)",
+    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à spring4shell-cve.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "VULN_WEB_25_JAVA_SPRING4SHELL_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Tâche 2 : Exploitation & Capture du Flag",
+    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "points": 350,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SPRING4SHELL_TOMCAT_PIPELINE_VALVE_LOG_RCE}"
+  }
+]

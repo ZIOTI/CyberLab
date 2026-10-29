@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-[#f8f6f0]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skyline Riviera // Luxury Waterfront Villas &amp; Historic Estates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            sand: '#f8f6f0',
+            terracotta: {
+              600: '#c2410c',
+              700: '#9a3412',
+            },
+            charcoal: '#1c1917',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full bg-sand text-charcoal font-sans antialiased flex flex-col selection:bg-terracotta-600 selection:text-white">
+
+  <!-- TOP LUXURY BANNER -->
+  <div class="bg-charcoal text-stone-300 text-xs py-2 px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-4 text-[11px] tracking-wider uppercase">
+        <span>SKYLINE INTERNATIONAL REALTY</span>
+        <span>•</span>
+        <span>SAINT-TROPEZ • MONACO • CAP D'ANTIBES • ASPEN</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4 text-xs">
+        <span>CONCIERGERIE PRIVÉE : +33 4 94 97 00 00</span>
+        <a href="#search" class="text-amber-300 hover:underline">Recherche Propriétés</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-stone-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-charcoal text-white flex items-center justify-center font-heading font-bold text-xl">
+          S
+        </div>
+        <div>
+          <span class="font-heading font-black text-2xl tracking-wide text-charcoal block">
+            SKYLINE <span class="italic font-normal text-terracotta-600">Riviera</span>
+          </span>
+          <span class="text-[9px] uppercase tracking-widest text-stone-500 block -mt-1 font-semibold">
+            Immobilier d'Exception &amp; Domaines Privés
+          </span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-stone-700">
+        <a href="#villas" class="hover:text-terracotta-600 transition">Villas Front de Mer</a>
+        <a href="#penthouses" class="hover:text-terracotta-600 transition">Penthouses Monaco</a>
+        <a href="#search" class="text-terracotta-600 font-bold">Moteur de Recherche</a>
+        <a href="#contact" class="hover:text-terracotta-600 transition">Mandat Exclusif</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#search" class="px-5 py-2.5 rounded-full bg-charcoal hover:bg-stone-800 text-white text-xs font-bold uppercase tracking-wider transition">
+          Rechercher un Bien
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="py-16 sm:py-20 border-b border-stone-200 bg-white">
+    <div class="max-w-7xl mx-auto px-6 text-center space-y-4">
+      <span class="text-xs uppercase tracking-widest text-terracotta-600 font-bold block">
+        COLLECTION PRIVÉE 2026 // BIENS D'EXCEPTION
+      </span>
+      <h1 class="font-heading text-4xl sm:text-6xl font-normal text-charcoal leading-tight max-w-3xl mx-auto">
+        L'Art de Vivre sur la <span class="italic font-bold">Côte d'Azur</span> et les Sommets Alpins.
+      </h1>
+      <p class="text-stone-500 text-sm sm:text-base max-w-xl mx-auto">
+        Découvrez notre sélection confidentielle de propriétés pieds dans l'eau, domaines viticoles et appartements de maître.
+      </p>
+
+      <!-- SEARCH BAR FORM (VULNERABLE TO REFLECTED XSS) -->
+      <div id="search" class="pt-6 max-w-2xl mx-auto">
+        <form method="GET" action="" id="search-form" class="flex items-center p-1.5 rounded-full bg-stone-100 border border-stone-300 shadow-sm focus-within:border-terracotta-600 transition">
+          <svg class="w-5 h-5 text-stone-400 ml-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input 
+            type="text" 
+            name="q" 
+            id="search-input" 
+            placeholder="Rechercher par lieu, piscine, héliport, vue mer..." 
+            class="w-full px-3 py-2 bg-transparent text-sm text-charcoal outline-none placeholder:text-stone-400"
+          >
+          <button 
+            type="submit" 
+            class="px-6 py-2.5 rounded-full bg-terracotta-600 hover:bg-terracotta-700 text-white font-semibold text-xs uppercase tracking-wider transition shrink-0"
+          >
+            Filtrer
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH RESULTS & REFLECTED BANNER -->
+  <main class="max-w-7xl mx-auto px-6 py-12 flex-1 w-full space-y-8">
+    <!-- REFLECTED XSS AREA (UNESCAPED INNERHTML INJECTION) -->
+    <div id="results-header" class="border-b border-stone-200 pb-4">
+      <div class="text-xs uppercase tracking-widest text-stone-400 font-bold">Résultats du Catalogue Immobilier</div>
+      <!-- Le paramètre q est injecté directement dans ce titre sans sanitization -->
+      <h2 id="reflected-query-title" class="font-heading text-2xl sm:text-3xl text-charcoal mt-1">
+        Toutes nos propriétés de prestige
+      </h2>
+    </div>
+
+    <!-- Interactive XSS Trigger Alert Box (If XSS payload fires) -->
+    <div id="xss-success-alert" class="hidden p-5 rounded-2xl bg-emerald-900/90 text-white border-2 border-emerald-400 shadow-xl space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="font-bold text-emerald-300 uppercase tracking-wider text-xs font-mono">⚡ PAYLOAD XSS EXÉCUTÉ DANS LE DOM !</span>
+        <span class="px-2 py-0.5 rounded bg-emerald-500 text-black text-[10px] font-mono font-bold">FLAG VALIDÉ</span>
+      </div>
+      <p class="text-xs text-emerald-100">
+        Votre script JavaScript s'est exécuté dans le contexte de la page via le paramètre de recherche non filtré.
+      </p>
+      <div class="p-3 bg-black/60 rounded font-mono text-sm font-black text-emerald-300 select-all" id="flag-display">
+        CYBERLAB{REFLECTED_XSS_QUERY_PARAM_INJECT_SUCCESS}
+      </div>
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="properties-grid">
+      <!-- Property 1 -->
+      <div class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition space-y-4">
+        <div class="h-60 bg-stone-200 flex items-center justify-center text-stone-400 font-heading text-xl italic relative">
+          <span>Domaine Les Roches Rouges</span>
+          <span class="absolute top-3 right-3 bg-charcoal text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+            Exclusivité
+          </span>
+        </div>
+        <div class="p-6 space-y-3">
+          <div class="flex items-center justify-between text-xs text-stone-500 font-mono">
+            <span>Saint-Tropez (Pointe des Salins)</span>
+            <span>850 m² • 8 suites</span>
+          </div>
+          <h3 class="font-heading text-2xl text-charcoal font-bold">Villa Waterfront Horizon</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            Accès direct plage privée, piscine à débordement de 25m, héliport homologué et maison de gardien.
+          </p>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
+            <span class="font-heading text-2xl font-bold text-terracotta-600">28 500 000 €</span>
+            <button onclick="alert('Dossier confidentiel réservé aux acquéreurs certifiés.')" class="px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-xs font-bold text-charcoal transition">
+              Dossier Privé
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property 2 -->
+      <div class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition space-y-4">
+        <div class="h-60 bg-stone-200 flex items-center justify-center text-stone-400 font-heading text-xl italic relative">
+          <span>Penthouse Port Hercule</span>
+          <span class="absolute top-3 right-3 bg-terracotta-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+            Monaco GP View
+          </span>
+        </div>
+        <div class="p-6 space-y-3">
+          <div class="flex items-center justify-between text-xs text-stone-500 font-mono">
+            <span>Monaco (Condamine)</span>
+            <span>620 m² • Rooftop Pool</span>
+          </div>
+          <h3 class="font-heading text-2xl text-charcoal font-bold">Le Belvédère Princier</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            Vue panoramique à 360° sur le circuit du Grand Prix de Formule 1 et la mer Méditerranée.
+          </p>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
+            <span class="font-heading text-2xl font-bold text-terracotta-600">42 000 000 €</span>
+            <button onclick="alert('Dossier confidentiel réservé aux acquéreurs certifiés.')" class="px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-xs font-bold text-charcoal transition">
+              Dossier Privé
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property 3 -->
+      <div class="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition space-y-4">
+        <div class="h-60 bg-stone-200 flex items-center justify-center text-stone-400 font-heading text-xl italic relative">
+          <span>Manoir du Cap d'Antibes</span>
+        </div>
+        <div class="p-6 space-y-3">
+          <div class="flex items-center justify-between text-xs text-stone-500 font-mono">
+            <span>Cap d'Antibes (Bacon)</span>
+            <span>720 m² • Parc 1.2 ha</span>
+          </div>
+          <h3 class="font-heading text-2xl text-charcoal font-bold">Villa Belle Époque</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            Parc arboré d'oliviers centenaires, tennis en terre battue, spa intérieur et cave à vin d'exception.
+          </p>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
+            <span class="font-heading text-2xl font-bold text-terracotta-600">19 800 000 €</span>
+            <button onclick="alert('Dossier confidentiel réservé aux acquéreurs certifiés.')" class="px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-xs font-bold text-charcoal transition">
+              Dossier Privé
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-stone-200 py-8 px-6 text-center text-xs text-stone-500 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>&copy; 2026 Skyline Riviera International Real Estate. Carte Professionnelle CPI 0605 2026 000 042.</div>
+      <div class="flex gap-4">
+        <a href="#" class="hover:underline">Mentions Légales</a>
+        <a href="#" class="hover:underline">Confidentialité</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Injection Vulnérable Reflected XSS
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('q');
+
+    if (query !== null) {
+      document.getElementById('search-input').value = query;
+      const titleEl = document.getElementById('reflected-query-title');
+      
+      // VULNERABILITÉ ICI : Injection brute dans innerHTML sans échappement
+      titleEl.innerHTML = `Résultats de recherche pour : <span class="italic text-terracotta-600">${query}</span>`;
+
+      // Détection pour le lab
+      const lower = query.toLowerCase();
+      if (lower.includes('<script') || lower.includes('<svg') || lower.includes('<img') || lower.includes('onerror') || lower.includes('onload') || lower.includes('alert')) {
+        document.getElementById('xss-success-alert').classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
