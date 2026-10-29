@@ -1,0 +1,80 @@
+name: Release CyberRange PRO
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Version du tag (ex: v1.0.1)'
+        required: true
+        default: 'v1.0.1'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Récupération du code source
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 🧪 Exécution de la suite de tests
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          sleep 3
+          node test_suite.js
+          kill $SERVER_PID
+
+      - name: 📦 Préparation du package autonome CyberRange PRO
+        run: |
+          mkdir -p dist/CyberRange-PRO
+          # Copie des fichiers d'application essentiels
+          cp -r public dist/CyberRange-PRO/
+          cp server.js dist/CyberRange-PRO/
+          cp package.json dist/CyberRange-PRO/
+          cp start.bat dist/CyberRange-PRO/
+          cp update.bat dist/CyberRange-PRO/
+          cp updater.js dist/CyberRange-PRO/
+          cp test_suite.js dist/CyberRange-PRO/
+          cp README.md dist/CyberRange-PRO/
+          cp .gitignore dist/CyberRange-PRO/
+
+          # Suppression explicite de toute base sqlite personnelle si présente
+          rm -f dist/CyberRange-PRO/cyberrange.db*
+
+          # Création de l'archive ZIP portable
+          cd dist
+          TAG_VAL="${{ github.ref_name }}"
+          if [ -z "$TAG_VAL" ] || [ "$TAG_VAL" = "main" ]; then
+            TAG_VAL="${{ github.event.inputs.tag_name }}"
+          fi
+          if [ -z "$TAG_VAL" ]; then
+            TAG_VAL="v1.0.0"
+          fi
+
+          zip -r "CyberRange-PRO-${TAG_VAL}.zip" CyberRange-PRO
+          cp "CyberRange-PRO-${TAG_VAL}.zip" CyberRange-PRO.zip
+          cd ..
+
+      - name: 🚀 Création de la GitHub Release avec Archive Téléchargeable
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "CyberRange PRO ${{ github.ref_name || github.event.inputs.tag_name }}"
+          tag_name: ${{ github.ref_name || github.event.inputs.tag_name }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: |
+            dist/CyberRange-PRO.zip
+            dist/CyberRange-PRO-*.zip

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>CYBERRANGE PRO // Académie de Hacking Offensif & CTF</title>
+  
+  <!-- Polices Cyber & UI Tactile (Space Grotesk + Inter + JetBrains Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Utilitaires Tailwind CSS & Confetti Canvas -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  
+  <!-- Styles Duolingo Tactile, Micro-Cards & Glossy Bars -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-[#080c14] text-slate-100 selection:bg-cyan-500 selection:text-slate-950 font-sans antialiased">
+
+  <!-- ==================================================================== -->
+  <!-- CONTENEUR DESKTOP 3 COLONNES STYLE CYBER-DUOLINGO -->
+  <!-- ==================================================================== -->
+  <div class="app-container">
+
+    <!-- COLONNE 1 : BARRE LATÉRALE GAUCHE -->
+    <aside class="duo-sidebar hidden md:flex" aria-label="Navigation principale">
+      <!-- Logo Branding CyberRange Pro -->
+      <div class="flex items-center gap-3.5 px-3 mb-8">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-slate-950 shadow-lg shadow-cyan-950/60 font-black p-2.5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-full h-full" aria-hidden="true">
+            <polygon points="12 2 21 7 21 17 12 22 3 17 3 7 12 2" fill="currentColor" fill-opacity="0.2"/>
+            <path d="M13 3.5L7 13h5l-1 7.5L18 11h-5l1-7.5z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base font-black tracking-wider text-cyan-400 leading-none font-heading">CYBERRANGE</h1>
+          <span class="text-[10px] font-extrabold tracking-widest text-emerald-400 uppercase font-mono">OFFENSIVE PRO</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tactile Principale -->
+      <nav class="flex-1 space-y-2 font-mono">
+        <a class="duo-nav-item active" id="nav-learn" role="button" tabindex="0">
+          <span id="nav-icon-curriculum" class="w-5 h-5 flex items-center justify-center text-cyan-400"></span>
+          <span>Curriculum (15 Mod.)</span>
+        </a>
+        <a class="duo-nav-item" id="btn-open-badges-nav" role="button" tabindex="0">
+          <span id="nav-icon-badges" class="w-5 h-5 flex items-center justify-center text-amber-400"></span>
+          <span>Badges & Exploits</span>
+        </a>
+        <a class="duo-nav-item" id="btn-open-profile-nav" role="button" tabindex="0">
+          <span id="nav-icon-profile" class="w-5 h-5 flex items-center justify-center text-purple-400"></span>
+          <span>Profil Opérateur</span>
+        </a>
+      </nav>
+
+      <!-- Contrôles du bas : Son & Moteur Audio -->
+      <div class="pt-4 border-t border-slate-800/80 space-y-2">
+        <button id="btn-audio-mute" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold font-mono text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-2.5" aria-label="Activer ou couper le synthétiseur audio">
+          <span id="audio-icon-slot" class="w-4 h-4 flex items-center justify-center text-cyan-400"></span>
+          <span class="hidden lg:inline" id="audio-label-text">Synthétiseur Audio</span>
+        </button>
+      </div>
+
+      <!-- Badge Profil Opérateur en bas de barre -->
+      <div id="btn-sidebar-profile" class="mt-4 p-3.5 bg-slate-900/80 hover:bg-slate-800/80 transition-colors rounded-2xl border border-slate-800 flex items-center gap-3 cursor-pointer" role="button" tabindex="0" title="Consulter mon dossier opérateur">
+        <div id="user-avatar-badge" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl shadow-inner select-none">
+          🥷
+        </div>
+        <div class="flex-1 min-w-0 font-mono">
+          <div id="user-nickname-label" class="text-xs font-black truncate text-slate-200">Opérateur RedTeam</div>
+          <div id="user-rank-label" class="text-[10px] font-bold text-cyan-400 uppercase tracking-tight truncate">Accès Root Restreint</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- COLONNE 2 : FLUX CENTRAL (SÉLECTEUR DE PISTES & CHEMIN SERPENTIN) -->
+    <main class="duo-main-feed">
+      <!-- En-tête mobile si écran étroit -->
+      <div class="md:hidden flex items-center justify-between pb-4 mb-4 border-b border-slate-800/80">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-slate-950 p-1.5 font-black">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-full h-full" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/>
+            </svg>
+          </div>
+          <span class="font-black text-cyan-400 text-sm font-heading tracking-wider">CYBERRANGE PRO</span>
+        </div>
+        <div class="flex items-center gap-3 text-xs font-black font-mono">
+          <div class="flex items-center gap-1 text-amber-400">
+            <span id="mob-streak-icon" class="w-4 h-4 inline-block"></span>
+            <span id="mob-streak">1</span>
+          </div>
+          <div class="flex items-center gap-1 text-cyan-400">
+            <span id="mob-xp-icon" class="w-4 h-4 inline-block"></span>
+            <span id="mob-xp">0</span>
+          </div>
+          <button id="mob-audio-btn" class="p-1.5 rounded-lg bg-slate-800/60 text-slate-300" aria-label="Audio son">
+            <span id="mob-audio-icon" class="w-4 h-4 inline-block"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sélecteur de Pistes TryHackMe / Hack The Box Style -->
+      <div id="track-selector-mount">
+        <!-- Rendu dynamique par app.js -->
+      </div>
+
+      <!-- Monture du chemin d'apprentissage avec Unités et Nœuds 3D -->
+      <div id="learning-path-mount">
+        <!-- Rendu dynamique par app.js -->
+      </div>
+    </main>
+
+    <!-- COLONNE 3 : PANNEAU DROIT (WIDGETS, VIES, STREAKS, XP) -->
+    <aside class="duo-right-panel hidden xl:flex" aria-label="Statistiques du joueur">
+      <!-- Barre d'état supérieure (Streak, XP, Gemmes) -->
+      <div class="flex items-center justify-between p-3.5 bg-slate-900/90 rounded-2xl border border-slate-800/80 shadow-md font-mono">
+        <!-- Streak Enflammé -->
+        <div class="flex items-center gap-2" title="Série de victoires d'affilée">
+          <span id="stat-icon-streak" class="w-5 h-5 flex items-center justify-center text-amber-400 animate-pulse"></span>
+          <span id="user-streak-label" class="text-xs font-black text-amber-400">1</span>
+        </div>
+
+        <!-- XP -->
+        <div class="flex items-center gap-2" title="Points d'expérience offensive">
+          <span id="stat-icon-xp" class="w-5 h-5 flex items-center justify-center text-cyan-400"></span>
+          <span id="user-xp-label" class="text-xs font-black text-cyan-400">0 XP</span>
+        </div>
+
+        <!-- Gemmes / Crédits -->
+        <div class="flex items-center gap-2" title="Crédits d'infrastructure">
+          <span id="stat-icon-gems" class="w-5 h-5 flex items-center justify-center text-emerald-400"></span>
+          <span id="user-gems-label" class="text-xs font-black text-emerald-400">100</span>
+        </div>
+      </div>
+
+      <!-- Jauge de Vies (Hearts ♥) Duolingo -->
+      <div class="p-4 bg-slate-900/60 rounded-2xl border border-slate-800/80 space-y-2.5 font-mono">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+            <span id="heart-header-icon" class="w-4 h-4 inline-block text-rose-500"></span>
+            <span>VIES RESTANTES</span>
+          </span>
+          <span class="text-[10px] font-bold text-slate-400">MAX 5</span>
+        </div>
+        <div id="user-hearts-container" class="flex items-center gap-2.5 py-1">
+          <!-- Injecté par app.js -->
+        </div>
+        <p class="text-[11px] text-slate-400 leading-tight">Chaque échec technique décrémente un cœur avec secousse d'écran.</p>
+      </div>
+
+      <!-- Widget : Directive Opérationnelle -->
+      <div class="p-4 bg-slate-900/60 rounded-2xl border border-slate-800/80 space-y-2 font-mono">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+            <span id="directive-shield-icon" class="w-4 h-4 inline-block text-cyan-400"></span>
+            <span>CURRICULUM DE ZÉRO À PRO</span>
+          </span>
+          <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800">ACTIF</span>
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Pédagogie offensive complète et progressive : cours approfondis, schémas animés, audits de code et défis réels en laboratoire.
+        </p>
+      </div>
+
+      <!-- Widget : Progression globale de la campagne -->
+      <div class="p-4 bg-slate-900/60 rounded-2xl border border-slate-800/80 space-y-3 font-mono">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-black uppercase tracking-wider text-purple-400">Curriculum (61 Niveaux)</span>
+          <span id="widget-progress-pct" class="text-xs font-black text-purple-300">0%</span>
+        </div>
+        <div class="w-full h-3.5 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-slate-800">
+          <div id="widget-progress-bar" class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full w-0 transition-all duration-500 shadow-[0_0_12px_rgba(168,85,247,0.5)]"></div>
+        </div>
+        <p class="text-[11px] text-slate-400 leading-snug">Conquiers les 5 Pistes et les Boss Fights Boot2Root pour la Certification d'Élite.</p>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- NAVIGATION MOBILE BASSE FLOTTANTE -->
+  <nav class="mobile-bottom-dock md:hidden" aria-label="Navigation mobile">
+    <button class="mobile-dock-btn active" id="mob-nav-learn">
+      <span id="mob-dock-icon-learn" class="w-5 h-5 flex items-center justify-center"></span>
+      <span>Parcours</span>
+    </button>
+    <button class="mobile-dock-btn" id="mob-nav-badges">
+      <span id="mob-dock-icon-badges" class="w-5 h-5 flex items-center justify-center"></span>
+      <span>Badges</span>
+    </button>
+    <button class="mobile-dock-btn" id="mob-nav-profile">
+      <span id="mob-dock-icon-profile" class="w-5 h-5 flex items-center justify-center"></span>
+      <span>Profil</span>
+    </button>
+  </nav>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL DE SESSION MICRO-CARDS (BARRE BOMBÉE À REFLET LUMINEUX) -->
+  <!-- ==================================================================== -->
+  <div id="modal-session" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-content-card">
+      <!-- En-tête de session avec barre bombée à reflet lumineux Duolingo -->
+      <div class="p-5 border-b border-slate-800/80 flex items-center justify-between gap-4 bg-slate-950/80 backdrop-blur-md">
+        <button onclick="window.cyberApp.closeAllModals()" class="w-9 h-9 rounded-xl bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 hover:text-white flex items-center justify-center transition-all" aria-label="Quitter la session d'entraînement" title="Quitter la session">
+          <span id="modal-close-icon" class="w-5 h-5"></span>
+        </button>
+
+        <div class="flex-1 glossy-progress-bar-wrapper" role="progressbar" aria-label="Progression de la session">
+          <div id="session-glossy-bar-fill" class="glossy-progress-bar-fill" style="width: 20%;"></div>
+        </div>
+
+        <div class="text-xs font-black text-cyan-400 flex items-center gap-1.5 font-mono px-2.5 py-1 rounded-xl bg-cyan-950/60 border border-cyan-800/60">
+          <span id="session-xp-icon" class="w-4 h-4"></span>
+          <span>EXP</span>
+        </div>
+      </div>
+
+      <!-- Corps dynamique de la micro-carte -->
+      <div id="session-card-body" class="p-6 overflow-y-auto flex-1">
+        <!-- Rendu dynamique par app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Pied de page Duolingo fixe de validation -->
+  <div id="session-validation-footer" class="duo-validation-footer">
+    <!-- Injecté dynamiquement lors de la validation -->
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL VITRINE DES BADGES -->
+  <!-- ==================================================================== -->
+  <div id="modal-badges" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-content-card max-w-xl p-6 font-mono">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-3 mb-4">
+        <div class="flex items-center gap-2.5">
+          <span id="badges-header-icon" class="w-6 h-6 text-amber-400"></span>
+          <div>
+            <h2 class="text-base font-black text-amber-400 font-heading">Exploits & Trophées d'Élite</h2>
+            <div id="badges-counter-subtitle" class="text-[11px] text-slate-400">Progression globale de tes homologations</div>
+          </div>
+        </div>
+        <button id="btn-close-badges" class="w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all" aria-label="Fermer la vitrine des trophées">
+          <span id="badges-close-icon" class="w-4 h-4"></span>
+        </button>
+      </div>
+
+      <div id="badges-grid-mount" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto pr-1">
+        <!-- Rendu dynamique par app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL PROFIL OPÉRATEUR REDTEAM -->
+  <!-- ==================================================================== -->
+  <div id="modal-profile" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-content-card max-w-md p-6 text-center space-y-4 font-mono">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+        <span class="text-xs font-black uppercase tracking-wider text-cyan-400 font-heading">Dossier Opérateur // Red Team</span>
+        <button id="btn-close-profile" class="w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all" aria-label="Fermer le profil">
+          <span id="profile-close-icon" class="w-4 h-4"></span>
+        </button>
+      </div>
+
+      <!-- Avatar & Choix d'avatar -->
+      <div class="space-y-2">
+        <div id="profile-modal-avatar" class="w-20 h-20 mx-auto rounded-3xl bg-slate-900 border-2 border-cyan-500/40 flex items-center justify-center text-4xl shadow-xl shadow-cyan-950/50 select-none">
+          🥷
+        </div>
+        <div class="flex items-center justify-center gap-2 pt-1" id="avatar-picker-row">
+          <!-- Injecté par app.js : Sélecteur d'avatar -->
+        </div>
+      </div>
+
+      <div>
+        <h3 id="profile-modal-name" class="text-lg font-black text-white font-heading">Opérateur RedTeam</h3>
+        <p id="profile-modal-rank-badge" class="text-xs text-emerald-400 font-bold mt-0.5">Certification Offensive 2026</p>
+      </div>
+
+      <!-- Grille de Statistiques Clés -->
+      <div class="grid grid-cols-3 gap-2.5 text-xs text-left">
+        <div class="p-3 bg-slate-900/90 rounded-2xl border border-slate-800">
+          <div class="text-slate-400 text-[10px] font-bold">XP TOTAL</div>
+          <div id="profile-modal-xp" class="text-sm font-black text-cyan-400 mt-1">0</div>
+        </div>
+        <div class="p-3 bg-slate-900/90 rounded-2xl border border-slate-800">
+          <div class="text-slate-400 text-[10px] font-bold">STREAK MAX</div>
+          <div id="profile-modal-streak" class="text-sm font-black text-amber-400 mt-1">1</div>
+        </div>
+        <div class="p-3 bg-slate-900/90 rounded-2xl border border-slate-800">
+          <div class="text-slate-400 text-[10px] font-bold">MISSIONS</div>
+          <div id="profile-modal-badges-count" class="text-sm font-black text-purple-400 mt-1">0/61</div>
+        </div>
+      </div>
+
+      <button id="btn-reset-data" class="w-full text-xs text-rose-400 hover:text-rose-300 font-bold py-2.5 px-4 rounded-xl border border-rose-900/40 hover:bg-rose-950/30 transition-all flex items-center justify-center gap-2">
+        <span id="reset-icon-slot" class="w-4 h-4"></span>
+        <span>Réinitialiser la progression d'entraînement</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL OBLIGATOIRE DE MISE À JOUR DISPONIBLE (VERROUILLÉE) -->
+  <!-- ==================================================================== -->
+  <div id="modal-update-required" class="modal-overlay hidden z-[200]" role="dialog" aria-modal="true" data-unclosable="true">
+    <div class="modal-content-card max-w-lg p-6 sm:p-7 space-y-5 border-2 border-rose-500/80 shadow-[0_0_50px_rgba(244,63,94,0.35)] font-mono">
+      
+      <!-- En-tête Alerte Critique -->
+      <div class="flex items-center gap-3.5 pb-3 border-b border-rose-900/50">
+        <div class="w-12 h-12 rounded-2xl bg-rose-950 border border-rose-500/80 flex items-center justify-center text-rose-400 text-2xl flex-shrink-0 animate-pulse">
+          ⚡
+        </div>
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-widest text-rose-400 bg-rose-950/80 px-2 py-0.5 rounded border border-rose-800">ACTION REQUISE // AUTO-UPDATE</span>
+          <h2 class="text-base sm:text-lg font-black text-white font-heading mt-0.5">Mise à Jour Obligatoire Détectée</h2>
+        </div>
+      </div>
+
+      <!-- Badge de Version -->
+      <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-950 border border-slate-800">
+        <div>
+          <div class="text-[10px] text-slate-400 font-bold">VERSION ACTUELLE</div>
+          <div id="update-curr-version" class="text-xs font-black text-slate-300">v1.0.0</div>
+        </div>
+        <div class="text-rose-400 font-black text-lg">➔</div>
+        <div class="text-right">
+          <div class="text-[10px] text-emerald-400 font-bold">NOUVELLE VERSION</div>
+          <div id="update-target-version" class="text-sm font-black text-emerald-400">v1.0.1</div>
+        </div>
+      </div>
+
+      <!-- Assurance de Préservation des Données -->
+      <div class="p-3.5 rounded-2xl bg-cyan-950/40 border border-cyan-800/60 flex items-start gap-3 text-xs leading-relaxed text-cyan-200">
+        <span class="text-base mt-0.5">🛡️</span>
+        <div>
+          <strong class="text-white font-bold">Rétention Garantie :</strong> Ta base locale (<code class="text-cyan-300 font-bold">cyberrange.db</code>), tes 61 niveaux complétés, tes clés de flags, tes vies et ton XP sont strictement préservés lors de la mise à jour.
+        </div>
+      </div>
+
+      <!-- Notes de Version -->
+      <div class="space-y-1.5">
+        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Nouveautés & Correctifs :</div>
+        <div id="update-release-notes" class="p-3 bg-slate-950 rounded-xl border border-slate-800/80 text-xs text-slate-300 max-h-36 overflow-y-auto font-mono whitespace-pre-wrap leading-relaxed">
+          Chargement des notes de version...
+        </div>
+      </div>
+
+      <!-- Barre de progression du téléchargement (masquée par défaut) -->
+      <div id="update-progress-container" class="hidden space-y-2">
+        <div class="flex justify-between text-xs">
+          <span id="update-progress-status" class="text-cyan-400 font-bold">Téléchargement des fichiers...</span>
+          <span id="update-progress-pct" class="text-slate-400">0%</span>
+        </div>
+        <div class="w-full h-3 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-slate-800">
+          <div id="update-progress-bar-fill" class="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Boutons d'Action -->
+      <div class="space-y-2.5 pt-1">
+        <button id="btn-trigger-update" class="w-full btn-duo-3d btn-duo-green py-3.5 text-xs font-mono font-bold">
+          <span>🚀 Télécharger & Mettre à Jour Automatiquement</span>
+        </button>
+        <a id="btn-manual-update-link" href="#" target="_blank" class="block text-center text-xs text-slate-400 hover:text-cyan-400 underline py-1 transition-colors">
+          Ou télécharger manuellement l'archive ZIP sur GitHub
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts du Moteur CyberRange Pro -->
+  <script src="/js/icons.js"></script>
+  <script src="/js/audio.js"></script>
+  <script src="/js/terminal.js"></script>
+  <script src="/js/sandbox.js"></script>
+  <script src="/js/challenges.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

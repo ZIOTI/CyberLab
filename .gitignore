@@ -1,0 +1,26 @@
+# Base de données locale de progression utilisateur (PRÉSERVÉE LOCALEMENT)
+cyberrange.db
+cyberrange.db-journal
+cyberrange.db.bak
+*.db
+*.db-journal
+*.db.bak
+
+# Dépendances et builds
+node_modules/
+package-lock.json
+
+# Fichiers temporaires de mise à jour
+update_temp/
+update_extract/
+update_temp.zip
+*.tmp
+
+# Logs
+*.log
+logs/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin-console/
+Disallow: /secret-vault/
+Disallow: /api/internal/
+
+# CYBERRANGE PRO FLAG:
+FLAG=CYBER{HTTP_GET_ROBOTS_TXT_FOUND}
