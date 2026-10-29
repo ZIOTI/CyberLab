@@ -915,26 +915,31 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === '/api/apply-update' && method === 'POST') {
     try {
-      const result = await updater.applyUpdate();
+      const force = req.url.includes('force=true');
+      const result = await updater.applyUpdate(force);
       sendJSON(res, 200, result);
-      // Redémarrage automatique du serveur après 1.5s (code 42 ou respawn autonome)
-      setTimeout(() => {
-        console.log('[*] Redémarrage automatique du serveur suite à la mise à jour...');
-        try {
-          if (!process.env.CYBERRANGE_SUPERVISOR) {
-            const { spawn } = require('node:child_process');
-            const child = spawn(process.execPath, [path.join(__dirname, 'server.js')], {
-              detached: true,
-              stdio: 'ignore',
-              cwd: __dirname
-            });
-            child.unref();
+
+      if (result.success && !result.alreadyUpToDate) {
+        // Redémarrage automatique du serveur uniquement si de nouveaux fichiers ont été déployés
+        setTimeout(() => {
+          console.log('[*] Redémarrage automatique du serveur suite à la mise à jour...');
+          try {
+            if (!process.env.CYBERRANGE_SUPERVISOR) {
+              const { spawn } = require('node:child_process');
+              const child = spawn(process.execPath, [path.join(__dirname, 'server.js')], {
+                detached: true,
+                stdio: 'ignore',
+                cwd: __dirname
+              });
+              child.unref();
+            }
+          } catch (e) {
+            console.warn('[!] Erreur respawn autonome :', e.message);
           }
-        } catch (e) {
-          console.warn('[!] Erreur respawn autonome :', e.message);
-        }
-        process.exit(42);
-      }, 1500);
+          try { server.close(); } catch (e) {}
+          process.exit(42);
+        }, 1000);
+      }
       return;
     } catch (err) {
       return sendJSON(res, 500, { success: false, error: err.message });
@@ -1349,6 +1354,25 @@ const server = http.createServer(async (req, res) => {
     const stream = fs.createReadStream(safePath);
     stream.pipe(res);
   });
+});
+
+let retryCount = 0;
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    retryCount++;
+    console.warn(`[!] Port ${PORT} temporairement occupé (TIME_WAIT). Tentative ${retryCount}/5 dans 1s...`);
+    if (retryCount <= 5) {
+      setTimeout(() => {
+        try { server.close(); } catch (e) {}
+        server.listen(PORT, '127.0.0.1');
+      }, 1000);
+    } else {
+      console.error(`[FATAL] Impossible d'ouvrir le port ${PORT} après 5 tentatives.`);
+      process.exit(1);
+    }
+  } else {
+    console.error('[!] Erreur serveur HTTP :', err);
+  }
 });
 
 server.listen(PORT, '127.0.0.1', () => {

@@ -206,10 +206,16 @@ function copyDirRecursiveSafe(src, dest) {
 }
 
 // 3. APPLICATION COMPLÈTE DE LA MISE À JOUR
-async function applyUpdate() {
+async function applyUpdate(force = false) {
   const check = await checkForUpdates();
-  if (!check.updateAvailable && !process.env.FORCE_UPDATE) {
-    return { success: false, message: 'Aucune mise à jour disponible.', currentVersion: check.currentVersion };
+  if (!check.updateAvailable && !process.env.FORCE_UPDATE && !force) {
+    return {
+      success: true,
+      alreadyUpToDate: true,
+      currentVersion: check.currentVersion,
+      latestVersion: check.latestVersion,
+      message: `Votre plateforme est déjà à jour (version v${check.currentVersion}).`
+    };
   }
 
   console.log(`[*] Démarrage de la mise à jour v${check.currentVersion} -> v${check.latestVersion}...`);

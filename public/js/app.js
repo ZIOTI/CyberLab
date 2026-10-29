@@ -389,6 +389,23 @@ class CyberAppPro {
           }
           const applyData = await applyRes.json();
 
+          if (applyData.alreadyUpToDate) {
+            if (window.cyberAudio) window.cyberAudio.playSuccess();
+            if (progStatus) {
+              progStatus.className = 'text-xs text-emerald-400 font-bold';
+              progStatus.innerText = `✅ Vous disposez déjà de la version la plus récente (v${applyData.currentVersion}) !`;
+            }
+            if (progPct) progPct.innerText = '100%';
+            if (progFill) progFill.style.width = '100%';
+            setTimeout(() => {
+              modal.classList.add('hidden');
+              if (progContainer) progContainer.classList.add('hidden');
+              updateBtn.disabled = false;
+              updateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }, 2200);
+            return;
+          }
+
           if (applyData.success) {
             if (window.cyberAudio) window.cyberAudio.playSuccess();
             if (progStatus) progStatus.innerText = '3/3 : Déploiement terminé avec succès ! Redémarrage...';
