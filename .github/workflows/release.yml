@@ -1,23 +1,19 @@
-name: Release CyberRange PRO
+name: Release CyberRange PRO (Automatique)
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v*.*.*'
       - 'v*'
   workflow_dispatch:
-    inputs:
-      tag_name:
-        description: 'Version du tag (ex: v1.0.1)'
-        required: true
-        default: 'v1.0.1'
 
 permissions:
   contents: write
 
 jobs:
   build-and-release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: 📥 Récupération du code source
@@ -28,53 +24,69 @@ jobs:
         with:
           node-version: 20
 
-      - name: 🧪 Exécution de la suite de tests
+      - name: 🧪 Exécution de la suite de tests de validation
+        shell: powershell
         run: |
-          node server.js &
-          SERVER_PID=$!
-          sleep 3
-          node test_suite.js
-          kill $SERVER_PID
+          $server = Start-Process node -ArgumentList "server.js" -PassThru
+          Start-Sleep -Seconds 3
+          try {
+            node test_suite.js
+          } finally {
+            Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue
+          }
 
-      - name: 📦 Préparation du package autonome CyberRange PRO
+      - name: 🔨 Compilation des exécutables Windows (.EXE)
+        shell: powershell
         run: |
-          mkdir -p dist/CyberRange-PRO
-          # Copie des fichiers d'application essentiels
-          cp -r public dist/CyberRange-PRO/
-          cp server.js dist/CyberRange-PRO/
-          cp package.json dist/CyberRange-PRO/
-          cp start.bat dist/CyberRange-PRO/
-          cp update.bat dist/CyberRange-PRO/
-          cp updater.js dist/CyberRange-PRO/
-          cp test_suite.js dist/CyberRange-PRO/
-          cp README.md dist/CyberRange-PRO/
-          cp .gitignore dist/CyberRange-PRO/
+          $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+          Write-Host "[*] Compilation de CyberRange-PRO.exe (Launcher)..."
+          & $csc /nologo /target:winexe /out:CyberRange-PRO.exe /r:System.Windows.Forms.dll,System.Drawing.dll src-launcher\Launcher.cs
 
-          # Suppression explicite de toute base sqlite personnelle si présente
-          rm -f dist/CyberRange-PRO/cyberrange.db*
+          Write-Host "[*] Compilation de CyberRange-PRO-Setup.exe (Installateur 1-Clic)..."
+          & $csc /nologo /target:winexe /out:CyberRange-PRO-Setup.exe /r:System.Windows.Forms.dll,System.Drawing.dll,Microsoft.CSharp.dll src-launcher\Installer.cs
 
-          # Création de l'archive ZIP portable
-          cd dist
-          TAG_VAL="${{ github.ref_name }}"
-          if [ -z "$TAG_VAL" ] || [ "$TAG_VAL" = "main" ]; then
-            TAG_VAL="${{ github.event.inputs.tag_name }}"
-          fi
-          if [ -z "$TAG_VAL" ]; then
-            TAG_VAL="v1.0.0"
-          fi
+      - name: 📦 Préparation des packages de distribution
+        shell: powershell
+        run: |
+          $pkg = Get-Content package.json | ConvertFrom-Json
+          $versionTag = "v" + $pkg.version
 
-          zip -r "CyberRange-PRO-${TAG_VAL}.zip" CyberRange-PRO
-          cp "CyberRange-PRO-${TAG_VAL}.zip" CyberRange-PRO.zip
-          cd ..
+          New-Item -ItemType Directory -Force -Path dist\CyberRange-PRO | Out-Null
 
-      - name: 🚀 Création de la GitHub Release avec Archive Téléchargeable
+          # Copie des fichiers d'application propres
+          Copy-Item -Recurse -Force public dist\CyberRange-PRO\
+          Copy-Item -Force CyberRange-PRO.exe dist\CyberRange-PRO\
+          Copy-Item -Force CyberRange-PRO-Setup.exe dist\CyberRange-PRO\
+          Copy-Item -Force server.js dist\CyberRange-PRO\
+          Copy-Item -Force package.json dist\CyberRange-PRO\
+          Copy-Item -Force start.bat dist\CyberRange-PRO\
+          Copy-Item -Force update.bat dist\CyberRange-PRO\
+          Copy-Item -Force updater.js dist\CyberRange-PRO\
+          Copy-Item -Force README.md dist\CyberRange-PRO\
+
+          # Suppression explicite de toute base locale temporaire
+          Remove-Item -Force -ErrorAction SilentlyContinue dist\CyberRange-PRO\cyberrange.db*
+
+          # Création du ZIP portable
+          Compress-Archive -Path dist\CyberRange-PRO\* -DestinationPath dist\CyberRange-PRO.zip -Force
+          Copy-Item -Force dist\CyberRange-PRO.zip "dist\CyberRange-PRO-$versionTag.zip"
+
+          # Copie de l'installateur autonome dans dist/
+          Copy-Item -Force CyberRange-PRO-Setup.exe dist\
+
+          # Enregistre la version pour les steps suivants
+          "RELEASE_TAG=$versionTag" >> $env:GITHUB_ENV
+          "RELEASE_VERSION=$($pkg.version)" >> $env:GITHUB_ENV
+
+      - name: 🚀 Création automatique de la GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "CyberRange PRO ${{ github.ref_name || github.event.inputs.tag_name }}"
-          tag_name: ${{ github.ref_name || github.event.inputs.tag_name }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: "CyberRange PRO ${{ env.RELEASE_TAG }} (Installer & Portable)"
           generate_release_notes: true
           draft: false
           prerelease: false
           files: |
+            dist/CyberRange-PRO-Setup.exe
             dist/CyberRange-PRO.zip
             dist/CyberRange-PRO-*.zip

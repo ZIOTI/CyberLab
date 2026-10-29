@@ -181,10 +181,26 @@ function copyDirRecursiveSafe(src, dest) {
     }
 
     if (entry.isDirectory()) {
-      if (entry.name === '.git' || entry.name === 'node_modules') continue;
+      if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'src-launcher') continue;
       copyDirRecursiveSafe(srcPath, destPath);
     } else {
-      fs.copyFileSync(srcPath, destPath);
+      try {
+        fs.copyFileSync(srcPath, destPath);
+      } catch (copyErr) {
+        // Sous Windows, un .exe en cours d'exécution peut être renommé mais pas écrasé directement
+        if (copyErr.code === 'EBUSY' || copyErr.code === 'EPERM') {
+          const oldPath = destPath + '.old';
+          try { if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath); } catch (e) {}
+          try {
+            fs.renameSync(destPath, oldPath);
+            fs.copyFileSync(srcPath, destPath);
+          } catch (renameErr) {
+            console.warn(`[!] Remplacement différé pour ${entry.name}:`, renameErr.message);
+          }
+        } else {
+          throw copyErr;
+        }
+      }
     }
   }
 }

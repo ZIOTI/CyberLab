@@ -122,7 +122,7 @@ async function testAll() {
   // 12. Test Auto-Update API Endpoints
   const verData = await fetch('http://localhost:3333/api/version').then(r => r.json());
   assert(verData.version === '1.0.0', 'Version check');
-  assert(verData.owner === 'Zioti', 'Owner check');
+  assert(verData.owner.toLowerCase() === 'zioti', 'Owner check');
   console.log('✔ API /api/version test PASSED (v' + verData.version + ' repo: ' + verData.owner + '/' + verData.repo + ')');
 
   const checkData = await fetch('http://localhost:3333/api/check-update').then(r => r.json());

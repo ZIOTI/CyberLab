@@ -6,58 +6,50 @@
 
 ---
 
-## 🚀 Démarrage en 1 Clic sur Windows (Pour tes potes / joueurs)
+## 🚀 Première Installation en 1 Clic (Pour tes potes / joueurs)
 
-1. **Télécharge** la dernière version dans l'onglet **[Releases](https://github.com/Zioti/CyberLab/releases)** (`CyberRange-PRO.zip`).
-2. **Dézippe** le dossier n'importe où sur ton PC.
-3. Double-clique simplement sur :
-```text
-start.bat
-```
-Le serveur local démarre automatiquement sur **`http://localhost:3333`** et ouvre ton navigateur.
+Tes potes ont deux façons simples d'installer le jeu depuis l'onglet **[Releases](https://github.com/ZIOTI/CyberLab/releases)** :
+
+### Option 1 : L'Installateur Windows Dédié (.EXE) — Recommandé
+1. Télécharge **`CyberRange-PRO-Setup.exe`**.
+2. Lance l'installateur :
+   - Il installe le laboratoire dans `%LOCALAPPDATA%\Programs\CyberRange-PRO` (aucun droit administrateur requis).
+   - Il crée automatiquement un raccourci stylé sur le Bureau (**⚡ CyberRange PRO**).
+   - Il crée l'entrée dans le Menu Démarrer.
+   - Il démarre directement le jeu et ouvre le navigateur !
+
+### Option 2 : Version Portable (.ZIP ou .EXE direct)
+1. Télécharge **`CyberRange-PRO.zip`** et dézippe-le où tu veux.
+2. Double-clique sur **`CyberRange-PRO.exe`** (ou `start.bat`).
 
 > 🛡️ **Rétention Garantie des Données :**
 > Ta progression (XP, niveaux complétés, badges débloqués, série streak, vies restantes) est automatiquement stockée dans ta base locale `cyberrange.db`. Même en mettant à jour le jeu, **ta progression n'est JAMAIS écrasée ni perdue**.
 
 ---
 
-## 🔄 Système d'Auto-Update Automatique & Obligatoire
+## 🔄 Système d'Auto-Update Automatique & En Place
 
 Lorsqu'une nouvelle version de CyberRange PRO est publiée sur GitHub :
 1. Dès qu'un joueur lance le jeu ou recharge la page, une **modale d'alerte critique verrouillée** s'affiche immédiatement.
 2. L'accès aux défis est suspendu tant que la version n'est pas synchronisée afin de garantir la cohérence des cibles, des flags et du curriculum.
 3. Le joueur clique sur **« 🚀 Télécharger & Mettre à Jour Automatiquement »** :
-   - Le moteur télécharge la dernière archive depuis GitHub Releases.
+   - Le moteur télécharge la dernière version depuis GitHub Releases.
    - Il sauvegarde automatiquement `cyberrange.db` en `.bak`.
-   - Il remplace les fichiers de code et redémarre le serveur local de manière transparente.
-   - Les niveaux, scores et stats sont conservés à 100%.
-4. Alternativement, le script `update.bat` permet de mettre à jour le laboratoire en un double-clic sans ouvrir le navigateur.
+   - Il met à jour les fichiers de code **directement en place** dans le dossier d'installation.
+   - **Il ne recrée pas de raccourcis supplémentaires et ne relance pas l'installateur.**
+   - Le serveur redémarre instantanément et recharge la page avec 100% de la progression conservée.
 
 ---
 
-## 👨‍💻 Comment Publier une Nouvelle Mise à Jour (Pour toi)
+## 👨‍💻 Publication 100% Automatique (Pour toi)
 
-Pour publier une nouvelle version et la déployer automatiquement auprès de tous tes joueurs :
-
-### Méthode 1 : En 1 Clic via `release.bat` (Recommandé)
-Lance simplement :
-```text
-release.bat
-```
-L'assistant te demandera le numéro de version (ex: `1.0.1`) et tes notes de mise à jour. Il va automatiquement :
-1. Exécuter la suite de 12 tests de validation pour s'assurer que tout fonctionne sans bug.
-2. Mettre à jour `package.json`.
-3. Créer le commit et le tag Git (`v1.0.1`).
-4. Pousser vers GitHub (`git push origin main --tags`).
-5. **GitHub Actions** prend le relais, fabrique l'archive ZIP propre et crée la Release GitHub automatiquement !
-
-### Méthode 2 : En ligne de commande
-```bash
-git add .
-git commit -m "feat: ajout de 5 nouveaux défis web"
-git tag -a v1.0.1 -m "Version 1.0.1 : correctifs et nouveaux CTF"
-git push origin main --tags
-```
+Tu n'as aucun script manuel à lancer ! Dès que tu effectues un `git push` sur la branche `main` :
+1. **GitHub Actions** prend automatiquement le relais.
+2. Il exécute les 12 suites de tests pour vérifier que tout est vert.
+3. Il compile nativement **`CyberRange-PRO.exe`** et l'installateur **`CyberRange-PRO-Setup.exe`**.
+4. Il package l'archive **`CyberRange-PRO.zip`**.
+5. Il publie automatiquement la **GitHub Release** avec l'installateur `.exe` et l'archive `.zip` attachés.
+6. Tous tes potes reçoivent instantanément la popup de mise à jour dès qu'ils lancent le jeu !
 
 ---
 
@@ -76,6 +68,7 @@ git push origin main --tags
 ## 🛠️ Stack Technique
 
 - **Backend :** Node.js natif (`node:http`, `node:sqlite`, `node:fs`, `node:path`, `node:https`), Zéro dépendance npm.
+- **Lanceurs & Installateurs :** Exécutables Windows C# natifs (`CyberRange-PRO.exe`, `CyberRange-PRO-Setup.exe`).
 - **Frontend :** HTML5, Tailwind CSS, Space Grotesk, JetBrains Mono, Inter, Canvas-Confetti, Web Audio API Synthétiseur.
 - **Stockage :** Base SQLite locale (`cyberrange.db`).
-- **CI/CD :** GitHub Actions automatisé (`.github/workflows/release.yml`).
+- **CI/CD :** GitHub Actions automatisé sur Windows (`.github/workflows/release.yml`).
