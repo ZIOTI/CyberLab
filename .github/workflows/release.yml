@@ -22,18 +22,24 @@ jobs:
       - name: ⚙️ Configuration de Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 🧪 Exécution de la suite de tests de validation
         shell: powershell
         run: |
-          $server = Start-Process node -ArgumentList "server.js" -PassThru
-          Start-Sleep -Seconds 3
-          try {
-            node test_suite.js
-          } finally {
+          $server = Start-Process node -ArgumentList "server.js" -WorkingDirectory (Get-Location) -PassThru -RedirectStandardError "server_err.log" -RedirectStandardOutput "server_out.log"
+          Start-Sleep -Seconds 4
+          node test_suite.js
+          $testExit = $LASTEXITCODE
+          if ($testExit -ne 0) {
+            Write-Host "=== SERVER ERROR LOG ==="
+            if (Test-Path "server_err.log") { Get-Content "server_err.log" }
+            Write-Host "=== SERVER OUTPUT LOG ==="
+            if (Test-Path "server_out.log") { Get-Content "server_out.log" }
             Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue
+            exit $testExit
           }
+          Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue
 
       - name: 🔨 Compilation des exécutables Windows (.EXE)
         shell: powershell
@@ -43,7 +49,7 @@ jobs:
           & $csc /nologo /target:winexe /out:CyberRange-PRO.exe /r:System.Windows.Forms.dll,System.Drawing.dll src-launcher\Launcher.cs
 
           Write-Host "[*] Compilation de CyberRange-PRO-Setup.exe (Installateur 1-Clic)..."
-          & $csc /nologo /target:winexe /out:CyberRange-PRO-Setup.exe /r:System.Windows.Forms.dll,System.Drawing.dll,Microsoft.CSharp.dll src-launcher\Installer.cs
+          & $csc /nologo /target:winexe /out:CyberRange-PRO-Setup.exe /r:System.Windows.Forms.dll,System.Drawing.dll,Microsoft.CSharp.dll,System.IO.Compression.dll,System.IO.Compression.FileSystem.dll src-launcher\Installer.cs
 
       - name: 📦 Préparation des packages de distribution
         shell: powershell
@@ -81,6 +87,7 @@ jobs:
       - name: 🚀 Création automatique de la GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ env.RELEASE_TAG }}
           name: "CyberRange PRO ${{ env.RELEASE_TAG }} (Installer & Portable)"
           generate_release_notes: true

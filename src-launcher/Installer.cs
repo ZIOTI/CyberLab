@@ -2,6 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CyberRangeSetup
@@ -138,6 +141,17 @@ namespace CyberRangeSetup
             this.Controls.Add(btnInstall);
         }
 
+        private void UpdateUI(string status, int progress)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => UpdateUI(status, progress)));
+                return;
+            }
+            if (!string.IsNullOrEmpty(status)) lblStatus.Text = status;
+            if (progress >= 0 && progress <= 100) prgBar.Value = progress;
+        }
+
         private void BtnInstall_Click(object sender, EventArgs e)
         {
             string targetDir = txtInstallPath.Text.Trim();
@@ -145,65 +159,142 @@ namespace CyberRangeSetup
 
             btnInstall.Enabled = false;
             prgBar.Visible = true;
-            prgBar.Value = 10;
-            lblStatus.Text = "Préparation des dossiers...";
+            prgBar.Value = 5;
+            lblStatus.Text = "Initialisation...";
             lblStatus.ForeColor = Color.FromArgb(6, 182, 212);
 
-            try
+            bool createDesktop = chkDesktop.Checked;
+            bool createStartMenu = chkStartMenu.Checked;
+            bool launchNow = chkLaunchNow.Checked;
+
+            Thread worker = new Thread(() =>
             {
-                Directory.CreateDirectory(targetDir);
-                prgBar.Value = 30;
-
-                string sourceDir = AppDomain.CurrentDomain.BaseDirectory;
-                lblStatus.Text = "Copie des fichiers du laboratoire (préservation SQLite)...";
-                CopyFilesRecursively(sourceDir, targetDir);
-                prgBar.Value = 70;
-
-                // Création du raccourci Bureau si demandé
-                if (chkDesktop.Checked)
+                try
                 {
-                    lblStatus.Text = "Création du raccourci Bureau...";
-                    string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    string targetExe = Path.Combine(targetDir, "CyberRange-PRO.exe");
-                    CreateShortcut(Path.Combine(desktopPath, "⚡ CyberRange PRO.lnk"), targetExe, targetDir);
-                }
+                    Directory.CreateDirectory(targetDir);
+                    UpdateUI("Préparation des dossiers...", 15);
 
-                // Création du raccourci Menu Démarrer si demandé
-                if (chkStartMenu.Checked)
-                {
-                    lblStatus.Text = "Création du raccourci Menu Démarrer...";
-                    string startMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "CyberRange PRO");
-                    Directory.CreateDirectory(startMenu);
-                    string targetExe = Path.Combine(targetDir, "CyberRange-PRO.exe");
-                    CreateShortcut(Path.Combine(startMenu, "CyberRange PRO.lnk"), targetExe, targetDir);
-                }
+                    string sourceDir = AppDomain.CurrentDomain.BaseDirectory;
+                    bool hasLocalFiles = File.Exists(Path.Combine(sourceDir, "server.js"));
 
-                prgBar.Value = 100;
-                lblStatus.Text = "Installation terminée avec succès !";
-                lblStatus.ForeColor = Color.FromArgb(16, 185, 129);
-
-                MessageBox.Show(
-                    "Installation de CyberRange PRO terminée avec succès !\n\n" +
-                    "Ton raccourci a été créé sur le Bureau.\n" +
-                    "Toutes les futures mises à jour se feront en place sans jamais écraser tes niveaux !",
-                    "CyberRange PRO - Installation Réussie",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                if (chkLaunchNow.Checked)
-                {
-                    string targetExe = Path.Combine(targetDir, "CyberRange-PRO.exe");
-                    if (File.Exists(targetExe))
+                    if (hasLocalFiles)
                     {
-                        Process.Start(new ProcessStartInfo(targetExe) { WorkingDirectory = targetDir });
+                        UpdateUI("Copie des fichiers locaux (préservation SQLite)...", 30);
+                        CopyFilesRecursively(sourceDir, targetDir);
+                        UpdateUI("Fichiers copiés.", 75);
                     }
-                }
+                    else
+                    {
+                        UpdateUI("Téléchargement du package CyberRange PRO depuis GitHub...", 25);
+                        string tempZip = Path.Combine(Path.GetTempPath(), "CyberRange-PRO-Download.zip");
 
-                this.Close();
-            }
-            catch (Exception ex)
+                        try
+                        {
+                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)12288;
+                        }
+                        catch { }
+
+                        using (WebClient client = new WebClient())
+                        {
+                            client.Headers["User-Agent"] = "CyberRange-PRO-Installer";
+                            client.DownloadProgressChanged += (s, ev) =>
+                            {
+                                int val = 25 + (int)(ev.ProgressPercentage * 0.45);
+                                if (val > 70) val = 70;
+                                UpdateUI(string.Format("Téléchargement en cours ({0}%)...", ev.ProgressPercentage), val);
+                            };
+                            string downloadUrl = "https://github.com/ZIOTI/CyberLab/releases/latest/download/CyberRange-PRO.zip";
+                            client.DownloadFile(new Uri(downloadUrl), tempZip);
+                        }
+
+                        UpdateUI("Extraction du laboratoire (préservation SQLite)...", 75);
+                        ExtractZipSafe(tempZip, targetDir);
+
+                        try { if (File.Exists(tempZip)) File.Delete(tempZip); } catch { }
+                    }
+
+                    // Création du raccourci Bureau si demandé
+                    if (createDesktop)
+                    {
+                        UpdateUI("Création du raccourci Bureau...", 85);
+                        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        string targetExe = Path.Combine(targetDir, "CyberRange-PRO.exe");
+                        CreateShortcut(Path.Combine(desktopPath, "⚡ CyberRange PRO.lnk"), targetExe, targetDir);
+                    }
+
+                    // Création du raccourci Menu Démarrer si demandé
+                    if (createStartMenu)
+                    {
+                        UpdateUI("Création du raccourci Menu Démarrer...", 92);
+                        string startMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "CyberRange PRO");
+                        Directory.CreateDirectory(startMenu);
+                        string targetExe = Path.Combine(targetDir, "CyberRange-PRO.exe");
+                        CreateShortcut(Path.Combine(startMenu, "CyberRange PRO.lnk"), targetExe, targetDir);
+                    }
+
+                    UpdateUI("Installation terminée avec succès !", 100);
+
+                    this.Invoke(new Action(() =>
+                    {
+                        lblStatus.ForeColor = Color.FromArgb(16, 185, 129);
+                        MessageBox.Show(
+                            "Installation de CyberRange PRO terminée avec succès !\n\n" +
+                            "Ton raccourci a été créé sur le Bureau.\n" +
+                            "Toutes les futures mises à jour se feront en place sans jamais écraser tes niveaux !",
+                            "CyberRange PRO - Installation Réussie",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        if (launchNow)
+                        {
+                            string targetExe = Path.Combine(targetDir, "CyberRange-PRO.exe");
+                            if (File.Exists(targetExe))
+                            {
+                                Process.Start(new ProcessStartInfo(targetExe) { WorkingDirectory = targetDir });
+                            }
+                        }
+
+                        this.Close();
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        MessageBox.Show("Erreur lors de l'installation :\n" + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        btnInstall.Enabled = true;
+                        lblStatus.Text = "Erreur pendant l'installation.";
+                        lblStatus.ForeColor = Color.FromArgb(239, 68, 68);
+                    }));
+                }
+            });
+
+            worker.IsBackground = true;
+            worker.Start();
+        }
+
+        private void ExtractZipSafe(string zipPath, string targetDir)
+        {
+            using (ZipArchive archive = ZipFile.OpenRead(zipPath))
             {
-                MessageBox.Show("Erreur lors de l'installation :\n" + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btnInstall.Enabled = true;
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    if (string.IsNullOrEmpty(entry.Name)) continue;
+
+                    string destinationPath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
+                    if (!destinationPath.StartsWith(targetDir, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    // NE JAMAIS ÉCRASER LA BASE SQLITE
+                    if (entry.Name == "cyberrange.db" || entry.Name.StartsWith("cyberrange.db-") || entry.Name.EndsWith(".bak"))
+                    {
+                        if (File.Exists(destinationPath)) continue;
+                    }
+
+                    string dir = Path.GetDirectoryName(destinationPath);
+                    if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+                    entry.ExtractToFile(destinationPath, true);
+                }
             }
         }
 

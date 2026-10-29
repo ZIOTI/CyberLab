@@ -134,7 +134,7 @@ async function checkForUpdates() {
     // Cherche l'archive release zippée (.zip) dans les assets
     let downloadUrl = release.zipball_url;
     if (release.assets && release.assets.length > 0) {
-      const zipAsset = release.assets.find(a => a.name.endsWith('.zip'));
+      const zipAsset = release.assets.find(a => a.name === 'CyberRange-PRO.zip') || release.assets.find(a => a.name.endsWith('.zip'));
       if (zipAsset) {
         downloadUrl = zipAsset.browser_download_url;
       }
