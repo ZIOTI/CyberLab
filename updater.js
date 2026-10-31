@@ -80,6 +80,29 @@ function fetchJSON(url) {
   });
 }
 
+// Requête HTTPS pour récupérer du texte brut (ex: checksums.txt)
+function fetchText(url) {
+  return new Promise((resolve) => {
+    const options = {
+      headers: {
+        'User-Agent': 'CyberRange-PRO-AutoUpdater/1.0'
+      }
+    };
+
+    https.get(url, options, (res) => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        return resolve(fetchText(res.headers.location));
+      }
+      if (res.statusCode !== 200) {
+        return resolve('');
+      }
+      let data = '';
+      res.on('data', chunk => { data += chunk; });
+      res.on('end', () => resolve(data));
+    }).on('error', () => resolve(''));
+  });
+}
+
 // Téléchargement binaire de fichier
 function downloadFile(url, destPath) {
   return new Promise((resolve, reject) => {
@@ -157,10 +180,36 @@ async function checkForUpdates() {
 
     // Cherche l'archive release zippée (.zip) dans les assets
     let downloadUrl = release.zipball_url;
+    let expectedSha256 = null;
+    let zipName = 'CyberRange-PRO.zip';
+
     if (release.assets && release.assets.length > 0) {
       const zipAsset = release.assets.find(a => a.name === 'CyberRange-PRO.zip') || release.assets.find(a => a.name.endsWith('.zip'));
       if (zipAsset) {
         downloadUrl = zipAsset.browser_download_url;
+        zipName = zipAsset.name;
+      }
+
+      // Recherche automatique du hash dans checksums.txt
+      const checksumsAsset = release.assets.find(a => a.name === 'checksums.txt');
+      if (checksumsAsset) {
+        try {
+          const checksumsData = await fetchText(checksumsAsset.browser_download_url);
+          const lines = checksumsData.split(/\r?\n/);
+          for (const line of lines) {
+            const parts = line.trim().split(/\s+/);
+            if (parts.length >= 2) {
+              const hash = parts[0].trim();
+              const filename = parts[1].trim();
+              if (filename === zipName || filename === 'CyberRange-PRO.zip' || filename.endsWith('.zip')) {
+                expectedSha256 = hash;
+                break;
+              }
+            }
+          }
+        } catch (e) {
+          // Ignorer si échec de récupération du checksum
+        }
       }
     }
 
@@ -173,6 +222,7 @@ async function checkForUpdates() {
       releaseNotes: release.body || 'Mise à jour d\'optimisation du laboratoire offensive.',
       publishedAt: release.published_at || new Date().toISOString(),
       downloadUrl: downloadUrl,
+      expectedSha256: expectedSha256,
       htmlUrl: release.html_url || `https://github.com/${config.owner}/${config.repo}/releases`,
       mandatory: true
     };

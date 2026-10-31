@@ -5,6 +5,9 @@
 
 set -u
 
+# Confinement dans le répertoire du projet pour supporter l'appel depuis n'importe quel dossier
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+
 echo "====================================================================="
 echo "   🛡️  CYBERRANGE PRO - ACADÉMIE OFFENSIVE DE ZÉRO À PRO"
 echo "====================================================================="
@@ -36,12 +39,14 @@ open_browser() {
     local max_retries=30
     local count=0
 
-    # Attente active de la disponibilité du serveur
+    # Attente active de la disponibilité du serveur (avec curl ou node natif)
     while [ $count -lt $max_retries ]; do
         if command -v curl >/dev/null 2>&1; then
             if curl -s -f "$target_url/api/version" >/dev/null 2>&1; then
                 break
             fi
+        elif node -e "fetch('$target_url/api/version').then(r=>{if(r.ok)process.exit(0);else process.exit(1)}).catch(()=>process.exit(1))" >/dev/null 2>&1; then
+            break
         fi
         sleep 0.4
         count=$((count + 1))
@@ -50,8 +55,10 @@ open_browser() {
     # Détection de l'utilitaire d'ouverture selon l'OS (macOS 'open' vs Linux 'xdg-open')
     if [ "$(uname -s)" = "Darwin" ]; then
         open "$target_url" >/dev/null 2>&1 &
-    elif command -v xdg-open >/dev/null 2>&1; then
-        xdg-open "$target_url" >/dev/null 2>&1 &
+    elif [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
+        if command -v xdg-open >/dev/null 2>&1; then
+            xdg-open "$target_url" >/dev/null 2>&1 &
+        fi
     fi
 }
 

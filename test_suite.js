@@ -1611,8 +1611,10 @@ async function testAll() {
 
   // 21.1 En-têtes HTTP de Sécurité Stricts
   const headerCheck = await fetch(`${BASE_URL}/api/version`);
-  assert(headerCheck.headers.get('content-security-policy'), 'CSP header is present');
-  assert(headerCheck.headers.get('content-security-policy').includes("default-src 'self'"), 'CSP defines default-src');
+  const cspHeader = headerCheck.headers.get('content-security-policy');
+  assert(cspHeader, 'CSP header is present');
+  assert(cspHeader.includes("default-src 'self'"), 'CSP defines default-src');
+  assert(cspHeader.includes('script-src') && cspHeader.includes('style-src') && cspHeader.includes('https:'), 'CSP allows CDN scripts, styles and fonts for frontend runtime');
   assert(headerCheck.headers.get('x-content-type-options') === 'nosniff', 'X-Content-Type-Options is nosniff');
   assert(headerCheck.headers.get('x-frame-options') === 'SAMEORIGIN', 'X-Frame-Options is SAMEORIGIN');
   assert(headerCheck.headers.get('referrer-policy') === 'strict-origin-when-cross-origin', 'Referrer-Policy is strict-origin-when-cross-origin');
@@ -1620,29 +1622,45 @@ async function testAll() {
   console.log('✔ 21.1 Strict HTTP Security Headers PASSED');
 
   // 21.2 Protection Anti-CSRF sur les routes d'altération d'état
-  // A. Obtention d'un jeton de session
+  // A. Obtention d'un jeton de session légitime
   const csrfInit = await fetch(`${BASE_URL}/api/csrf-token`).then(r => r.json());
   assert(csrfInit.success === true, 'CSRF token endpoint responds with success');
   assert(typeof csrfInit.csrfToken === 'string' && csrfInit.csrfToken.length === 64, 'CSRF token is valid 64-char hex string');
 
-  // B. Tentative sans header X-CSRF-Token sur reset-profile -> Rejet 403
+  // B. Rejet immédiat de toute tentative d'extraction cross-origin (evil.com)
+  const crossOriginCsrf = await fetch(`${BASE_URL}/api/csrf-token`, {
+    headers: { 'Origin': 'https://evil-attacker.example.com' }
+  });
+  assert(crossOriginCsrf.status === 403, 'Cross-origin CSRF token request rejected with 403 Forbidden');
+
+  // C. Tentative sans header X-CSRF-Token sur reset-profile -> Rejet 403
   const badReset = await fetch(`${BASE_URL}/api/reset-profile`, { method: 'POST' });
   assert(badReset.status === 403, 'POST /api/reset-profile without CSRF token returns 403 Forbidden');
   const badResetBody = await badReset.json();
   assert(badResetBody.success === false && badResetBody.error.includes('Anti-CSRF'), 'Rejection body mentions Anti-CSRF');
 
-  // C. Tentative avec token frauduleux / invalide -> Rejet 403
+  // D. Tentative avec token frauduleux / invalide -> Rejet 403
   const forgedReset = await fetch(`${BASE_URL}/api/reset-profile`, {
     method: 'POST',
     headers: { 'X-CSRF-Token': 'forged_fake_csrf_token_1234567890' }
   });
   assert(forgedReset.status === 403, 'POST /api/reset-profile with invalid CSRF token returns 403');
 
-  // D. Tentative sans header sur apply-update -> Rejet 403
+  // E. Tentative cross-origin même avec un token valide -> Rejet 403
+  const crossOriginReset = await fetch(`${BASE_URL}/api/reset-profile`, {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': csrfInit.csrfToken,
+      'Origin': 'https://evil-attacker.example.com'
+    }
+  });
+  assert(crossOriginReset.status === 403, 'Cross-origin state-altering request rejected with 403');
+
+  // F. Tentative sans header sur apply-update -> Rejet 403
   const badUpdate = await fetch(`${BASE_URL}/api/apply-update`, { method: 'POST' });
   assert(badUpdate.status === 403, 'POST /api/apply-update without CSRF token returns 403');
 
-  // E. Requête légitime avec le header X-CSRF-Token valide -> Succès 200
+  // G. Requête légitime avec le header X-CSRF-Token valide -> Succès 200
   const goodReset = await fetch(`${BASE_URL}/api/reset-profile`, {
     method: 'POST',
     headers: { 'X-CSRF-Token': csrfInit.csrfToken }
@@ -1651,7 +1669,7 @@ async function testAll() {
   console.log('✔ 21.2 Anti-CSRF Session Token Protection PASSED');
 
   // 21.3 Rate Limiting en mémoire sur les endpoints sensibles
-  // Test de saturation sur /api/apply-update (limite: 5 req/10s)
+  // A. Test de saturation sur /api/apply-update (limite: 5 req/10s)
   const validCsrf = (await fetch(`${BASE_URL}/api/csrf-token`).then(r => r.json())).csrfToken;
   let hitRateLimit = false;
   let rateLimitStatus = 0;
@@ -1672,6 +1690,23 @@ async function testAll() {
   }
   assert(hitRateLimit === true && rateLimitStatus === 429, 'Rate limiting successfully triggered 429 on rapid requests burst');
   assert(retryAfterHeader !== null, 'Retry-After header returned on 429 response');
+
+  // B. Test de résistance contre le spoofing IP (X-Forwarded-For arbitraire ne doit pas contourner la limite)
+  let spoofBlocked = false;
+  for (let i = 0; i < 7; i++) {
+    const res = await fetch(`${BASE_URL}/api/apply-update`, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': validCsrf,
+        'X-Forwarded-For': `10.99.${i}.1`
+      }
+    });
+    if (res.status === 429) {
+      spoofBlocked = true;
+      break;
+    }
+  }
+  assert(spoofBlocked === true, 'Rate limiter cannot be bypassed by rotating fake X-Forwarded-For headers');
   console.log('✔ 21.3 In-Memory Rate Limiting on Sensitive Endpoints PASSED');
 
   // 21.4 Anti-Path Traversal strict sur /targets/training/download/
@@ -1686,6 +1721,10 @@ async function testAll() {
   // Traversal 3: cross challenge ../../
   const trav3 = await fetch(`${BASE_URL}/targets/training/download/network/net-01-wireshark-ftp/../../web/web-01-robots/meta.json`);
   assert(trav3.status === 404, 'Cross-challenge path traversal safely rejected with 404');
+
+  // Traversal 4: multi-encodé double URL encoding %252e%252e
+  const trav4 = await fetch(`${BASE_URL}/targets/training/download/network/net-01-wireshark-ftp/%252e%252e/%252e%252e/server.js`);
+  assert(trav4.status === 404, 'Multi-encoded path traversal (%252e%252e) safely rejected with 404');
 
   // Téléchargement légitime confiné
   const legitDownload = await fetch(`${BASE_URL}/targets/training/download/network/net-01-wireshark-ftp/ftp_session_capture.pcap`);
@@ -1738,6 +1777,11 @@ async function testAll() {
     assert(Buffer.byteLength(content, 'utf8') >= rf.minBytes, `${rf.file} meets minimum size (${rf.minBytes} bytes)`);
     assert(content.includes(rf.match), `${rf.file} contains required content signature: "${rf.match}"`);
   }
+
+  // Vérification du statut exécutable (100755) des scripts sous Git
+  const { execSync } = require('child_process');
+  const gitFiles = execSync('git ls-files --stage start.sh update.sh').toString();
+  assert(gitFiles.includes('100755'), 'start.sh and update.sh are executable (100755) in git index');
 
   // Vérification de la configuration CI GitHub Actions
   const workflowContent = fs.readFileSync('.github/workflows/release.yml', 'utf8');

@@ -5,6 +5,9 @@
 
 set -u
 
+# Confinement dans le répertoire du projet pour supporter l'appel depuis n'importe quel dossier
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+
 echo "====================================================================="
 echo "   🚀 CYBERRANGE PRO - ASSISTANT DE MISE À JOUR OFFENSIVE"
 echo "====================================================================="

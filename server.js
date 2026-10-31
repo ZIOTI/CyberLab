@@ -512,7 +512,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/training/submit-flag' && method === 'POST') {
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const clientIp = getClientIdentifier(req);
     const rateCheck = rateLimiter.check(`${clientIp}:/api/training/submit-flag`, 50, 10000);
     if (rateCheck.limited) {
       res.setHeader('Retry-After', String(rateCheck.retryAfter));
@@ -1301,45 +1301,61 @@ const server = http.createServer(async (req, res) => {
 
   // Téléchargement sécurisé des fichiers de challenges (.pcap, .bin, .eml, .jpg)
   if (pathname.startsWith('/targets/training/download/')) {
-    // Rejet formel des tentatives de traversée de chemin (Path Traversal) brutes ou encodées
+    // Rejet formel des tentatives de traversée de chemin (Path Traversal) brutes ou multi-encodées
     const rawUrl = req.url || '';
-    let decodedUrl = '';
-    try {
-      decodedUrl = decodeURIComponent(rawUrl);
-    } catch (e) {
-      return sendJSON(res, 404, { success: false, error: 'URL invalide.' });
+    let fullyDecoded = rawUrl;
+    for (let i = 0; i < 5; i++) {
+      try {
+        const next = decodeURIComponent(fullyDecoded);
+        if (next === fullyDecoded) break;
+        fullyDecoded = next;
+      } catch (e) {
+        return sendJSON(res, 404, { success: false, error: 'URL invalide.' });
+      }
     }
 
-    if (rawUrl.includes('..') || decodedUrl.includes('..') || pathname.includes('..')) {
+    if (rawUrl.includes('..') || fullyDecoded.includes('..') || pathname.includes('..') ||
+        fullyDecoded.includes('\\') || fullyDecoded.includes('\0')) {
       return sendJSON(res, 404, { success: false, error: 'Accès refusé : tentative de traversée de chemin détectée.' });
     }
 
     const remainder = pathname.replace('/targets/training/download/', '');
     const parts = remainder.split('/');
     if (parts.length === 3) {
-      const [cat, chId, rawFileName] = parts;
-      let fileName;
+      let [rawCat, rawChId, rawFileName] = parts;
+      let cat, chId, fileName;
       try {
+        cat = decodeURIComponent(rawCat);
+        chId = decodeURIComponent(rawChId);
         fileName = decodeURIComponent(rawFileName);
       } catch (e) {
-        fileName = rawFileName;
+        return sendJSON(res, 404, { success: false, error: 'Paramètres invalides.' });
       }
 
-      if (fileName.includes('..') || cat.includes('..') || chId.includes('..')) {
+      if (cat.includes('..') || chId.includes('..') || fileName.includes('..') ||
+          cat.includes('/') || cat.includes('\\') ||
+          chId.includes('/') || chId.includes('\\') ||
+          fileName.includes('/') || fileName.includes('\\') || fileName.includes('\0')) {
         return sendJSON(res, 404, { success: false, error: 'Accès refusé : chemin interdit.' });
       }
 
-      const baseFilesDir = path.resolve(path.join(__dirname, 'challenges', cat, chId, 'files'));
+      const challengesDir = path.resolve(__dirname, 'challenges');
+      const baseFilesDir = path.resolve(challengesDir, cat, chId, 'files');
       const safePath = path.resolve(baseFilesDir, fileName);
 
       // Confinement strict dans challenges/<cat>/<id>/files/
-      const isConfined = (safePath.startsWith(baseFilesDir + path.sep) || safePath === baseFilesDir);
-      if (isConfined && fs.existsSync(safePath) && !fs.statSync(safePath).isDirectory()) {
-        res.writeHead(200, {
-          'Content-Type': 'application/octet-stream',
-          'Content-Disposition': `attachment; filename="${path.basename(safePath)}"`
-        });
-        return fs.createReadStream(safePath).pipe(res);
+      const isConfined = safePath.startsWith(baseFilesDir + path.sep);
+      if (isConfined && fs.existsSync(safePath)) {
+        try {
+          const stat = fs.statSync(safePath);
+          if (stat.isFile()) {
+            res.writeHead(200, {
+              'Content-Type': 'application/octet-stream',
+              'Content-Disposition': `attachment; filename="${path.basename(safePath)}"`
+            });
+            return fs.createReadStream(safePath).pipe(res);
+          }
+        } catch (e) {}
       }
     }
     return sendJSON(res, 404, { success: false, error: 'Fichier d\'artefact introuvable.' });
@@ -2026,7 +2042,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/apply-update' && method === 'POST') {
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const clientIp = getClientIdentifier(req);
     const rateCheck = rateLimiter.check(`${clientIp}:/api/apply-update`, 5, 10000);
     if (rateCheck.limited) {
       res.setHeader('Retry-After', String(rateCheck.retryAfter));
@@ -2161,7 +2177,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/verify-answer' && method === 'POST') {
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const clientIp = getClientIdentifier(req);
     const rateCheck = rateLimiter.check(`${clientIp}:/api/verify-answer`, 30, 10000);
     if (rateCheck.limited) {
       res.setHeader('Retry-After', String(rateCheck.retryAfter));
@@ -2220,7 +2236,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/reset-profile' && method === 'POST') {
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const clientIp = getClientIdentifier(req);
     const rateCheck = rateLimiter.check(`${clientIp}:/api/reset-profile`, 10, 10000);
     if (rateCheck.limited) {
       res.setHeader('Retry-After', String(rateCheck.retryAfter));

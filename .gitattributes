@@ -1,0 +1,5 @@
+# Preserver les fins de ligne Unix (LF) pour les scripts shell portables Linux & macOS
+*.sh text eol=lf
+
+# Fichiers de commandes Windows
+*.bat text eol=crlf
