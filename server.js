@@ -14,6 +14,15 @@ const SkillTreeManager = require('./platform/skill_tree_manager');
 const GamificationManager = require('./platform/gamification_manager');
 const { defaultLimiter: rateLimiter } = require('./platform/rate_limiter');
 
+// Gestionnaire global d'exceptions pour garantir la haute disponibilité locale
+process.on('uncaughtException', (err) => {
+  console.error('[!] Uncaught Exception interceptée :', err.message, err.stack);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[!] Unhandled Rejection interceptée :', reason);
+});
+
 // Gestion en mémoire des jetons de session Anti-CSRF
 const activeCsrfTokens = new Set();
 
