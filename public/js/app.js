@@ -312,11 +312,11 @@ class CyberAppPro {
   testUpdateModal() {
     this.displayUpdateModal({
       updateAvailable: true,
-      currentVersion: '1.0.1',
-      latestVersion: '1.1.0',
+      currentVersion: '1.1.0',
+      latestVersion: '1.2.0',
       isTest: true,
-      releaseName: 'CyberRange PRO v1.1.0 (Mode Test & Simulation)',
-      releaseNotes: '⚡ SIMULATION DE MISE À JOUR OBLIGATOIRE :\n- Déploiement des 100 labs d\'entraînement réalistes\n- 10 sites cibles refaits à neuf avec identités uniques\n- Navigateur web intégré dans la plateforme (Split-Screen CTF)\n- Sauvegarde intégrale et rétention de cyberrange.db garantie !',
+      releaseName: 'CyberRange PRO v1.2.0 (Zone Entraînement TryHackMe & Terminal Bash)',
+      releaseNotes: '⚡ NOUVEAUTÉS DE LA VERSION v1.2.0 :\n- Zone Entraînement refaite à neuf style officiel TryHackMe (sections curatées, cartes aérées, avatars dédiés)\n- Terminal Linux Bash interactif intégré dans les rooms avec raccourcis tactiques (getcap, python setuid, sudo, suid)\n- 123 challenges CTF réalistes avec scénarios d\'entreprises, indices et writeups officiels\n- Élimination des redirections vers des IP virtuelles inaccessibles\n- Sauvegarde intégrale et rétention de cyberrange.db garantie !',
       downloadUrl: 'https://github.com/ZIOTI/CyberLab/releases/latest',
       htmlUrl: 'https://github.com/ZIOTI/CyberLab/releases'
     });

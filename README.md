@@ -65,6 +65,18 @@ Tu n'as aucun script manuel à lancer ! Dès que tu effectues un `git push` sur 
 
 ---
 
+## 🎯 Zone d'Entraînement Style TryHackMe (123 Labs Réalistes)
+
+En plus du cursus granulaire Duolingo, CyberRange PRO intègre une **Zone d'Entraînement Complète** organisée selon les standards visuels et pédagogiques de **TryHackMe** et **HackTheBox** :
+
+- **Sections Curatées & Aérées :** *Break into the server*, *Exploit web vulnerabilities*, *Investigate a cybercrime*, *Stop an attack*, *Master Active Directory & Networks*, *Crack ciphers & Binaries*, *Cloud & Container Escapes*, et *Boot2Root Elite Corporate Targets*.
+- **Avatars Stylisés & Zéro Bruit :** Cartes modernes sans pavés de texte superflus, métadonnées épurées (`Easy · 45 min`), tags de catégorisation et signets.
+- **Terminal Linux Bash Interactif en Direct :** Console web intégrée (`CyberTerminal`) sans aucune dépendance, avec raccourcis tactiques 1-clic (`getcap`, `python setuid`, `sudo -l`, `suid find`, `cat flag`).
+- **Navigateur Web Cible Split-Screen :** Visualisation et interaction directe avec les applications cibles vulnérables sans configuration réseau complexe.
+- **123 Défis Professionnels :** Web, Cryptographie, Forensics, Reverse, Pwn, Linux, Active Directory, Cloud, Mobile et Blue Team avec scénarios réalistes, indices progressifs et writeups officiels.
+
+---
+
 ## 🛠️ Stack Technique
 
 - **Backend :** Node.js natif (`node:http`, `node:sqlite`, `node:fs`, `node:path`, `node:https`), Zéro dépendance npm.
