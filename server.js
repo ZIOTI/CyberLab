@@ -11,11 +11,16 @@ const updater = require('./updater');
 const TrainingManager = require('./platform/training_manager');
 
 const PORT = process.env.PORT || 3333;
+const HOST = process.env.HOST || '127.0.0.1';
 const DB_PATH = path.join(__dirname, 'cyberrange.db');
+const TARGETS_DB_PATH = path.join(__dirname, 'targets.db');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
-// Initialisation de la base SQLite locale
+// Initialisation des bases SQLite locales :
+// 1. cyberrange.db : Progression utilisateur & état du joueur (isolé)
+// 2. targets.db : Cibles réelles d'exercices & tables vulnérables (isolé)
 let db;
+let targetsDb;
 let trainingManager;
 try {
   db = new DatabaseSync(DB_PATH);
@@ -44,8 +49,21 @@ try {
       is_correct INTEGER,
       timestamp TEXT
     );
+  `);
 
-    -- Tables pour cibles réelles d'exercices
+  // Nettoyage de sécurité : suppression des tables d'exercices de cyberrange.db si présentes
+  try {
+    db.exec(`
+      DROP TABLE IF EXISTS crm_accounts;
+      DROP TABLE IF EXISTS crm_customers;
+      DROP TABLE IF EXISTS system_telemetry;
+      DROP TABLE IF EXISTS admin_credentials_vault;
+    `);
+  } catch (e) {}
+
+  // Initialisation de la base dédiée aux cibles (targets.db)
+  targetsDb = new DatabaseSync(TARGETS_DB_PATH);
+  targetsDb.exec(`
     CREATE TABLE IF NOT EXISTS crm_accounts (
       id INTEGER PRIMARY KEY,
       username TEXT,
@@ -102,8 +120,8 @@ try {
     VALUES ('current_player', 'Opérateur RedTeam', '🥷', 'dark', 0, 1, 1, 5, 0, 100, '[]', '[]', datetime('now'));
   `);
 
-  // Peuplement des tables de cibles réelles
-  db.exec(`
+  // Peuplement des tables de cibles réelles dans targetsDb (isolé)
+  targetsDb.exec(`
     DELETE FROM crm_accounts;
     INSERT INTO crm_accounts (id, username, password, role, email, secret_api_key) VALUES
       (1, 'secops_admin', 'Pass_Ultra_Complex_#2026!$', 'Administrator', 'admin@aegis-defense.local', 'KEY{JWT_SECRET_SIGN_KEY_AEGIS_99}'),
@@ -128,7 +146,7 @@ try {
       (1, 'superadmin_ops', 'MasterSecKey#9941_Veloce', 'CYBERLAB{SQLI_UNION_SELECT_SCHEMA_UNMASKED_994}');
   `);
 
-  console.log('[DATABASE] SQLite initialisée avec succès (Mode Offensif Pro).');
+  console.log('[DATABASE] SQLite initialisée avec succès (Mode Offensif Pro : cyberrange.db & targets.db isolés).');
   trainingManager = new TrainingManager(db);
 } catch (err) {
   console.warn('[DATABASE] Erreur SQLite :', err.message);
@@ -365,6 +383,17 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  if (pathname === '/api/training/instance/reset' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const inst = trainingManager.resetInstance(body.challenge_id);
+      return sendJSON(res, 200, { success: true, instance: inst, message: 'Instance réinitialisée avec succès.' });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
   if (pathname === '/api/training/submit-flag' && method === 'POST') {
     try {
       const body = await parseBody(req);
@@ -544,7 +573,7 @@ const server = http.createServer(async (req, res) => {
     const q = parsedUrl.searchParams.get('q') || '';
     if (!q) {
       try {
-        const rows = db ? db.prepare('SELECT id, company, contact_name, contract_value FROM crm_customers LIMIT 10').all() : [];
+        const rows = targetsDb ? targetsDb.prepare('SELECT id, company, contact_name, contract_value FROM crm_customers LIMIT 10').all() : [];
         return sendJSON(res, 200, { results: rows });
       } catch (e) {
         return sendJSON(res, 500, { error: e.message });
@@ -553,8 +582,8 @@ const server = http.createServer(async (req, res) => {
 
     try {
       const rawSql = `SELECT id, company, contact_name, contract_value FROM crm_customers WHERE company LIKE '%${q}%' OR contact_name LIKE '%${q}%'`;
-      if (db) {
-        const rows = db.prepare(rawSql).all();
+      if (targetsDb) {
+        const rows = targetsDb.prepare(rawSql).all();
         return sendJSON(res, 200, { results: rows });
       }
       return sendJSON(res, 200, { results: [] });
@@ -1148,8 +1177,8 @@ const server = http.createServer(async (req, res) => {
 
     try {
       const rawSql = `SELECT id, company, contact_name, contract_value, iban, confidential_memo FROM crm_customers WHERE company LIKE '%${q}%' OR contact_name LIKE '%${q}%'`;
-      if (db) {
-        const rows = db.prepare(rawSql).all();
+      if (targetsDb) {
+        const rows = targetsDb.prepare(rawSql).all();
         return sendJSON(res, 200, { results: rows, executed_query_dbg: false });
       }
       return sendJSON(res, 200, { results: [] });
@@ -1386,7 +1415,7 @@ server.on('error', (err) => {
     if (retryCount <= 5) {
       setTimeout(() => {
         try { server.close(); } catch (e) {}
-        server.listen(PORT, '0.0.0.0');
+        server.listen(PORT, HOST);
       }, 1000);
     } else {
       console.error(`[FATAL] Impossible d'ouvrir le port ${PORT} après 5 tentatives.`);
@@ -1397,9 +1426,9 @@ server.on('error', (err) => {
   }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, HOST, () => {
   console.log(`=================================================================`);
-  console.log(`🚀 [CYBERRANGE PRO] Serveur opérationnel sur http://localhost:${PORT} (0.0.0.0:${PORT})`);
+  console.log(`🚀 [CYBERRANGE PRO] Serveur opérationnel sur http://${HOST}:${PORT}`);
   console.log(`🛡️  5 Modules d'élite, 5 Boss Fights, 123 Cibles réelles prêtes.`);
   console.log(`=================================================================`);
 });

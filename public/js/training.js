@@ -965,6 +965,14 @@ class TrainingSystem {
             </button>
 
             <button 
+              onclick="window.trainingSystem.switchRoomTab('guide')"
+              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'guide' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
+            >
+              <span>📚</span>
+              <span>Guide Terminal</span>
+            </button>
+
+            <button 
               onclick="window.trainingSystem.switchRoomTab('writeup')"
               class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'writeup' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
             >
@@ -1049,6 +1057,24 @@ class TrainingSystem {
           <span id="target-countdown-display" class="text-xs font-black text-amber-400">--:--</span>
         </div>
 
+        <!-- Carte Réseau Simple (Poste d'Attaque vs Machine Cible) -->
+        <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-[11px] font-mono">
+          <div class="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+            <span>Réseau Lab Isolé</span>
+            <span class="text-emerald-400 flex items-center gap-1">● VPN Connecté</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 p-2 bg-slate-900/80 rounded-lg border border-slate-800/80 text-xs">
+            <div class="text-left border-r border-slate-800 pr-1">
+              <span class="text-slate-500 text-[10px] block">Attaquant (Toi)</span>
+              <span class="text-cyan-400 font-bold">10.10.14.5</span>
+            </div>
+            <div class="text-right pl-1">
+              <span class="text-slate-500 text-[10px] block">Cible (${this.escapeHtml(this.activeChallenge?.target_os || 'Linux')})</span>
+              <span class="text-amber-400 font-bold">${ip}</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Informations d'Accès Cible -->
         <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2.5">
           <div class="flex items-center justify-between text-xs font-mono">
@@ -1078,13 +1104,16 @@ class TrainingSystem {
           </div>
         </div>
 
-        <!-- Prolonger & Arrêter -->
-        <div class="grid grid-cols-2 gap-2 pt-1 font-mono">
-          <button onclick="window.trainingSystem.renewInstance('${this.activeChallenge.id}')" class="btn-mini-3d btn-mini-cyan py-1.5 text-[10px]" title="Ajouter 15 minutes">
+        <!-- Contrôles Instance : Prolonger, Réinitialiser & Arrêter -->
+        <div class="grid grid-cols-3 gap-1.5 pt-1 font-mono">
+          <button onclick="window.trainingSystem.renewInstance('${this.activeChallenge.id}')" class="btn-mini-3d btn-mini-cyan py-1.5 px-1 text-[10px]" title="Ajouter 15 minutes">
             <span>+15 min</span>
           </button>
-          <button onclick="window.trainingSystem.stopInstance('${this.activeChallenge.id}')" class="btn-mini-3d btn-mini-rose py-1.5 text-[10px]" title="Arrêter l'instance">
-            <span>Arrêter</span>
+          <button onclick="window.trainingSystem.resetInstance('${this.activeChallenge.id}')" class="btn-mini-3d btn-mini-slate py-1.5 px-1 text-[10px] text-amber-300 hover:text-amber-200" title="Réinitialiser la machine à zéro">
+            <span>↻ Reset</span>
+          </button>
+          <button onclick="window.trainingSystem.stopInstance('${this.activeChallenge.id}')" class="btn-mini-3d btn-mini-rose py-1.5 px-1 text-[10px]" title="Arrêter l'instance">
+            <span>■ Arrêter</span>
           </button>
         </div>
       </div>
@@ -1239,7 +1268,12 @@ class TrainingSystem {
       `;
     }
 
-    // 5. ONGLET PAR DÉFAUT : TÂCHES & QUESTIONS
+    // 5. ONGLET AIDE & GUIDE DU TERMINAL
+    if (this.activeRoomTab === 'guide') {
+      return this.renderTerminalGuide();
+    }
+
+    // 6. ONGLET PAR DÉFAUT : TÂCHES & QUESTIONS
     return `
       <div class="space-y-4 font-sans">
         ${this.activeChallenge.tasks.map((task, idx) => this.renderTaskCard(task, idx + 1)).join('')}
@@ -1251,12 +1285,139 @@ class TrainingSystem {
     const mount = document.getElementById('room-terminal-mount');
     if (!mount) return;
 
+    if (window.cyberActiveTerminal && 
+        window.cyberActiveTerminal.wrapperElement && 
+        window.cyberActiveTerminal.options?.challenge?.id === this.activeChallenge?.id) {
+      mount.innerHTML = '';
+      mount.appendChild(window.cyberActiveTerminal.wrapperElement);
+      if (window.cyberActiveTerminal.fitAddon) {
+        setTimeout(() => {
+          try { window.cyberActiveTerminal.fitAddon.fit(); } catch (e) {}
+        }, 50);
+      }
+      if (window.cyberActiveTerminal.xterm) {
+        window.cyberActiveTerminal.xterm.focus();
+      }
+      return;
+    }
+
     if (window.CyberTerminal) {
-      window.cyberActiveTerminal = new CyberTerminal('room-terminal-mount', {
+      window.cyberActiveTerminal = new CyberTerminal(mount, {
         challenge: this.activeChallenge,
         instance: this.activeInstance
       });
     }
+  }
+
+  renderTerminalGuide() {
+    return `
+      <div class="p-6 bg-slate-950/90 rounded-2xl border border-slate-800 space-y-6 font-sans">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 font-mono">
+          <div>
+            <span class="text-[10px] font-black uppercase text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">AIDE & GUIDE DU TERMINAL</span>
+            <h3 class="text-base font-black text-white mt-1">L'Art de la Ligne de Commande Linux pour Opérateur Cyber</h3>
+          </div>
+          <button onclick="window.trainingSystem.switchRoomTab('terminal')" class="btn-mini-3d btn-mini-cyan py-1 px-3 text-xs font-mono">
+            <span>Ouvrir le Terminal</span> <span>&rarr;</span>
+          </button>
+        </div>
+
+        <!-- 1. Identité & Navigation -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono flex items-center gap-2">
+            <span>📍</span> <span>1. Identité & Navigation Essentielle</span>
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">whoami</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('whoami'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Affiche le nom de l'utilisateur actif (<code class="text-slate-300">operator</code> ou <code class="text-rose-400">root</code>).</p>
+            </div>
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">pwd</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('pwd'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Print Working Directory : affiche le chemin absolu du dossier courant.</p>
+            </div>
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">ls -la</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('ls -la'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Liste détaillée de tous les fichiers (y compris les fichiers cachés).</p>
+            </div>
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">cd &lt;dossier&gt; | cd .. | cd ~</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('cd ~'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Se déplacer dans l'arborescence : <code class="text-slate-300">cd ..</code> (parent), <code class="text-slate-300">cd ~</code> (home).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Lecture, Recherche & Filtres -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono flex items-center gap-2">
+            <span>🔍</span> <span>2. Lecture, Recherche & Filtres</span>
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">cat &lt;fichier&gt;</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('cat notes.txt'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Affiche le contenu d'un fichier texte directement dans le shell.</p>
+            </div>
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">grep -i "mot" &lt;fichier&gt;</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('grep -i BIENVENUE notes.txt'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Filtre les lignes contenant une expression ou un mot-clé.</p>
+            </div>
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">find / -perm -4000 2&gt;/dev/null</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('find / -perm -4000 2>/dev/null'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Recherche les binaires SUID pour l'élévation de privilèges root.</p>
+            </div>
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <code class="font-bold text-cyan-300 font-mono">commande1 | commande2</code>
+                <button onclick="window.trainingSystem.switchRoomTab('terminal'); setTimeout(() => window.cyberActiveTerminal?.runCommand('cat /etc/passwd | grep operator'), 200);" class="text-[10px] text-slate-400 hover:text-cyan-400 font-mono">Tester ▶</button>
+              </div>
+              <p class="text-slate-400 text-[11px]">Pipes Unix (|) pour chaîner la sortie d'un outil vers un autre.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Raccourcis Clavier du Terminal -->
+        <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+          <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono flex items-center gap-2">
+            <span>⚡</span> <span>Raccourcis Clavier Rapides</span>
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono text-slate-300">
+            <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+              <span class="text-cyan-400 font-bold">TAB</span> : Autocomplétion
+            </div>
+            <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+              <span class="text-cyan-400 font-bold">Flèches ↑ / ↓</span> : Historique
+            </div>
+            <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+              <span class="text-cyan-400 font-bold">Ctrl + C</span> : Annuler ligne
+            </div>
+            <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+              <span class="text-cyan-400 font-bold">Ctrl + L</span> : Effacer écran
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   renderTaskCard(task, taskNum) {
@@ -1414,6 +1575,32 @@ class TrainingSystem {
       }
     } catch (e) {
       console.error('Erreur renouvellement:', e);
+    }
+  }
+
+  async resetInstance(challengeId) {
+    if (!confirm('Réinitialiser la machine virtuelle à son état d\'origine ?')) return;
+    try {
+      if (window.cyberAudio) window.cyberAudio.playTactileClick();
+      const res = await fetch('/api/training/instance/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ challenge_id: challengeId })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        this.activeInstance = data.instance || data;
+        const boxMount = document.getElementById('room-target-box-mount');
+        if (boxMount) boxMount.innerHTML = this.renderTargetBox();
+        this.startCountdownTimer();
+        if (window.cyberActiveTerminal) {
+          window.cyberActiveTerminal.reset();
+        }
+        if (window.cyberAudio) window.cyberAudio.playSuccess();
+      }
+    } catch (e) {
+      console.error('Erreur réinitialisation:', e);
     }
   }
 

@@ -209,8 +209,189 @@ async function testAll() {
   assert(instStop.success === true, 'Instance stopped');
   console.log('✔ Training Instance lifecycle (Start/Stop) test PASSED');
 
+  // 14. Test Lifecycle Instance Reset API
+  const instReset = await fetch(`${BASE_URL}/api/training/instance/reset`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ challenge_id: 'web-01-robots' })
+  }).then(r => r.json());
+  assert(instReset.success === true, 'Instance reset success');
+  assert(instReset.instance.virtual_ip, 'Virtual IP preserved or renewed');
+  await fetch(`${BASE_URL}/api/training/instance/stop`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ challenge_id: 'web-01-robots' })
+  });
+  console.log('✔ Training Instance lifecycle Reset API test PASSED');
+
+  // 15. Test Syntax of all Frontend Scripts & Vendorized xterm.js
+  const { execSync } = require('node:child_process');
+  const frontendScripts = [
+    'public/vendor/xterm/xterm.js',
+    'public/vendor/xterm/addon-fit.js',
+    'public/js/icons.js',
+    'public/js/audio.js',
+    'public/js/terminal.js',
+    'public/js/sandbox.js',
+    'public/js/challenges.js',
+    'public/js/training.js',
+    'public/js/app.js',
+    'public/js/devtools.js',
+    'public/js/visual_models.js'
+  ];
+  for (const scriptPath of frontendScripts) {
+    assert(fs.existsSync(scriptPath), `File exists: ${scriptPath}`);
+    execSync(`node -c "${scriptPath}"`);
+  }
+  console.log(`✔ Frontend & Vendor scripts syntax validation PASSED (${frontendScripts.length} scripts verified)`);
+
+  // 16. Test Database Security & Target Isolation (cyberrange.db vs targets.db)
+  const { DatabaseSync } = require('node:sqlite');
+  assert(fs.existsSync('targets.db'), 'targets.db database file exists');
+  assert(fs.existsSync('cyberrange.db'), 'cyberrange.db database file exists');
+
+  const targetsDbCheck = new DatabaseSync('targets.db');
+  const targetTables = targetsDbCheck.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(t => t.name);
+  assert(targetTables.includes('crm_customers'), 'targets.db contains crm_customers');
+  assert(targetTables.includes('crm_accounts'), 'targets.db contains crm_accounts');
+  assert(targetTables.includes('system_telemetry'), 'targets.db contains system_telemetry');
+  assert(targetTables.includes('admin_credentials_vault'), 'targets.db contains admin_credentials_vault');
+
+  const cyberDbCheck = new DatabaseSync('cyberrange.db');
+  const cyberTables = cyberDbCheck.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(t => t.name);
+  assert(cyberTables.includes('user_state'), 'cyberrange.db contains user_state');
+  assert(!cyberTables.includes('crm_customers'), 'cyberrange.db does NOT contain vulnerable crm_customers');
+  assert(!cyberTables.includes('crm_accounts'), 'cyberrange.db does NOT contain vulnerable crm_accounts');
+  console.log('✔ Database Security & Isolation (cyberrange.db vs targets.db) PASSED');
+
+  // 17. Test VFS & VirtualShellBackend (30+ commands, POSIX permissions, Privesc)
+  const { VirtualFileSystem, VirtualShellBackend, CyberTerminal } = require('./public/js/terminal.js');
+  const testVfs = new VirtualFileSystem();
+  assert(testVfs.getNode('/bin'), 'VFS contains /bin');
+  assert(testVfs.getNode('/etc'), 'VFS contains /etc');
+  assert(testVfs.getNode('/var/log'), 'VFS contains /var/log');
+  assert(testVfs.getNode('/opt'), 'VFS contains /opt');
+  assert(testVfs.getNode('/home/operator'), 'VFS contains /home/operator');
+  assert(testVfs.getNode('/root'), 'VFS contains /root');
+  assert(testVfs.getNode('/tmp'), 'VFS contains /tmp');
+
+  const backend = new VirtualShellBackend(testVfs);
+
+  // Test permissions POSIX (read /root denied to operator)
+  assert.throws(() => {
+    testVfs.readFile('/root/root.txt', 'operator', 1001);
+  }, /Permission denied/, 'Operator cannot read /root/root.txt directly');
+
+  // Test basic commands
+  let out = await backend.execute('whoami');
+  assert(out.stdout.trim() === 'operator', 'whoami returns operator');
+
+  out = await backend.execute('id');
+  assert(out.stdout.includes('uid=1001(operator)'), 'id returns uid=1001');
+
+  out = await backend.execute('pwd');
+  assert(out.stdout.trim() === '/home/operator', 'pwd returns /home/operator');
+
+  out = await backend.execute('ls -la');
+  assert(out.stdout.includes('notes.txt') && out.stdout.includes('user.txt'), 'ls lists directory contents');
+
+  out = await backend.execute('cat notes.txt');
+  assert(out.stdout.includes('BIENVENUE DANS TON LAB CYBER'), 'cat notes.txt reads content');
+
+  out = await backend.execute('cat notes.txt | grep BIENVENUE');
+  assert(out.stdout.includes('BIENVENUE'), 'pipeline with grep filters output');
+
+  out = await backend.execute('mkdir test_dir');
+  assert(testVfs.getNode('/home/operator/test_dir'), 'mkdir creates directory');
+
+  out = await backend.execute('touch test_dir/test_file.txt');
+  assert(testVfs.getNode('/home/operator/test_dir/test_file.txt'), 'touch creates file');
+
+  out = await backend.execute('sudo -l');
+  assert(out.stdout.includes('/usr/bin/find'), 'sudo -l lists allowed commands');
+
+  // Test sudo isolation (sudo whoami executes as root without escalating caller session)
+  out = await backend.execute('sudo whoami');
+  assert(out.stdout.trim() === 'root', 'sudo whoami returns root');
+  assert(backend.isRoot === false && backend.user === 'operator', 'caller session remains operator after sudo');
+
+  // Test POSIX write denial to unprivileged operator
+  out = await backend.execute('echo pwned > /root/unauthorized.txt');
+  assert(out.exitCode !== 0 && out.stderr.includes('Permission denied'), 'operator cannot write to /root');
+
+  // Test POSIX chmod denial on files not owned by operator
+  out = await backend.execute('chmod 777 /root/root.txt');
+  assert(out.exitCode !== 0 && out.stderr.includes('Operation not permitted'), 'operator cannot chmod files owned by root');
+
+  // Test stderr retention and exit code on missing file
+  out = await backend.execute('cat /home/operator/nonexistent.txt');
+  assert(out.exitCode !== 0 && out.stderr.includes('No such file or directory'), 'stderr retained on missing file');
+
+  // Test ls on file operand
+  out = await backend.execute('ls notes.txt');
+  assert(out.stdout.trim() === 'notes.txt' && out.exitCode === 0, 'ls on file outputs file name');
+
+  // Test command chaining (&&, ||)
+  out = await backend.execute('echo alpha && echo beta');
+  assert(out.stdout.includes('alpha') && out.stdout.includes('beta'), '&& executes both successful commands');
+
+  out = await backend.execute('cat nonexistent_file || echo fallback');
+  assert(out.stdout.includes('fallback'), '|| executes fallback on error');
+
+  // Test Tab autocompletion for commands and filenames
+  const cmdCompletions = await backend.getCompletions('who');
+  assert(cmdCompletions.includes('whoami'), 'tab autocompletion matches whoami');
+
+  const fileCompletions = await backend.getCompletions('cat n');
+  assert(fileCompletions.includes('notes.txt'), 'tab autocompletion matches notes.txt');
+
+  // Test GTFOBins Privilege Escalation (find SUID / sudo)
+  out = await backend.execute('find . -exec /bin/sh \\;');
+  assert(backend.isRoot === true && backend.eUID === 0, 'Privilege escalation to root succeeded');
+
+  out = await backend.execute('whoami');
+  assert(out.stdout.trim() === 'root', 'whoami returns root after privesc');
+
+  out = await backend.execute('cat /root/root.txt');
+  assert(out.stdout.includes('CYBERLAB{LINUX_CAP_SETUID_PYTHON3_ROOT_SHELL}'), 'Root can read /root/root.txt');
+
+  // Test CyberTerminal instantiation in headless mode, challenge flag preservation and tutorial
+  const mockContainer = {
+    innerHTML: '',
+    appendChild: () => {},
+    addEventListener: () => {}
+  };
+  const termInstance = new CyberTerminal(mockContainer, {
+    challenge: {
+      id: 'test-challenge',
+      title: 'Test Suite Challenge',
+      tasks: [
+        { id: 't1', title: 'User Task', canonical_flag: 'FLAG{TEST_USER_SUITE}' },
+        { id: 't2', title: 'Root Task', canonical_flag: 'FLAG{TEST_ROOT_SUITE}' }
+      ]
+    }
+  });
+  assert(typeof termInstance.runCommand === 'function', 'CyberTerminal runCommand API available');
+  assert(typeof termInstance.reset === 'function', 'CyberTerminal reset API available');
+
+  // Verify challenge flags applied
+  let termOut = await termInstance.runCommand('cat user.txt');
+  assert(termOut.stdout.includes('FLAG{TEST_USER_SUITE}'), 'CyberTerminal applies user challenge flag');
+
+  // Verify reset restores challenge flags and does not crash in headless mode
+  termInstance.reset();
+  termOut = await termInstance.runCommand('cat user.txt');
+  assert(termOut.stdout.includes('FLAG{TEST_USER_SUITE}'), 'CyberTerminal reset preserves challenge flags');
+
+  // Verify beginner tutorial step advances
+  assert(termInstance.tutorialStep === 1, 'tutorial starts at step 1');
+  termInstance.advanceTutorial('whoami');
+  assert(termInstance.tutorialStep === 2, 'tutorial advances to step 2 after whoami');
+
+  console.log('✔ VFS, VirtualShellBackend (30+ commands, POSIX, GTFOBins) & CyberTerminal PASSED');
+
   console.log('========================================================================');
-  console.log('🎉 100% DES 13 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
+  console.log('🎉 100% DES 17 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
   console.log('========================================================================');
 }
 

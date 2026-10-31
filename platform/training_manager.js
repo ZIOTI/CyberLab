@@ -559,6 +559,11 @@ class TrainingManager {
     return this.getInstance(challengeId);
   }
 
+  resetInstance(challengeId) {
+    this.stopInstance(challengeId);
+    return this.startInstance(challengeId);
+  }
+
   getInstance(challengeId) {
     const row = this.db.prepare('SELECT * FROM training_instances WHERE challenge_id = ? AND status = ? ORDER BY started_at DESC LIMIT 1').get(challengeId, 'running');
     if (!row) return null;
