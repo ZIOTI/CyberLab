@@ -1,0 +1,20 @@
+[
+  {
+    "index": 0,
+    "title": "Clé du Vault",
+    "cost": 20,
+    "content": "La clé de l'enveloppe cryptographique est VAULT_CIPHER_KEY_AEGIS_99, trouvée dans nexus_auth.sql à la fin de l'Acte II."
+  },
+  {
+    "index": 1,
+    "title": "Élévation Root Daemon",
+    "cost": 30,
+    "content": "Le binaire /usr/bin/aegis-vault-ctl accepte une commande d'administration 'override' qui exécute un shell de secours en root."
+  },
+  {
+    "index": 2,
+    "title": "Suricata & Neutralisation",
+    "cost": 30,
+    "content": "Consulte /var/log/suricata/eve.json : le domaine DNS résolu est beacon-alpha.chimera-apt.net. Pour la remédiation : supprime /opt/telemetry/shadow_dropper."
+  }
+]

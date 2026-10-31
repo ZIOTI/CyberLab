@@ -1,0 +1,99 @@
+{
+  "id": "aegis-box-03-vault",
+  "title": "Shadow Vault // Neutralisation Finale",
+  "organization": "Aegis Defense Systems",
+  "category": "campaign",
+  "act": 3,
+  "season": 1,
+  "target_os": "Linux",
+  "machine_type": "box",
+  "difficulty": "insane",
+  "points": 400,
+  "duration_min": 90,
+  "learning_path": "campaign-season-1",
+  "author": "Aegis RedOps & Elena Vance",
+  "tags": [
+    "campaign-season-1",
+    "vault-compromise",
+    "c2-exfiltration",
+    "yara-detection",
+    "soc-investigation",
+    "remediation",
+    "boss-fight"
+  ],
+  "mitre_tags": [
+    "T1048 - Exfiltration Over Alternative Protocol",
+    "T1059 - Command and Scripting Interpreter",
+    "T1140 - Deobfuscate/Decode Files or Information",
+    "T1562 - Impair Defenses"
+  ],
+  "owasp_tags": [
+    "A02:2021-Cryptographic Failures",
+    "A08:2021-Software and Data Integrity Failures"
+  ],
+  "cve": "CVE-2026-AEGIS-03",
+  "rating": 5.0,
+  "solves": 182,
+  "monogram": "VLT",
+  "mission_order": "ORDRE DE MISSION N° 2026-090 // URGENCE ABSOLUE // NIVEAU OMEGA\nÉmetteur : Elena Vance, CISO & Direction Générale, Aegis Defense Systems\nDestinataire : Cellule d'Évaluation Tactique (Opérateur)\nObjet : Neutralisation de l'exfiltration C2 et reprise de contrôle du Shadow Vault.\n\nALERTE MAXIMALE : Chimera APT a déclenché son implant furtif 'Chimera-ShadowDropper' au cœur du sanctuaire de données 'Shadow Vault' (10.10.10.70). Un flux chiffré transmet en continu les plans avioniques classifiés d'Aegis vers un serveur C2 extérieur.\n\nVotre mission : pénétrer dans le Vault avec la clé déchiffrée lors de l'Acte II (User Flag), neutraliser le démon d'orchestration pour obtenir le contrôle Root (Root Flag), analyser les alertes Suricata IDS pour identifier le canal C2 de Chimera, forger la signature YARA officielle de l'implant, et appliquer les règles de remédiation réseau et de purge pour sauver Aegis Defense Systems.",
+  "rules_of_engagement": "RÈGLES D'ENGAGEMENT (RoE) :\n1. Périmètre : Système central 10.10.10.70 (shadow-vault.secure.aegis).\n2. Utilisation de la clé de chiffrement extraite de l'Acte II (nexus_auth.sql).\n3. Interdiction formelle de corrompre les données classifiées du coffre.\n4. Blocage immédiat de tout flux d'exfiltration sortant.",
+  "prerequisites": [
+    "Cryptanalyse et manipulation d'enveloppes de sécurité",
+    "Élévation de privilèges avancée sous Linux",
+    "Analyse de journaux IDS Suricata (eve.json) et signatures YARA",
+    "Filtrage réseau et durcissement de politiques de pare-feu"
+  ],
+  "recommended_tools": [
+    "OpenSSL / jq",
+    "YARA Engine",
+    "Suricata / Evebox",
+    "iptables / ufw"
+  ],
+  "narrative_story": "Vous atteignez le cœur névralgique d'Aegis Defense Systems : le Shadow Vault. Les indicateurs du SOC clignotent en rouge vif : une exfiltration massive est en cours vers l'infrastructure de Chimera. C'est l'affrontement final pour reprendre le contrôle et sceller définitivement la forteresse.",
+  "target_port": 9443,
+  "virtual_ip": "10.10.10.70",
+  "artifacts_discovered": [
+    {
+      "name": "vault_master.key",
+      "type": "key",
+      "description": "Clé cryptographique de validation de l'enveloppe du Shadow Vault.",
+      "path": "/home/operator/vault_master.key"
+    },
+    {
+      "name": "suricata_eve_sample.json",
+      "type": "json",
+      "description": "Journal d'événements réseau Suricata enregistrant les requêtes DNS et sessions C2 de Chimera.",
+      "path": "/var/log/suricata/eve.json"
+    }
+  ],
+  "debrief_json": {
+    "storyline": "L'assaut a permis d'éradiquer l'implant Chimera-ShadowDropper, d'interrompre l'exfiltration vers beacon-alpha.chimera-apt.net et d'isoler le Vault derrière une politique de pare-feu Egress Filter stricte.",
+    "key_lesson": "Un coffre-fort de secrets et données sensibles ne doit jamais disposer d'un accès sortant direct vers Internet. Le filtrage Egress 'Default Deny' est obligatoire.",
+    "historical_case": "Les opérations de cyber-sabotage et d'espionnage critique (NotPetya, attaques APT28/Fancy Bear) exploitant des serveurs centraux pour exfiltrer des secrets d'État par des protocoles chiffrés dissimulés.",
+    "permanent_remediation": "1. Mettre en œuvre une architecture Zero-Trust avec isolation réseau complète (Air-Gap logique) du coffre-fort.\n2. Bloquer tous les flux sortants directs : iptables -P OUTPUT DROP avec whitelist stricte.\n3. Déployer des sondes IDS/IPS (Suricata/Snort) avec signatures YARA en mémoire pour détecter les implants furtifs."
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "question": "Quel est le nom de domaine C2 externe utilisé par Chimera identifié dans /var/log/suricata/eve.json ?",
+      "expected_answer": "beacon-alpha.chimera-apt.net",
+      "log_file": "/var/log/suricata/eve.json",
+      "sample_logs": "{\"timestamp\":\"2026-10-29T21:40:12.890123\",\"event_type\":\"alert\",\"src_ip\":\"10.10.10.70\",\"dest_ip\":\"198.51.100.99\",\"dest_port\":9443,\"proto\":\"TCP\",\"alert\":{\"action\":\"allowed\",\"signature\":\"ET MALWARE Chimera APT C2 Beacon Outbound\"},\"dns\":{\"query\":[{\"name\":\"beacon-alpha.chimera-apt.net\",\"type\":\"A\"}]}}\n[2026-10-29 21:40:15] BEACON ACTIVE: Destination alias beacon-alpha.chimera-apt.net on port 9443"
+    },
+    "detection_rule": {
+      "type": "yara",
+      "title": "Signature YARA Chimera ShadowDropper",
+      "expected_pattern": "CHIMERA_IMPLANT_V1",
+      "starter_template": "rule Chimera_ShadowDropper_Implant {\n  meta:\n    description = \"Détecte l'implant persistant Chimera ShadowDropper\"\n    author = \"Aegis BlueOps\"\n  strings:\n    $magic = \"CHIMERA_IMPLANT_V1\"\n    $c2 = \"beacon-alpha.chimera-apt.net\"\n  condition:\n    $magic or $c2\n}"
+    },
+    "remediation": {
+      "type": "neutralize_implant",
+      "target_file": "/etc/iptables.rules",
+      "expected_action": "firewall_block_and_purge",
+      "actions_required": [
+        "Supprimer l'implant malveillant : rm -f /opt/telemetry/shadow_dropper",
+        "Ajouter une règle de pare-feu de blocage Egress : iptables -A OUTPUT -p tcp --dport 9443 -j DROP",
+        "Sauvegarder dans /etc/iptables.rules avec une politique de rejet (DROP)"
+      ]
+    }
+  }
+}

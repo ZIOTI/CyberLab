@@ -355,7 +355,7 @@ const server = http.createServer(async (req, res) => {
       const chId = body.challenge_id;
       if (!trainingManager) throw new Error('Moteur d\'entraînement non initialisé.');
       const inst = trainingManager.startInstance(chId);
-      return sendJSON(res, 200, { success: true, instance: inst });
+      return sendJSON(res, 200, { success: true, instance: inst, vfs_injection: inst ? inst.vfs_injection : null });
     } catch (e) {
       return sendJSON(res, 500, { success: false, error: e.message });
     }
@@ -405,7 +405,8 @@ const server = http.createServer(async (req, res) => {
         body.task_id,
         body.flag,
         nick,
-        req.socket.remoteAddress
+        req.socket.remoteAddress,
+        body.player_id || null
       );
       return sendJSON(res, 200, result);
     } catch (e) {
@@ -435,6 +436,62 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // --- NOUVEAUX ENDPOINTS DE LA CAMPAGNE SAISON 1 (OPÉRATION AEGIS & CHIMERA) ---
+  if ((pathname === '/api/training/campaign/season-1' || pathname === '/api/training/campaign/season/1') && method === 'GET') {
+    try {
+      const user = db ? db.prepare('SELECT id, nickname FROM user_state WHERE id = ?').get('current_player') : null;
+      const pid = user ? user.id : 'current_player';
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const seasonData = trainingManager.getCampaignSeason(1, pid);
+      return sendJSON(res, 200, { success: true, ...seasonData });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/daily-mission' && method === 'GET') {
+    try {
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const daily = trainingManager.getDailyMission('current_player');
+      return sendJSON(res, 200, { success: true, ...daily });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/campaign/verify-remediation' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const result = trainingManager.verifyRemediation(body.challenge_id, body.remediation_type, body.vfs_state, 'current_player');
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/training/campaign/validate-soc-rule' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const result = trainingManager.validateSocRule(body.challenge_id, body.rule_type, body.rule_content, 'current_player');
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname.startsWith('/api/training/challenge-vfs/') && method === 'GET') {
+    try {
+      const challengeId = pathname.replace('/api/training/challenge-vfs/', '').trim();
+      if (!trainingManager) throw new Error('Moteur non initialisé.');
+      const vfsFiles = trainingManager.getChallengeVfsSnapshot(challengeId, 'current_player');
+      return sendJSON(res, 200, { success: true, files: vfsFiles });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
   // ==========================================================================
   // CIBLES D'EXPLOITATION DU LAB D'ENTRAÎNEMENT (/targets/training/*)
   // ==========================================================================
@@ -455,6 +512,179 @@ const server = http.createServer(async (req, res) => {
       }
     }
     return sendJSON(res, 404, { error: 'Fichier d\'artefact introuvable.' });
+  }
+
+  // ==========================================================================
+  // CIBLES DE CAMPAGNE SAISON 1 (OPÉRATION AEGIS & CHIMERA)
+  // ==========================================================================
+
+  // --- Cible Acte I : Gatekeeper // 10.10.10.50 (aegis-box-01-perimeter) ---
+  if (pathname === '/targets/training/aegis-box-01-perimeter' ||
+      pathname === '/targets/training/aegis-box-01-perimeter/' ||
+      pathname === '/portal' || pathname === '/portal/') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(`<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Aegis Defense // Gatekeeper Telemetry Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-mono p-8 min-h-screen flex flex-col justify-center items-center">
+  <div class="max-w-xl w-full p-8 bg-slate-900 rounded-2xl border border-cyan-800/80 shadow-2xl space-y-4">
+    <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+      <span class="text-3xl">🛡️</span>
+      <div>
+        <h1 class="text-lg font-black text-cyan-400">AEGIS DEFENSE SYSTEMS</h1>
+        <span class="text-xs text-emerald-400 font-bold">GATEKEEPER TELEMETRY GATEWAY v2.4.1</span>
+      </div>
+    </div>
+    <p class="text-xs text-slate-300 leading-relaxed">
+      Passerelle DMZ sécurisée de télémesure avionique. Accès restreint aux postes d'ingénierie certifiés.
+    </p>
+    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-xs">
+      <div class="flex justify-between text-slate-400"><span>STATUT MACHINE :</span> <span class="text-emerald-400 font-bold">OPTIMAL</span></div>
+      <div class="flex justify-between text-slate-400"><span>ENDPOINT CONFIG :</span> <span class="text-cyan-400 font-bold">/portal/api/exchange</span></div>
+      <div class="flex justify-between text-slate-400"><span>PIVOT INTERNE :</span> <span class="text-amber-400">10.10.10.60 (core-nexus)</span></div>
+    </div>
+    <div class="pt-2 text-[11px] text-slate-500">Aegis CyberLab Sandbox // Strict Confidentiality Enforced</div>
+  </div>
+</body>
+</html>`);
+  }
+
+  if (pathname === '/portal/api/status' || pathname === '/targets/training/aegis-box-01-perimeter/api/status') {
+    return sendJSON(res, 200, {
+      service: 'Aegis Gatekeeper Gateway',
+      version: '2.4.1',
+      status: 'AEGIS_PERIMETER_SECURE',
+      exchange_endpoint: '/portal/api/exchange',
+      token_format: 'gatekeeper_token_v1'
+    });
+  }
+
+  if (pathname === '/portal/api/exchange' || pathname === '/targets/training/aegis-box-01-perimeter/api/exchange') {
+    const userFlag = trainingManager ? trainingManager.generateDynamicFlag('aegis-box-01-perimeter', 't2', 'AEGIS{GATEKEEPER_USER_BREACH}', 'current_player') : 'AEGIS{GATEKEEPER_USER_BREACH}';
+    return sendJSON(res, 200, {
+      status: 'authorized',
+      gateway: 'gatekeeper-dmz-01',
+      token: 'gatekeeper_token_v1',
+      session_token: 'gatekeeper_token_v1',
+      operator_user: 'operator',
+      session_flag: userFlag,
+      internal_pivot: '10.10.10.60'
+    });
+  }
+
+  // --- Cible Acte II : Core Nexus // 10.10.10.60 (aegis-box-02-internal) ---
+  if (pathname === '/targets/training/aegis-box-02-internal' ||
+      pathname === '/targets/training/aegis-box-02-internal/' ||
+      pathname === '/nexus' || pathname === '/nexus/') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(`<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Aegis Defense // Core Nexus IAM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-mono p-8 min-h-screen flex flex-col justify-center items-center">
+  <div class="max-w-xl w-full p-8 bg-slate-900 rounded-2xl border border-purple-800/80 shadow-2xl space-y-4">
+    <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+      <span class="text-3xl">⚙️</span>
+      <div>
+        <h1 class="text-lg font-black text-purple-400">AEGIS DEFENSE SYSTEMS</h1>
+        <span class="text-xs text-cyan-400 font-bold">CORE NEXUS // CI/CD & IAM FORGE</span>
+      </div>
+    </div>
+    <p class="text-xs text-slate-300 leading-relaxed">
+      Serveur de build interne et de centralisation des identités. Connexion via certificat d'autorité ou token interne.
+    </p>
+    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-xs">
+      <div class="flex justify-between text-slate-400"><span>ZONE RÉSEAU :</span> <span class="text-purple-400 font-bold">LAN INTERNE // 10.10.10.60</span></div>
+      <div class="flex justify-between text-slate-400"><span>MAINTENANCE :</span> <span class="text-amber-400 font-bold">/opt/maintenance/aegis-backup.sh (Cron)</span></div>
+      <div class="flex justify-between text-slate-400"><span>IAM AUTH DUMP :</span> <span class="text-emerald-400">nexus_auth.sql</span></div>
+    </div>
+  </div>
+</body>
+</html>`);
+  }
+
+  if (pathname === '/nexus/api/auth-check' || pathname === '/targets/training/aegis-box-02-internal/api/auth-check') {
+    const authHeader = req.headers['authorization'] || '';
+    let body = {};
+    try { body = await parseBody(req); } catch {}
+    const pass = body.password || '';
+    const userFlag = trainingManager ? trainingManager.generateDynamicFlag('aegis-box-02-internal', 't2', 'AEGIS{CORE_NEXUS_USER_PIVOT}', 'current_player') : 'AEGIS{CORE_NEXUS_USER_PIVOT}';
+    if (authHeader.includes('viktor.k') || authHeader.includes('V!kt0r_Ch1m3ra_P4ss#2026') || pass === 'V!kt0r_Ch1m3ra_P4ss#2026') {
+      return sendJSON(res, 200, {
+        authenticated: true,
+        user: 'viktor.k',
+        role: 'External Auditor',
+        session_flag: userFlag,
+        vault_cipher_key: 'VAULT_CIPHER_KEY_AEGIS_99'
+      });
+    }
+    return sendJSON(res, 200, {
+      authenticated: false,
+      message: 'Token d\'autorisation interne requis (Authorization: Chimera-Operator viktor.k:<password> ou JSON { password }).'
+    });
+  }
+
+  // --- Cible Acte III : Shadow Vault // 10.10.10.70 (aegis-box-03-vault) ---
+  if (pathname === '/targets/training/aegis-box-03-vault' ||
+      pathname === '/targets/training/aegis-box-03-vault/' ||
+      pathname === '/vault' || pathname === '/vault/') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(`<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Aegis Defense // Shadow Vault Core</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-mono p-8 min-h-screen flex flex-col justify-center items-center">
+  <div class="max-w-xl w-full p-8 bg-slate-900 rounded-2xl border border-rose-800/80 shadow-2xl space-y-4">
+    <div class="flex items-center gap-3 border-b border-rose-900/80 pb-4">
+      <span class="text-3xl">🏰</span>
+      <div>
+        <h1 class="text-lg font-black text-rose-500">AEGIS SHADOW VAULT // CORE</h1>
+        <span class="text-xs text-amber-400 font-bold">COFFRE-FORT CENTRAL CLASSÉ NIVEAU OMEGA</span>
+      </div>
+    </div>
+    <div class="p-3 bg-rose-950/40 rounded-xl border border-rose-900/60 text-rose-300 text-xs flex items-center gap-2">
+      <span class="animate-pulse text-lg">⚠️</span>
+      <span>ALERTE EXFILTRATION : Flux C2 non autorisé actif vers beacon-alpha.chimera-apt.net !</span>
+    </div>
+    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-xs">
+      <div class="flex justify-between text-slate-400"><span>CONTRÔLE DAEMON :</span> <span class="text-rose-400 font-bold">/usr/bin/aegis-vault-ctl</span></div>
+      <div class="flex justify-between text-slate-400"><span>IMPLANT FURTIF :</span> <span class="text-rose-400">/opt/telemetry/shadow_dropper</span></div>
+      <div class="flex justify-between text-slate-400"><span>IDS SURICATA :</span> <span class="text-cyan-400">/var/log/suricata/eve.json</span></div>
+    </div>
+  </div>
+</body>
+</html>`);
+  }
+
+  if (pathname === '/vault/api/cipher' || pathname === '/targets/training/aegis-box-03-vault/api/cipher') {
+    let body = {};
+    try { body = await parseBody(req); } catch {}
+    const keyParam = parsedUrl.searchParams.get('key') || body.key || '';
+    const userFlag = trainingManager ? trainingManager.generateDynamicFlag('aegis-box-03-vault', 't2', 'AEGIS{SHADOW_VAULT_USER_ACCESS}', 'current_player') : 'AEGIS{SHADOW_VAULT_USER_ACCESS}';
+    if (keyParam === 'VAULT_CIPHER_KEY_AEGIS_99') {
+      return sendJSON(res, 200, {
+        status: 'VAULT_UNLOCKED',
+        decrypted: true,
+        access: 'GRANTED',
+        vault: 'Shadow Vault',
+        user_flag: userFlag,
+        root_ctl: '/usr/bin/aegis-vault-ctl override'
+      });
+    }
+    return sendJSON(res, 200, {
+      status: 'locked',
+      error: 'Clé cryptographique de coffre requise (?key=VAULT_CIPHER_KEY_AEGIS_99 ou JSON { key }).'
+    });
   }
 
   // --- Cible Challenge 1 : web-01-robots (Apex Logistics) ---

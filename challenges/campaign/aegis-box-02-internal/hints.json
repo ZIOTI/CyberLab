@@ -1,0 +1,20 @@
+[
+  {
+    "index": 0,
+    "title": "Extraction du PCAP",
+    "cost": 15,
+    "content": "Ouvre chimera_beacon.pcap ou utilise 'strings chimera_beacon.pcap | grep -i pass' pour extraire le mot de passe de Viktor K."
+  },
+  {
+    "index": 1,
+    "title": "Script Cron en écriture",
+    "cost": 25,
+    "content": "Consulte /etc/cron.d/aegis-backup. Le script /opt/maintenance/aegis-backup.sh est en mode 0777 (accessible en écriture pour operator) !"
+  },
+  {
+    "index": 2,
+    "title": "SOC & Remédiation",
+    "cost": 25,
+    "content": "Filtre /var/log/syslog avec 'grep -i chimera /var/log/syslog'. Pour la remédiation : 'chmod 0700 /opt/maintenance/aegis-backup.sh' et supprime /tmp/chimera_implant_cron.sh."
+  }
+]

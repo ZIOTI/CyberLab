@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "title": "Analyse d'Artefacts // Déchiffrement du Token Chimera",
+    "description": "Analyse le flux réseau extrait de chimera_beacon.pcap (Box 1). Quel mot de passe l'opérateur Chimera Viktor K. a-t-il utilisé pour s'authentifier ?",
+    "points": 35,
+    "task_type": "flag",
+    "canonical_flag": "V!kt0r_Ch1m3ra_P4ss#2026"
+  },
+  {
+    "id": "t2",
+    "title": "Accès Initial // Pivot Interne (User Flag)",
+    "description": "Connecte-toi à Core Nexus avec les credentials extraits. Lis le drapeau personnel dans /home/operator/user.txt.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "AEGIS{CORE_NEXUS_USER_PIVOT}"
+  },
+  {
+    "id": "t3",
+    "title": "Élévation de Privilèges // Cron Abuse (Root Flag)",
+    "description": "Exploite le script cron /opt/maintenance/aegis-backup.sh ou la configuration permissive de privilèges pour devenir root. Lis /root/root.txt.",
+    "points": 65,
+    "task_type": "flag",
+    "canonical_flag": "AEGIS{CORE_NEXUS_ROOT_COMPROMISE}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC // Analyse Forensics Syslog",
+    "description": "Inspecte /var/log/syslog et /var/log/audit/audit.log. Quel est le nom du script malveillant de persistance injecté dans /tmp par Chimera ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "chimera_implant_cron.sh"
+  },
+  {
+    "id": "t5",
+    "title": "Détection // Règle Sigma Tâches Planifiées",
+    "description": "Valide la règle Sigma interceptant toute altération non autorisée de scripts exécutés par cron dans /opt/maintenance/.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "SIGMA{CRON_PERSISTENCE_TAMPERING_DETECTED}"
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Hardening // Verrouillage Permissions",
+    "description": "Rétablis la sécurité du serveur en appliquant 'chmod 0700 /opt/maintenance/aegis-backup.sh' et en supprimant le script malveillant /tmp/chimera_implant_cron.sh.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "REMEDIATION{CRON_PERMISSIONS_HARDENED_0700}"
+  }
+]

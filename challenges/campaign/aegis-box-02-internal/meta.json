@@ -1,0 +1,98 @@
+{
+  "id": "aegis-box-02-internal",
+  "title": "Core Nexus // Pivot & Identités",
+  "organization": "Aegis Defense Systems",
+  "category": "campaign",
+  "act": 2,
+  "season": 1,
+  "target_os": "Linux",
+  "machine_type": "box",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 75,
+  "learning_path": "campaign-season-1",
+  "author": "Aegis RedOps & Elena Vance",
+  "tags": [
+    "campaign-season-1",
+    "internal-pivot",
+    "cron-privesc",
+    "capabilities",
+    "soc-investigation",
+    "sigma-detection",
+    "remediation"
+  ],
+  "mitre_tags": [
+    "T1021 - Remote Services",
+    "T1053 - Scheduled Task/Job",
+    "T1003 - OS Credential Dumping",
+    "T1548 - Abuse Elevation Control Mechanism"
+  ],
+  "owasp_tags": [
+    "A05:2021-Security Misconfiguration",
+    "A07:2021-Identification and Authentication Failures"
+  ],
+  "cve": "CVE-2026-AEGIS-02",
+  "rating": 5.0,
+  "solves": 298,
+  "monogram": "NEX",
+  "mission_order": "ORDRE DE MISSION N° 2026-089 // CONFIDENTIEL DÉFENSE\nÉmetteur : Elena Vance, CISO, Aegis Defense Systems\nDestinataire : Cellule d'Évaluation Tactique (Opérateur)\nObjet : Neutralisation du pivot interne sur le serveur d'intégration Core Nexus.\n\nLes artefacts découverts lors de l'Acte I (chimera_beacon.pcap) confirment que l'opérateur Chimera Viktor K. a réussi à pivoter sur notre serveur interne 'Core Nexus' (10.10.10.60). Ce serveur centralise notre gestion des identités IAM et notre chaîne d'intégration continue.\n\nVotre mission : exploiter les credentials extraits pour accéder au système (User Flag), remonter l'escalade jusqu'à Root via un job cron compromis (Root Flag), sécuriser le dump de la base d'identités (nexus_auth.sql) pour l'Acte III, puis mener l'enquête SOC sur les modifications frauduleuses de tâches planifiées et patcher le script de maintenance.",
+  "rules_of_engagement": "RÈGLES D'ENGAGEMENT (RoE) :\n1. Périmètre strict : Système interne 10.10.10.60 (core-nexus.internal.aegis).\n2. Utilisation requise des artefacts récoltés lors de l'Acte I.\n3. Interdiction de modifier les données de compilation des projets avioniques.\n4. Rétablissement obligatoire des permissions strictes sur les tâches planifiées.",
+  "prerequisites": [
+    "Exploitation d'artefacts réseau (PCAP / Wireshark)",
+    "Élévation de privilèges via tâches planifiées Linux (Cron / Systemd)",
+    "Analyse de traces d'audit auditd / syslog et règles Sigma"
+  ],
+  "recommended_tools": [
+    "Wireshark / strings",
+    "SSH / OpenSSH",
+    "crontab / auditctl",
+    "Sigma Rule Engine"
+  ],
+  "narrative_story": "Grâce aux identifiants extraits du flux chiffré de Chimera, vous franchissez la passerelle vers Core Nexus. Le serveur héberge les dépôts de code classifiés d'Aegis. Vous devez débusquer le mécanisme de persistance implanté par Chimera pour empêcher toute manipulation silencieuse des futurs firmwares.",
+  "target_port": 8443,
+  "virtual_ip": "10.10.10.60",
+  "artifacts_discovered": [
+    {
+      "name": "nexus_auth.sql",
+      "type": "sql",
+      "description": "Dump de la base IAM contenant la clé de chiffrement du coffre central : VAULT_CIPHER_KEY_AEGIS_99.",
+      "path": "/home/operator/nexus_auth.sql"
+    },
+    {
+      "name": "core_audit_trail.log",
+      "type": "log",
+      "description": "Journal d'audit détaillé attestant de l'injection d'implant par Chimera.",
+      "path": "/var/log/audit_trail.log"
+    }
+  ],
+  "debrief_json": {
+    "storyline": "Sur Core Nexus, Viktor K. avait configuré un script /opt/maintenance/aegis-backup.sh en permissions mondiales (0777), exécuté périodiquement par root via cron, lui garantissant un accès root permanent.",
+    "key_lesson": "Tout script invoqué par un compte privilégié (root via cron ou timer) doit impérativement être la propriété exclusive de root avec des droits stricts en écriture (0700 ou 0755 appartenant à root).",
+    "historical_case": "L'attaque de la chaîne logistique SolarWinds Orion (2020), où des attaquants d'élite ont altéré des scripts de build internes pour contaminer des logiciels signés officiellement.",
+    "permanent_remediation": "1. Durcir les permissions des scripts de maintenance : chmod 0700 /opt/maintenance/aegis-backup.sh chown root:root.\n2. Mettre en place un outil de surveillance d'intégrité de fichiers (File Integrity Monitoring) sur /etc/cron* et /opt/.\n3. Segmenter le réseau de build pour l'isoler de tout accès direct depuis la DMZ."
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "question": "Quel est le nom du script malveillant de persistance injecté par Chimera dans /tmp identifié dans /var/log/syslog ?",
+      "expected_answer": "chimera_implant_cron.sh",
+      "log_file": "/var/log/syslog",
+      "sample_logs": "Oct 28 14:20:00 core-nexus CRON[2891]: (root) CMD (/opt/maintenance/aegis-backup.sh)\nOct 28 14:23:45 core-nexus logger[2940]: ALERT: Chimera implant persistence detected in /tmp/chimera_implant_cron.sh"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "title": "Détection d'altération de script de maintenance",
+      "expected_pattern": "aegis-backup.sh",
+      "starter_template": "title: Modification Non Autorisée Script Maintenance\nstatus: experimental\ndescription: Détecte la modification suspecte de scripts exécutés par cron\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|startswith: '/opt/maintenance/'\n  condition: selection"
+    },
+    "remediation": {
+      "type": "restrict_permissions",
+      "target_file": "/opt/maintenance/aegis-backup.sh",
+      "expected_mode": "0700",
+      "actions_required": [
+        "Restreindre l'accès au script cron : chmod 0700 /opt/maintenance/aegis-backup.sh",
+        "Purger le script d'implant : rm -f /tmp/chimera_implant_cron.sh",
+        "Vérifier que root est le seul propriétaire avec droits stricts"
+      ]
+    }
+  }
+}

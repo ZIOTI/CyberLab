@@ -1,0 +1,20 @@
+[
+  {
+    "index": 0,
+    "title": "Reconnaissance HTTP",
+    "cost": 10,
+    "content": "Effectue une requête GET sur /portal/api/status ou inspecte /etc/aegis/gatekeeper.conf pour découvrir les endpoints internes enregistrés."
+  },
+  {
+    "index": 1,
+    "title": "Privesc SUID",
+    "cost": 20,
+    "content": "Utilise 'find / -perm -4000 -type f 2>/dev/null'. Remarque /usr/local/bin/aegis-sync qui exécute un hook /tmp/sync_hook avec les privilèges root."
+  },
+  {
+    "index": 2,
+    "title": "Traces SOC & Remédiation",
+    "cost": 20,
+    "content": "Consulte /var/log/nginx/access.log : l'adresse IP attaquante commence par 198.51. Pour la remédiation, exécute 'chmod 0755 /usr/local/bin/aegis-sync' pour supprimer le bit setuid."
+  }
+]

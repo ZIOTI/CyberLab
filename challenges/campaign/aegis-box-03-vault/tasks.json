@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "title": "Déchiffrement de l'Enveloppe // Clé Maîtresse",
+    "description": "Utilise la clé de chiffrement extraite de nexus_auth.sql (Box 2). Valide l'accès cryptographique au Shadow Vault.",
+    "points": 45,
+    "task_type": "flag",
+    "canonical_flag": "VAULT_CIPHER_KEY_AEGIS_99"
+  },
+  {
+    "id": "t2",
+    "title": "Accès Initial // Infiltration du Sanctuaire (User Flag)",
+    "description": "Pénètre dans le système de gestion du Vault. Récupère le drapeau personnel dans /home/operator/user.txt.",
+    "points": 65,
+    "task_type": "flag",
+    "canonical_flag": "AEGIS{SHADOW_VAULT_USER_ACCESS}"
+  },
+  {
+    "id": "t3",
+    "title": "Prise de Contrôle Totale // Boss Fight (Root Flag)",
+    "description": "Élève tes privilèges en exploitant le démon central /usr/bin/aegis-vault-ctl pour neutraliser les restrictions. Lis /root/root.txt.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "AEGIS{SHADOW_VAULT_ROOT_TAKEOVER}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC // Analyse des Alertes Suricata IDS",
+    "description": "Analyse /var/log/suricata/eve.json et /var/log/chimera_c2.log. Quel est le domaine externe du serveur C2 de Chimera vers lequel les données sont exfiltrées ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "beacon-alpha.chimera-apt.net"
+  },
+  {
+    "id": "t5",
+    "title": "Détection // Signature YARA de l'Implant Chimera",
+    "description": "Rédige ou valide la règle de signature YARA interceptant l'implant binaire Chimera-ShadowDropper (motif CHIMERA_IMPLANT_V1).",
+    "points": 70,
+    "task_type": "flag",
+    "canonical_flag": "YARA{CHIMERA_SHADOWDROPPER_SIGNATURE_VALIDATED}"
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Neutralisation Finale // Isolation Réseau",
+    "description": "Élimine l'implant /opt/telemetry/shadow_dropper, purge les flux malveillants et applique la règle de pare-feu bloquant le port d'exfiltration dans /etc/iptables.rules.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "REMEDIATION{SHADOW_DROPPER_NEUTRALIZED_AND_ISOLATED}"
+  }
+]

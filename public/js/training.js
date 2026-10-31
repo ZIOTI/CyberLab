@@ -103,16 +103,23 @@ class TrainingSystem {
       search: ''
     };
     this.activeChallenge = null;
-    this.activeRoomTab = 'tasks'; // 'tasks' | 'terminal' | 'browser' | 'scenario' | 'writeup'
+    this.activeRoomTab = 'tasks'; // 'tasks' | 'terminal' | 'browser' | 'scenario' | 'writeup' | 'defense' | 'debrief'
     this.activeInstance = null;
     this.timerInterval = null;
     this.expandedTaskId = null;
     this.isLoading = false;
+    this.campaignData = null;
+    this.selectedAct = 'all';
+    this.dailyMission = null;
   }
 
   async init() {
-    await this.loadCatalog();
-    await this.loadLearningPaths();
+    await Promise.all([
+      this.loadCatalog(),
+      this.loadLearningPaths(),
+      this.loadCampaignData(),
+      this.loadDailyMission()
+    ]);
     this.setupListeners();
     this.renderHub();
   }
@@ -152,6 +159,32 @@ class TrainingSystem {
       }
     } catch (e) {
       console.error('Erreur chargement learning paths:', e);
+    }
+  }
+
+  async loadCampaignData(season = 1) {
+    try {
+      const res = await fetch(`/api/training/campaign/season-${season}`);
+      if (res.ok) {
+        this.campaignData = await res.json();
+        if (this.viewMode === 'campaign') {
+          const mount = document.getElementById('training-view-mount');
+          if (mount) mount.innerHTML = this.renderActiveViewContent();
+        }
+      }
+    } catch (e) {
+      console.error('Erreur chargement campagne:', e);
+    }
+  }
+
+  async loadDailyMission() {
+    try {
+      const res = await fetch('/api/training/daily-mission');
+      if (res.ok) {
+        this.dailyMission = await res.json();
+      }
+    } catch (e) {
+      console.error('Erreur chargement mission quotidienne:', e);
     }
   }
 
@@ -209,6 +242,9 @@ class TrainingSystem {
         </div>
       </div>
 
+      <!-- BANNIÈRE MISSION QUOTIDIENNE (BONUS XP 1.5X) -->
+      ${this.renderDailyMissionBanner()}
+
       <!-- BARRE DE FILTRES ÉPURÉE & SPACIEUSE -->
       <div class="p-4 bg-slate-900/60 rounded-2xl border border-slate-800 space-y-3.5 mb-8 font-sans">
         <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
@@ -249,6 +285,14 @@ class TrainingSystem {
 
             <!-- Switcher Mode de Vue -->
             <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 font-mono">
+              <button 
+                onclick="window.trainingSystem.switchViewMode('campaign')"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${this.viewMode === 'campaign' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'}"
+                title="Mode Campagne Histoire (Saison 1)"
+              >
+                <span>⚔️</span>
+                <span class="hidden sm:inline">Campagne</span>
+              </button>
               <button 
                 onclick="window.trainingSystem.switchViewMode('grid')"
                 class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${this.viewMode === 'grid' ? 'bg-cyan-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'}"
@@ -358,9 +402,275 @@ class TrainingSystem {
   }
 
   // ==========================================================================
+  // RENDU DU MODE CAMPAGNE SAISON 1 & MISSION DU JOUR
+  // ==========================================================================
+  renderDailyMissionBanner() {
+    if (!this.dailyMission || !this.dailyMission.challenge) return '';
+    const ch = this.dailyMission.challenge;
+    const basePts = ch.points || 50;
+    const bonusPts = Math.round(basePts * (this.dailyMission.xp_multiplier || 1.5));
+    const isSolved = ch.status === 'solved';
+
+    return `
+      <div class="mb-8 p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-slate-900 to-cyan-950/40 border border-amber-500/30 relative overflow-hidden shadow-2xl font-sans animate-fadeIn">
+        <div class="absolute -right-6 -bottom-6 text-7xl opacity-10 pointer-events-none select-none">⚡</div>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="space-y-1.5 flex-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1.5 font-mono">
+                <span>⚡</span>
+                <span>MISSION DU JOUR // BONUS XP 1.5X</span>
+              </span>
+              <span class="text-xs text-slate-400 font-mono">${ch.category} • ${ch.difficulty}</span>
+            </div>
+            <h3 class="text-lg font-black text-white flex items-center gap-2">
+              <span>${this.escapeHtml(ch.title)}</span>
+              ${isSolved ? '<span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">✓ ACCOMPLIE</span>' : ''}
+            </h3>
+            <p class="text-xs text-slate-300 max-w-3xl leading-relaxed">${this.escapeHtml(ch.description)}</p>
+          </div>
+
+          <div class="flex items-center gap-4 flex-shrink-0 font-mono">
+            <div class="text-right">
+              <div class="text-[10px] text-slate-400 uppercase font-bold">Récompense XP</div>
+              <div class="text-sm font-black text-amber-400">
+                <span class="line-through text-slate-500 text-xs">${basePts} pts</span>
+                <span class="ml-1 text-base text-amber-300 font-black">${bonusPts} XP</span>
+              </div>
+            </div>
+            <button 
+              onclick="window.trainingSystem.openRoom('${ch.id}')"
+              class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs transition shadow-lg shadow-amber-950 flex items-center gap-2"
+            >
+              <span>🚀</span>
+              <span>Lancer la Mission</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  setCampaignAct(actNum) {
+    this.selectedAct = actNum;
+    const mount = document.getElementById('training-view-mount');
+    if (mount) mount.innerHTML = this.renderActiveViewContent();
+  }
+
+  renderCampaignView() {
+    const data = this.campaignData;
+    if (!data || !data.boxes) {
+      return `
+        <div class="p-12 text-center bg-slate-900/40 rounded-2xl border border-slate-800 font-sans">
+          <div class="text-3xl mb-3">⏳</div>
+          <h4 class="text-base font-bold text-slate-200">Chargement de la Campagne Saison 1...</h4>
+        </div>
+      `;
+    }
+
+    const season = data.season || {};
+    const boxes = data.boxes || [];
+    const stats = data.stats || {};
+    const characters = data.characters || [];
+
+    const filteredBoxes = (this.selectedAct === 'all')
+      ? boxes
+      : boxes.filter(b => b.act === Number(this.selectedAct));
+
+    const totalOffense = stats.offense_tasks || 9;
+    const completedOffense = stats.offense_completed !== undefined ? stats.offense_completed : 0;
+    const pctOffense = totalOffense ? Math.round((completedOffense / totalOffense) * 100) : 0;
+
+    const totalDefense = stats.defense_tasks || 9;
+    const completedDefense = stats.defense_completed !== undefined ? stats.defense_completed : 0;
+    const pctDefense = totalDefense ? Math.round((completedDefense / totalDefense) * 100) : 0;
+
+    return `
+      <div class="space-y-8 font-sans animate-fadeIn">
+        
+        <!-- BANNIÈRE PRINCIPALE DE LA CAMPAGNE -->
+        <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950/70 border border-cyan-500/30 relative overflow-hidden shadow-2xl">
+          <div class="absolute -right-10 -bottom-10 text-9xl opacity-10 pointer-events-none select-none">⚔️</div>
+          <div class="relative z-10 space-y-4">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-mono">
+                SAISON 1 // MODE HISTOIRE IMMERSIF
+              </span>
+              <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest bg-rose-500/20 text-rose-300 border border-rose-500/40 font-mono">
+                BOUCLE ATTAQUE & DÉFENSE (BLUE TEAM)
+              </span>
+              <span class="text-xs text-slate-400 font-mono">3 Actes • 18 Tâches Spécialisées</span>
+            </div>
+
+            <div>
+              <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
+                ${this.escapeHtml(season.name || 'Opération Aegis & Chimera')}
+              </h2>
+              <p class="text-sm sm:text-base text-slate-300 max-w-4xl mt-2 leading-relaxed">
+                ${this.escapeHtml(season.synopsis || 'Infiltration et neutralisation d\'une menace étatique ciblant l\'infrastructure d\'armement Aegis Defense.')}
+              </p>
+            </div>
+
+            <!-- PROTAGONISTES CLÉS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-3 border-t border-slate-800/80">
+              ${characters.map(c => `
+                <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 space-y-1">
+                  <div class="flex items-center gap-2 font-mono text-xs">
+                    <span class="text-base">${c.avatar || '👤'}</span>
+                    <strong class="text-white">${this.escapeHtml(c.name)}</strong>
+                    <span class="text-[10px] text-cyan-400">(${this.escapeHtml(c.role)})</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 italic">"${this.escapeHtml(c.quote || '')}"</p>
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- GAUGES D'AVANCEMENT BIVECTORIELLES (ATTAQUE / DÉFENSE) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 font-mono">
+              <div class="p-4 rounded-xl bg-slate-950/90 border border-rose-900/40 space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold">
+                  <span class="text-rose-400 flex items-center gap-1.5">
+                    <span>⚔️</span>
+                    <span>Progression Red Team (Infiltration)</span>
+                  </span>
+                  <span class="text-white">${completedOffense}/${totalOffense} (${pctOffense}%)</span>
+                </div>
+                <div class="h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                  <div class="h-full bg-gradient-to-r from-rose-500 to-amber-500 rounded-full transition-all duration-500" style="width: ${pctOffense}%"></div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-950/90 border border-blue-900/40 space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold">
+                  <span class="text-blue-400 flex items-center gap-1.5">
+                    <span>🛡️</span>
+                    <span>Progression Blue Team (Défense & SOC)</span>
+                  </span>
+                  <span class="text-white">${completedDefense}/${totalDefense} (${pctDefense}%)</span>
+                </div>
+                <div class="h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                  <div class="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-500" style="width: ${pctDefense}%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BARRE DE SÉLECTION DES ACTES -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 font-mono text-xs">
+          <button 
+            onclick="window.trainingSystem.setCampaignAct('all')"
+            class="px-4 py-2 rounded-xl font-bold transition flex items-center gap-1.5 ${this.selectedAct === 'all' ? 'bg-cyan-500 text-slate-950 shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'}"
+          >
+            <span>📜</span>
+            <span>Tous les Actes (3/3)</span>
+          </button>
+          <button 
+            onclick="window.trainingSystem.setCampaignAct(1)"
+            class="px-4 py-2 rounded-xl font-bold transition flex items-center gap-1.5 ${this.selectedAct === 1 ? 'bg-cyan-500 text-slate-950 shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'}"
+          >
+            <span>🚪</span>
+            <span>Acte I : Brèche Périmétrique</span>
+          </button>
+          <button 
+            onclick="window.trainingSystem.setCampaignAct(2)"
+            class="px-4 py-2 rounded-xl font-bold transition flex items-center gap-1.5 ${this.selectedAct === 2 ? 'bg-cyan-500 text-slate-950 shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'}"
+          >
+            <span>⚙️</span>
+            <span>Acte II : Pivot Interne</span>
+          </button>
+          <button 
+            onclick="window.trainingSystem.setCampaignAct(3)"
+            class="px-4 py-2 rounded-xl font-bold transition flex items-center gap-1.5 ${this.selectedAct === 3 ? 'bg-cyan-500 text-slate-950 shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'}"
+          >
+            <span>🏰</span>
+            <span>Acte III : Contrôle du Sanctuaire</span>
+          </button>
+        </div>
+
+        <!-- LISTE DES BOXES DE LA CAMPAGNE -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          ${filteredBoxes.map(b => this.renderCampaignBoxCard(b)).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  renderCampaignBoxCard(b) {
+    const actLabels = {
+      1: 'ACTE I // BRÈCHE PÉRIMÉTRIQUE',
+      2: 'ACTE II // PIVOT INTERNE',
+      3: 'ACTE III // EXFILTRATION & CONTRÔLE'
+    };
+    const actTitle = actLabels[b.act] || `ACTE ${b.act}`;
+    const offenseCompleted = b.offense_completed !== undefined ? b.offense_completed : (b.tasks ? b.tasks.filter(t => t.is_completed && !['t4','t5','t6'].includes(t.id)).length : 0);
+    const defenseCompleted = b.defense_completed !== undefined ? b.defense_completed : (b.tasks ? b.tasks.filter(t => t.is_completed && ['t4','t5','t6'].includes(t.id)).length : 0);
+    const allCompleted = b.is_completed || (offenseCompleted === 3 && defenseCompleted === 3) || (b.progress && b.progress.is_completed);
+
+    const chainedArtifact = b.act === 1
+      ? '📦 chimera_beacon.pcap + gatekeeper_config.json'
+      : b.act === 2
+      ? '📦 nexus_auth.sql + core_audit_trail.log'
+      : '📦 vault_master.key + suricata_eve_sample.json';
+
+    return `
+      <div class="p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-cyan-500/50 transition-all space-y-5 flex flex-col justify-between shadow-xl">
+        <div class="space-y-3 font-sans">
+          <div class="flex items-center justify-between font-mono">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-cyan-950 text-cyan-300 border border-cyan-800">
+              ${actTitle}
+            </span>
+            <span class="text-xs font-bold text-amber-400 font-mono">${b.points} PTS</span>
+          </div>
+
+          <div>
+            <h3 class="text-lg font-black text-white">${this.escapeHtml(b.title)}</h3>
+            <div class="text-xs text-cyan-400 font-mono mt-0.5">Cible : ${this.escapeHtml(b.organization || 'Aegis Defense')} (${b.virtual_ip || '10.10.10.50'})</div>
+            <p class="text-xs text-slate-400 mt-2 line-clamp-3 leading-relaxed">${this.escapeHtml(b.description || b.narrative_story || b.title)}</p>
+          </div>
+
+          <!-- ARTEFACTS ENCHAÎNÉS -->
+          <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs">
+            <div class="text-[10px] text-slate-400 font-bold uppercase">Artefacts & Chaînage :</div>
+            <div class="text-cyan-300 font-semibold truncate mt-0.5">${chainedArtifact}</div>
+          </div>
+
+          <!-- BADGES DOUBLE BOUCLE ATTAQUE / DÉFENSE -->
+          <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+            <div class="p-2 rounded-lg bg-slate-950 border border-rose-900/40 text-center">
+              <div class="text-[9px] text-slate-400 uppercase font-bold">Attaque (Red)</div>
+              <div class="text-sm font-black text-rose-400 mt-0.5">${offenseCompleted}/3</div>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-950 border border-blue-900/40 text-center">
+              <div class="text-[9px] text-slate-400 uppercase font-bold">Défense (Blue)</div>
+              <div class="text-sm font-black text-blue-400 mt-0.5">${defenseCompleted}/3</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between font-mono">
+          <span class="text-xs ${allCompleted ? 'text-emerald-400 font-bold' : 'text-slate-400'}">
+            ${allCompleted ? '✓ Box Pwned & Sécurisée' : 'En cours'}
+          </span>
+          <button 
+            onclick="window.trainingSystem.openRoom('${b.id}')"
+            class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs transition shadow-md shadow-cyan-950 flex items-center gap-1.5"
+          >
+            <span>Entrer dans le Lab</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================================================
   // RENDU DES SECTIONS CURATÉES TRYHACKME
   // ==========================================================================
   renderActiveViewContent() {
+    if (this.viewMode === 'campaign') {
+      return this.renderCampaignView();
+    }
     if (this.viewMode === 'matrix') {
       return this.renderMatrixTable();
     }
@@ -922,6 +1232,33 @@ class TrainingSystem {
               </div>
             </div>
           ` : ''}
+
+          <!-- Tags MITRE ATT&CK & OWASP -->
+          ${(c.mitre_tags && c.mitre_tags.length > 0) ? `
+            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-rose-400 uppercase tracking-wider font-mono">MITRE ATT&CK</div>
+              <div class="flex flex-wrap gap-1 font-mono">
+                ${c.mitre_tags.map(m => `
+                  <span class="text-[10px] bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800/60 text-rose-300 font-bold">
+                    ${this.escapeHtml(m)}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${(c.owasp_tags && c.owasp_tags.length > 0) ? `
+            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono">OWASP TOP 10</div>
+              <div class="flex flex-wrap gap-1 font-mono">
+                ${c.owasp_tags.map(o => `
+                  <span class="text-[10px] bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/60 text-amber-300 font-bold">
+                    ${this.escapeHtml(o)}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
         </div>
 
         <!-- ESPACE DE TRAVAIL PRINCIPAL : ONGLETS & CONTENU -->
@@ -953,6 +1290,23 @@ class TrainingSystem {
               >
                 <span>🌐</span>
                 <span>Navigateur Web Cible</span>
+              </button>
+            ` : ''}
+
+            ${(c.defense_json || c.is_campaign || c.act) ? `
+              <button 
+                onclick="window.trainingSystem.switchRoomTab('defense')"
+                class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'defense' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}"
+              >
+                <span>🛡️</span>
+                <span>Mode Défenseur (Blue Team)</span>
+              </button>
+              <button 
+                onclick="window.trainingSystem.switchRoomTab('debrief')"
+                class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'debrief' ? 'bg-gradient-to-r from-purple-600 to-cyan-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}"
+              >
+                <span>📜</span>
+                <span>Débrief & Retex</span>
               </button>
             ` : ''}
 
@@ -998,6 +1352,9 @@ class TrainingSystem {
   getLocalWebTarget(chId) {
     if (!chId) return null;
     const cat = (this.activeChallenge?.category || '').toLowerCase();
+    if (chId === 'aegis-box-01-perimeter') return `${window.location.origin}/portal/`;
+    if (chId === 'aegis-box-02-internal') return `${window.location.origin}/nexus/`;
+    if (chId === 'aegis-box-03-vault') return `${window.location.origin}/vault/`;
     if (chId.startsWith('web-01')) return `${window.location.origin}/targets/training/web-01/`;
     if (chId.startsWith('web-02')) return `${window.location.origin}/targets/training/web-02/`;
     if (chId.startsWith('web-03')) return `${window.location.origin}/targets/training/web-03/`;
@@ -1009,7 +1366,7 @@ class TrainingSystem {
     if (chId.startsWith('web-09')) return `${window.location.origin}/targets/training/web-09/`;
     if (chId.startsWith('web-10')) return `${window.location.origin}/targets/training/web-10/`;
     if (chId.startsWith('api-01')) return `${window.location.origin}/targets/training/api-01/`;
-    if (cat.includes('web') || cat.includes('api') || cat.includes('boot2root') || chId.startsWith('b2r-') || chId.startsWith('cloud-')) {
+    if (cat.includes('web') || cat.includes('api') || cat.includes('boot2root') || cat.includes('campaign') || chId.startsWith('b2r-') || chId.startsWith('cloud-') || chId.startsWith('aegis-box-')) {
       return `${window.location.origin}/targets/training/${chId}/`;
     }
     return null;
@@ -1045,7 +1402,9 @@ class TrainingSystem {
 
     const ip = inst.virtual_ip || inst.target_ip || '10.30.45.88';
     const localWebTarget = this.getLocalWebTarget(this.activeChallenge?.id);
-    const isWeb = (this.activeChallenge?.category || '').toLowerCase().includes('web');
+    const isWeb = (this.activeChallenge?.category || '').toLowerCase().includes('web') ||
+                  (this.activeChallenge?.category || '').toLowerCase().includes('campaign') ||
+                  (this.activeChallenge?.id || '').startsWith('aegis-box-');
 
     return `
       <div class="live-target-box active space-y-3 font-sans">
@@ -1236,13 +1595,31 @@ class TrainingSystem {
             </div>
           </div>
 
+          ${c.mission_order ? `
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                <span>📑</span> <span>Ordre de Mission Formel</span>
+              </h4>
+              <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 font-mono whitespace-pre-wrap leading-relaxed">${this.escapeHtml(c.mission_order)}</div>
+            </div>
+          ` : ''}
+
+          ${c.rules_of_engagement ? `
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold text-rose-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                <span>🛡️</span> <span>Règles d'Engagement (RoE)</span>
+              </h4>
+              <div class="p-3.5 rounded-xl bg-rose-950/20 border border-rose-900/40 text-xs text-rose-200 font-mono whitespace-pre-wrap leading-relaxed">${this.escapeHtml(c.rules_of_engagement)}</div>
+            </div>
+          ` : ''}
+
           <div class="space-y-2">
             <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono">Contexte Opérationnel</h4>
             <p class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">${this.escapeHtml(c.narrative_story || c.description)}</p>
           </div>
 
           <div class="pt-4 border-t border-slate-800 space-y-3">
-            <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono">Règles d'Engagement & Objectifs</h4>
+            <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono">Objectifs Opérationnels</h4>
             <ul class="list-disc list-inside text-sm text-slate-300 space-y-2 leading-relaxed">
               ${c.tasks.map(t => `<li><strong class="text-white">${this.escapeHtml(t.title)}</strong> : ${this.escapeHtml(t.description)}</li>`).join('')}
             </ul>
@@ -1273,12 +1650,372 @@ class TrainingSystem {
       return this.renderTerminalGuide();
     }
 
-    // 6. ONGLET PAR DÉFAUT : TÂCHES & QUESTIONS
+    // 6. ONGLET MODE DÉFENSEUR (BLUE TEAM)
+    if (this.activeRoomTab === 'defense') {
+      return this.renderDefenseTabContent();
+    }
+
+    // 7. ONGLET DÉBRIEF & RETEX
+    if (this.activeRoomTab === 'debrief') {
+      return this.renderDebriefTabContent();
+    }
+
+    // 8. ONGLET PAR DÉFAUT : TÂCHES & QUESTIONS
     return `
       <div class="space-y-4 font-sans">
         ${this.activeChallenge.tasks.map((task, idx) => this.renderTaskCard(task, idx + 1)).join('')}
       </div>
     `;
+  }
+
+  // ==========================================================================
+  // RENDU DU MODE DÉFENSEUR (BLUE TEAM) & DÉBRIEF RETEX
+  // ==========================================================================
+  renderDefenseTabContent() {
+    const c = this.activeChallenge;
+    const def = c.defense_json || c.defense_tasks || {};
+    const soc = def.soc_investigation || {};
+    const det = def.detection_rule || {};
+    const rem = def.remediation || {};
+
+    const t4 = c.tasks.find(t => t.id === 't4') || {};
+    const t5 = c.tasks.find(t => t.id === 't5') || {};
+    const t6 = c.tasks.find(t => t.id === 't6') || {};
+
+    return `
+      <div class="space-y-6 font-sans animate-fadeIn">
+        
+        <!-- HEADER BLUE TEAM -->
+        <div class="p-5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-slate-900 to-indigo-950/60 border border-blue-500/30 flex items-center justify-between">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-500/40 font-mono">
+              🛡️ LA BOUCLE INVERSÉE // BLUE TEAM & DÉFENSE
+            </span>
+            <h3 class="text-lg font-black text-white mt-1">Opération de Réponse à Incident & Hardening</h3>
+            <p class="text-xs text-slate-300 mt-0.5">Mène l'enquête dans les traces réelles, déploie des règles de détection et applique les correctifs sur la machine.</p>
+          </div>
+          <div class="hidden sm:block text-right font-mono">
+            <div class="text-[10px] text-slate-400 uppercase font-bold">Missions Défense</div>
+            <div class="text-base font-black text-cyan-400 mt-0.5">${[t4, t5, t6].filter(t => t.is_completed).length}/3 résolues</div>
+          </div>
+        </div>
+
+        <!-- 1. INVESTIGATION SOC (LOG ANALYSIS) -->
+        <div class="p-6 bg-slate-950/90 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 font-mono">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full ${t4.is_completed ? 'bg-emerald-400' : 'bg-blue-400'}"></span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-200">1. Investigation SOC // Forensics Réels</span>
+            </div>
+            <span class="text-xs text-amber-400 font-bold">${t4.points || 25} PTS</span>
+          </div>
+
+          <div class="text-xs text-slate-300 leading-relaxed">
+            ${this.escapeHtml(soc.description || t4.description || "Analyse les journaux d'événements pour identifier le vecteur d'attaque.")}
+          </div>
+
+          <!-- Aperçu des logs réels -->
+          ${soc.sample_logs ? `
+            <div class="space-y-1.5 font-mono">
+              <div class="flex items-center justify-between text-[11px] text-slate-400">
+                <span>Extrait de journaux réels (VFS / ${this.escapeHtml(soc.log_file || 'journal')}) :</span>
+                <span class="text-[10px] text-cyan-400">Traces Chimera APT</span>
+              </div>
+              <pre class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 overflow-x-auto select-all max-h-48 scrollbar-thin"><code>${this.escapeHtml(soc.sample_logs)}</code></pre>
+            </div>
+          ` : ''}
+
+          <!-- Formulaire de réponse SOC -->
+          <div class="pt-2 font-mono">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+              Question de Détection SOC : ${this.escapeHtml(soc.question || t4.description || '')}
+            </label>
+            ${t4.is_completed ? `
+              <div class="p-2.5 bg-emerald-950/60 border border-emerald-800/80 rounded-xl text-emerald-300 text-xs font-bold flex items-center gap-2">
+                <span>✓</span>
+                <span>Trace formellement identifiée et validée par le SOC. (+${t4.points || 25} XP)</span>
+              </div>
+            ` : `
+              <div class="flex items-center gap-2">
+                <input 
+                  type="text" 
+                  id="input-flag-t4" 
+                  placeholder="Tape l'artefact identifié (ex: IP, fichier, domaine)..." 
+                  class="flex-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-cyan-300 focus:border-cyan-500 focus:outline-none"
+                  onkeydown="if(event.key==='Enter') window.trainingSystem.submitFlag('t4')"
+                />
+                <button 
+                  onclick="window.trainingSystem.submitFlag('t4')"
+                  class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition"
+                >
+                  Valider la Trace
+                </button>
+              </div>
+              <div id="flag-error-t4" class="text-[11px] text-rose-400 font-bold hidden mt-1"></div>
+            `}
+          </div>
+        </div>
+
+        <!-- 2. DÉTECTION // RÈGLE SIGMA OU YARA -->
+        <div class="p-6 bg-slate-950/90 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 font-mono">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full ${t5.is_completed ? 'bg-emerald-400' : 'bg-purple-400'}"></span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-200">
+                2. Détection // Règle ${det.type === 'yara' ? 'YARA Signature' : 'Sigma Log Detection'}
+              </span>
+            </div>
+            <span class="text-xs text-amber-400 font-bold">${t5.points || 25} PTS</span>
+          </div>
+
+          <div class="text-xs text-slate-300 leading-relaxed">
+            ${this.escapeHtml(det.description || t5.description || 'Rédige une règle de détection pour intercepter ce comportement malveillant.')}
+          </div>
+
+          <!-- Éditeur de Règle Sigma / YARA -->
+          <div class="space-y-2 font-mono">
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Éditeur de Règle (${det.type === 'yara' ? 'Syntaxe YARA' : 'Syntaxe YAML Sigma'}) :</span>
+              <span class="text-[10px] text-slate-500">Moteur de validation déterministe</span>
+            </div>
+            <textarea 
+              id="soc-rule-editor" 
+              rows="7" 
+              class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-cyan-300 font-mono focus:border-cyan-500 focus:outline-none resize-y leading-relaxed"
+            >${this.escapeHtml(det.starter_template || '')}</textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 font-mono">
+            <button 
+              onclick="window.trainingSystem.validateSocRule('${c.id}', '${det.type || 'sigma'}')"
+              class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition shadow flex items-center gap-2"
+            >
+              <span>⚡</span>
+              <span>Tester & Valider la Règle (Audit Automatique)</span>
+            </button>
+            ${t5.is_completed ? '<span class="text-xs text-emerald-400 font-bold">✓ Règle Active & Enregistrée</span>' : ''}
+          </div>
+
+          <div id="soc-rule-result" class="hidden"></div>
+        </div>
+
+        <!-- 3. REMÉDIATION & HARDENING SYSTÈME -->
+        <div class="p-6 bg-slate-950/90 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 font-mono">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full ${t6.is_completed ? 'bg-emerald-400' : 'bg-emerald-500'}"></span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-200">3. Remédiation & Hardening Système (Audit VFS)</span>
+            </div>
+            <span class="text-xs text-amber-400 font-bold">${t6.points || 30} PTS</span>
+          </div>
+
+          <div class="text-xs text-slate-300 leading-relaxed">
+            ${this.escapeHtml(rem.description || t6.description || 'Applique les correctifs de sécurité dans le terminal interactif pour durcir la cible.')}
+          </div>
+
+          <!-- Actions de remédiation requises -->
+          ${(rem.actions_required && rem.actions_required.length > 0) ? `
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs space-y-1.5">
+              <div class="text-[10px] text-slate-400 uppercase font-bold">Actions de Durcissement Requises dans le Terminal :</div>
+              <ul class="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                ${rem.actions_required.map(act => `<li><code class="text-cyan-300 px-1 py-0.5 rounded bg-slate-950 border border-slate-800">${this.escapeHtml(act)}</code></li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 font-mono">
+            <button 
+              onclick="window.trainingSystem.switchRoomTab('terminal')"
+              class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5"
+            >
+              <span>💻</span>
+              <span>Aller au Terminal pour Appliquer</span>
+            </button>
+            <button 
+              onclick="window.trainingSystem.verifyRemediation('${c.id}', '${rem.type || 'strip_suid'}')"
+              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs transition shadow-lg shadow-emerald-950 flex items-center justify-center gap-2"
+            >
+              <span>🛡️</span>
+              <span>Vérifier le Patch Système (Audit Automatisé)</span>
+            </button>
+          </div>
+
+          <div id="remediation-result" class="hidden"></div>
+        </div>
+
+      </div>
+    `;
+  }
+
+  renderDebriefTabContent() {
+    const c = this.activeChallenge;
+    const deb = c.debrief_json || c.debrief || {};
+    const storyline = deb.storyline || deb.storyline_conclusion || 'L\'incident a été contenu et analysé par l\'équipe de réponse à incident.';
+    const keyLesson = deb.key_lesson || deb.key_security_lesson || 'La moindre permission excessive permet un pivot latéral destructeur.';
+    const incidentRaw = deb.historical_case || deb.real_world_incident || '';
+    const incident = typeof incidentRaw === 'string' ? { title: 'Incident de Référence', description: incidentRaw } : (incidentRaw || {});
+    const fixesRaw = deb.permanent_remediation || deb.architectural_fixes || [];
+    const fixes = typeof fixesRaw === 'string' ? fixesRaw.split('\n').filter(Boolean) : (Array.isArray(fixesRaw) ? fixesRaw : []);
+
+    return `
+      <div class="p-6 bg-slate-950/90 rounded-2xl border border-slate-800 space-y-6 font-sans animate-fadeIn">
+        
+        <!-- HEADER DEBRIEF -->
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800 font-mono">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-cyan-950 text-cyan-300 border border-cyan-800">
+              RETEX & DÉBRIEFING D'OPÉRATION
+            </span>
+            <h3 class="text-lg font-black text-white mt-1.5">Analyse Post-Incident // ${this.escapeHtml(c.title)}</h3>
+          </div>
+          <span class="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-xs font-bold text-slate-300">
+            Acte ${c.act || 1} • Saison 1
+          </span>
+        </div>
+
+        <!-- 1. STORYLINE & DÉNOUEMENT -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider font-mono flex items-center gap-2">
+            <span>📖</span> <span>1. Dénouement Opérationnel</span>
+          </h4>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-900/60 p-4 rounded-xl border border-slate-800 whitespace-pre-wrap">
+            ${this.escapeHtml(storyline)}
+          </p>
+        </div>
+
+        <!-- 2. LEÇON CLÉ DE SÉCURITÉ -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono flex items-center gap-2">
+            <span>💡</span> <span>2. Leçon Pédagogique Clé</span>
+          </h4>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed bg-emerald-950/30 p-4 rounded-xl border border-emerald-800/50">
+            ${this.escapeHtml(keyLesson)}
+          </p>
+        </div>
+
+        <!-- 3. CAS RÉEL ÉQUIVALENT -->
+        ${(incident.title || incident.description) ? `
+          <div class="space-y-2">
+            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono flex items-center gap-2">
+              <span>🏢</span> <span>3. Équivalent dans le Monde Réel // ${this.escapeHtml(incident.title || 'Cas Réel Documenté')}</span>
+            </h4>
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs text-slate-300 leading-relaxed">
+              <p>${this.escapeHtml(incident.description || '')}</p>
+              ${incident.impact ? `
+                <div class="text-[11px] text-amber-300 font-mono pt-2 border-t border-slate-800">
+                  <strong>Impact Réel :</strong> ${this.escapeHtml(incident.impact)}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- 4. REMÉDIATION ARCHITECTURALE PERMANENTE -->
+        ${fixes.length > 0 ? `
+          <div class="space-y-2">
+            <h4 class="text-xs font-bold text-rose-400 uppercase tracking-wider font-mono flex items-center gap-2">
+              <span>🛡️</span> <span>4. Mesures Architecturales Défensives Permanentes</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+              ${fixes.map(fix => `
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 flex items-start gap-2">
+                  <span class="text-emerald-400 mt-0.5">✓</span>
+                  <span>${this.escapeHtml(fix)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+      </div>
+    `;
+  }
+
+  async validateSocRule(challengeId, ruleType) {
+    const editor = document.getElementById('soc-rule-editor');
+    const resultBox = document.getElementById('soc-rule-result');
+    if (!editor) return;
+    const ruleContent = editor.value.trim();
+
+    try {
+      if (window.cyberAudio) window.cyberAudio.playTactileClick();
+      const res = await fetch('/api/training/campaign/validate-soc-rule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          challenge_id: challengeId,
+          rule_type: ruleType,
+          rule_content: ruleContent
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.valid) {
+        if (window.cyberAudio) window.cyberAudio.playVictory();
+        if (window.confetti) {
+          window.confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+        }
+        if (resultBox) {
+          resultBox.className = 'p-3 rounded-xl bg-emerald-950/80 border border-emerald-500 text-emerald-300 text-xs font-mono font-bold block animate-fadeIn';
+          resultBox.innerHTML = `✓ RÈGLE VALIDÉE ! ${this.escapeHtml(data.message)}<br><span class="text-cyan-300">Flag validé : ${this.escapeHtml(data.flag || 'SIGMA/YARA')} (+${data.points_awarded || 25} XP)</span>`;
+        }
+        const task = this.activeChallenge.tasks.find(t => t.id === 't5');
+        if (task) task.is_completed = true;
+        this.loadCampaignData();
+      } else {
+        if (window.cyberAudio) window.cyberAudio.playError();
+        if (resultBox) {
+          resultBox.className = 'p-3 rounded-xl bg-rose-950/80 border border-rose-500 text-rose-300 text-xs font-mono font-bold block animate-fadeIn';
+          resultBox.innerHTML = `❌ RÈGLE INVALIDE : ${this.escapeHtml(data.message || data.error || 'Syntaxe ou conditions de détection manquantes.')}`;
+        }
+      }
+    } catch (e) {
+      alert('Erreur validation règle : ' + e.message);
+    }
+  }
+
+  async verifyRemediation(challengeId, remType) {
+    const resultBox = document.getElementById('remediation-result');
+    try {
+      if (window.cyberAudio) window.cyberAudio.playTactileClick();
+      let vfsState = null;
+      if (window.cyberActiveTerminal && window.cyberActiveTerminal.vfs) {
+        vfsState = window.cyberActiveTerminal.vfs.exportTree();
+      }
+
+      const res = await fetch('/api/training/campaign/verify-remediation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          challenge_id: challengeId,
+          remediation_type: remType,
+          vfs_state: vfsState
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.hardened) {
+        if (window.cyberAudio) window.cyberAudio.playVictory();
+        if (window.confetti) {
+          window.confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+        }
+        if (resultBox) {
+          resultBox.className = 'p-4 rounded-xl bg-emerald-950/80 border border-emerald-500 text-emerald-300 text-xs font-mono font-bold block animate-fadeIn';
+          resultBox.innerHTML = `🛡️ SYSTÈME DURCI AVEC SUCCÈS ! ${this.escapeHtml(data.message)}<br><span class="text-cyan-300">Flag validé : ${this.escapeHtml(data.flag || 'REMEDIATION')} (+${data.points_awarded || 30} XP)</span>`;
+        }
+        const task = this.activeChallenge.tasks.find(t => t.id === 't6');
+        if (task) task.is_completed = true;
+        this.loadCampaignData();
+      } else {
+        if (window.cyberAudio) window.cyberAudio.playError();
+        if (resultBox) {
+          resultBox.className = 'p-4 rounded-xl bg-rose-950/80 border border-rose-500 text-rose-300 text-xs font-mono font-bold block animate-fadeIn';
+          resultBox.innerHTML = `❌ ÉCHEC DE REMÉDIATION : ${this.escapeHtml(data.message || data.error || 'Le système comporte encore des vulnérabilités.')}`;
+        }
+      }
+    } catch (e) {
+      alert('Erreur vérification remédiation : ' + e.message);
+    }
   }
 
   initRoomTerminal() {
@@ -1672,7 +2409,7 @@ class TrainingSystem {
 
       const data = await res.json();
 
-      if (res.ok && data.success && data.correct) {
+      if (res.ok && data.success && (data.correct || data.is_correct)) {
         if (window.cyberAudio) window.cyberAudio.playVictory();
         if (window.confetti) {
           window.confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
@@ -1688,10 +2425,11 @@ class TrainingSystem {
         }
 
         this.renderRoom();
+        this.loadCampaignData();
       } else {
         if (window.cyberAudio) window.cyberAudio.playError();
         if (errBox) {
-          errBox.innerText = data.error || 'Flag incorrect. Analyse bien les traces et les indices !';
+          errBox.innerHTML = this.escapeHtml(data.message || data.error || 'Flag incorrect. Analyse bien les traces et les indices !');
           errBox.classList.remove('hidden');
         }
         input.classList.add('animate-shake', 'border-rose-500');

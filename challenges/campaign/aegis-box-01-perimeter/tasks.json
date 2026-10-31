@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "title": "Reconnaissance de surface & Découverte d'API",
+    "description": "Énumère les points de terminaison de la passerelle Gatekeeper (10.10.10.50). Identifie le endpoint de configuration exposé et sa signature de token.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "gatekeeper_token_v1"
+  },
+  {
+    "id": "t2",
+    "title": "Accès Initial // Shell Opérateur (User Flag)",
+    "description": "Exploite le portail de télémétrie pour obtenir un accès interactif en tant qu'opérateur. Lis le drapeau personnel dans /home/operator/user.txt.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "AEGIS{GATEKEEPER_USER_BREACH}"
+  },
+  {
+    "id": "t3",
+    "title": "Élévation de Privilèges // Contrôle Root (Root Flag)",
+    "description": "Détecte le binaire propriétaire disposant du bit SUID (/usr/local/bin/aegis-sync) et obtiens les privilèges root. Lis /root/root.txt.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "AEGIS{GATEKEEPER_ROOT_PWNED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC // Analyse des Traces d'Attaque",
+    "description": "Inspecte les fichiers de logs réels /var/log/nginx/access.log et /var/log/auth.log. Quelle adresse IP source externe le groupe Chimera a-t-il employée pour compromettre le portail ?",
+    "points": 25,
+    "task_type": "flag",
+    "canonical_flag": "198.51.100.42"
+  },
+  {
+    "id": "t5",
+    "title": "Détection // Validation de Règle Sigma",
+    "description": "Rédige ou valide la règle de détection Sigma ciblant l'exécution anormale du binaire SUID /usr/local/bin/aegis-sync.",
+    "points": 25,
+    "task_type": "flag",
+    "canonical_flag": "SIGMA{AEGIS_SYNC_SUID_ABUSE_DETECTED}"
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement // Retrait du SUID",
+    "description": "Corrige la vulnérabilité dans le système en retirant le bit SUID du binaire avec 'chmod 0755 /usr/local/bin/aegis-sync'. Valide l'intégrité de la passerelle.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "REMEDIATION{AEGIS_SYNC_SUID_STRIPPED_SUCCESS}"
+  }
+]

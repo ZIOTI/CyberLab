@@ -1,0 +1,16 @@
+{
+  "system": "Gatekeeper Telemetry Gateway",
+  "version": "2.4.1",
+  "organization": "Aegis Defense Systems",
+  "dmz_ip": "10.10.10.50",
+  "internal_target_pivot": "10.10.10.60 (core-nexus.internal.aegis)",
+  "internal_services": [
+    { "name": "Aegis IAM & CI/CD", "port": 8443 },
+    { "name": "Shadow Vault Storage", "port": 9443 }
+  ],
+  "chimera_implant_trace": {
+    "detected_signature": "CHIMERA_IMPLANT_V1",
+    "operator_alias": "viktor.k",
+    "associated_artifact": "chimera_beacon.pcap"
+  }
+}

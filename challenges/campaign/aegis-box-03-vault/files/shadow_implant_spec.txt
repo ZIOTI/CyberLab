@@ -1,0 +1,7 @@
+CHIMERA APT // SHADOWDROPPER TECHNICAL SPECIFICATION
+DISCOVERY TARGET : /opt/telemetry/shadow_dropper
+MAGIC SIGNATURE : CHIMERA_IMPLANT_V1
+EXFILTRATION DOMAIN : beacon-alpha.chimera-apt.net
+DESTINATION PORT : 9443
+DESCRIPTION : Autonomous ELF binary transmitting raw telemetry fragments to Chimera C2.
+REMEDIATION REQUIREMENT : Process termination + binary file deletion + egress firewall drop.

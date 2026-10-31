@@ -1,0 +1,15 @@
+ORDRE DE MISSION OFFICIEL // CONFIDENTIEL DÉFENSE
+OPÉRATION : AEGIS & CHIMERA (SAISON 1)
+ACTE I : BRÈCHE PÉRIMÉTRIQUE
+ÉMETTEUR : Elena Vance, Directrice Sécurité des SI, Aegis Defense Systems
+DATE : 27 Octobre 2026
+
+OBJET : Audit intrusif de la passerelle DMZ 'Gatekeeper' (10.10.10.50).
+PÉRIMÈTRE AUTORISÉ : 10.10.10.50 ports 8080, 2222, 443.
+
+DIRECTIVES SPÉCIFIQUES :
+1. Établir l'accès initial et capturer le User Flag.
+2. Escalader les privilèges jusqu'au compte Root et capturer le Root Flag.
+3. Extraire les artefacts laissés par les opérateurs de Chimera APT.
+4. Mener l'investigation SOC dans les logs /var/log/nginx/access.log et auth.log.
+5. Appliquer la remédiation en retirant les bits SUID non autorisés.

