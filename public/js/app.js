@@ -201,6 +201,8 @@ class CyberAppPro {
     // Basculement entre Vues Principales (Curriculum vs Arbre de Compétences vs Zone Entraînement)
     const switchToCurriculum = () => {
       this.closeAllModals();
+      document.body.classList.remove('view-training-active');
+      document.body.classList.remove('view-skill-tree-active');
       document.getElementById('view-curriculum-container')?.classList.remove('hidden');
       document.getElementById('view-skill-tree')?.classList.add('hidden');
       document.getElementById('view-training-hub')?.classList.add('hidden');
@@ -219,6 +221,8 @@ class CyberAppPro {
 
     const switchToSkillTree = () => {
       this.closeAllModals();
+      document.body.classList.remove('view-training-active');
+      document.body.classList.add('view-skill-tree-active');
       document.getElementById('view-curriculum-container')?.classList.add('hidden');
       document.getElementById('view-skill-tree')?.classList.remove('hidden');
       document.getElementById('view-training-hub')?.classList.add('hidden');
@@ -238,6 +242,8 @@ class CyberAppPro {
 
     const switchToTraining = () => {
       this.closeAllModals();
+      document.body.classList.add('view-training-active');
+      document.body.classList.remove('view-skill-tree-active');
       document.getElementById('view-curriculum-container')?.classList.add('hidden');
       document.getElementById('view-skill-tree')?.classList.add('hidden');
       document.getElementById('view-training-hub')?.classList.remove('hidden');

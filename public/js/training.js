@@ -1105,9 +1105,9 @@ class TrainingSystem {
 
       if (this.activeInstance && (this.activeInstance.status === 'RUNNING' || this.activeInstance.status === 'running')) {
         this.startCountdownTimer();
-        // Si la machine est déjà active sur un lab Linux, activer le terminal
+        // Si la machine est déjà active sur un lab Linux, activer le split-screen
         if (!isWeb) {
-          setTimeout(() => this.switchRoomTab('terminal'), 150);
+          setTimeout(() => this.switchRoomTab('split'), 150);
         }
       }
     } catch (e) {
@@ -1272,7 +1272,17 @@ class TrainingSystem {
         <div class="flex-1 flex flex-col bg-slate-900/40 overflow-hidden font-sans">
           
           <!-- Barre d'onglets épurée -->
-          <div class="bg-slate-950/80 px-4 py-2 border-b border-slate-800 flex items-center gap-2 overflow-x-auto text-xs font-mono">
+          <div class="bg-slate-950/90 px-4 py-2 border-b border-slate-800 flex items-center gap-2 overflow-x-auto text-xs font-mono">
+            <!-- Onglet Split-Screen : Tâches + Terminal côte-à-côte -->
+            <button 
+              onclick="window.trainingSystem.switchRoomTab('split')"
+              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'split' ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 shadow-md font-black' : 'text-emerald-400 hover:text-white'}"
+              title="Afficher les questions et le terminal interactif côte-à-côte"
+            >
+              <span>⚡</span>
+              <span>Split-Screen (Questions + Shell)</span>
+            </button>
+
             <button 
               onclick="window.trainingSystem.switchRoomTab('tasks')"
               class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'tasks' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
@@ -1287,7 +1297,7 @@ class TrainingSystem {
               class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'terminal' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
             >
               <span>💻</span>
-              <span>Terminal Machine (Connecté)</span>
+              <span>Terminal Plein Écran</span>
             </button>
 
             ${this.getLocalWebTarget(c.id) ? `
@@ -1359,8 +1369,8 @@ class TrainingSystem {
       </div>
     `;
 
-    // Si l'onglet terminal est actif, initialiser CyberTerminal
-    if (this.activeRoomTab === 'terminal') {
+    // Si l'onglet terminal ou split est actif, initialiser CyberTerminal
+    if (this.activeRoomTab === 'terminal' || this.activeRoomTab === 'split') {
       this.initRoomTerminal();
     }
   }
@@ -1470,12 +1480,19 @@ class TrainingSystem {
                 <span>Split-Screen Intégré</span>
               </button>
             ` : `
-              <button onclick="window.trainingSystem.switchRoomTab('terminal')" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 text-xs font-black transition-all shadow-lg flex items-center justify-center gap-2 group">
-                <span>💻</span>
-                <span>OUVRIR LE TERMINAL BASH</span>
+              <button onclick="window.trainingSystem.switchRoomTab('split')" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 text-xs font-black transition-all shadow-lg flex items-center justify-center gap-2 group">
+                <span>⚡</span>
+                <span>MODE SPLIT-SCREEN</span>
                 <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
               </button>
+              <button onclick="window.trainingSystem.switchRoomTab('terminal')" class="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                <span>💻</span>
+                <span>Terminal Plein Écran</span>
+              </button>
             `}
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 text-[11px] text-slate-400 leading-relaxed font-sans">
+            <strong class="text-cyan-400 font-mono">💡 Terminal Local :</strong> La machine s'exécute directement dans CyberLab ! Tu n'as pas besoin d'ouvrir l'IP dans un autre onglet.
           </div>
         </div>
 
@@ -1499,6 +1516,70 @@ class TrainingSystem {
   // CONTENU DES ONGLETS DE LA ROOM
   // ==========================================================================
   renderRoomTabContent() {
+    // 0. ONGLET SPLIT-SCREEN (QUESTIONS + TERMINAL EN DIRECT)
+    if (this.activeRoomTab === 'split') {
+      const c = this.activeChallenge;
+      const isCap = (c.id || '').includes('cap');
+
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 h-[calc(94vh-140px)] font-sans">
+          <!-- COLONNE GAUCHE (5 cols) : LISTE DES TÂCHES & SOUMISSION DE FLAGS -->
+          <div class="lg:col-span-5 flex flex-col overflow-y-auto space-y-3.5 pr-1">
+            <div class="p-3 bg-slate-950/90 rounded-xl border border-slate-800 text-xs font-mono text-cyan-300 flex items-center justify-between">
+              <span>📋 TÂCHES DE LA MISSION (${c.tasks.filter(t => t.is_completed).length}/${c.tasks.length})</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>VFS Connecté</span>
+              </span>
+            </div>
+            ${this.activeChallenge.tasks.map((task, idx) => this.renderTaskCard(task, idx + 1)).join('')}
+          </div>
+
+          <!-- COLONNE DROITE (7 cols) : TERMINAL BASH INTERACTIF CONNECTÉ -->
+          <div class="lg:col-span-7 flex flex-col bg-[#050914] rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+            <!-- Barre de raccourcis rapides au-dessus du terminal -->
+            <div class="flex items-center justify-between bg-slate-950 px-3 py-2 border-b border-slate-800 font-mono text-xs overflow-x-auto">
+              <div class="flex items-center gap-2 text-slate-400 text-[11px] font-bold uppercase flex-shrink-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Shell Machine</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${isCap ? `
+                  <button onclick="window.cyberActiveTerminal?.runCommand('getcap -r / 2>/dev/null')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold border border-slate-700 text-[11px]" title="Lister les capacités Linux">
+                    ⚡ getcap -r /
+                  </button>
+                  <button onclick="window.cyberActiveTerminal?.runCommand('python3.8 -c \\'import os; os.setuid(0); os.system(\"/bin/bash\")\\'')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-emerald-300 font-bold border border-slate-700 text-[11px]" title="Exploiter cap_setuid en root">
+                    🐍 Python Root
+                  </button>
+                ` : `
+                  <button onclick="window.cyberActiveTerminal?.runCommand('sudo -l')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold border border-slate-700 text-[11px]">
+                    🔍 sudo -l
+                  </button>
+                  <button onclick="window.cyberActiveTerminal?.runCommand('find / -perm -4000 2>/dev/null')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-purple-300 font-bold border border-slate-700 text-[11px]">
+                    👑 SUID
+                  </button>
+                `}
+                <button onclick="window.cyberActiveTerminal?.runCommand('cat user.txt')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold border border-slate-700 text-[11px]">
+                  📄 User Flag
+                </button>
+                <button onclick="window.cyberActiveTerminal?.runCommand('cat /root/root.txt')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-rose-300 font-bold border border-slate-700 text-[11px]">
+                  🚩 Root Flag
+                </button>
+                <button onclick="window.cyberActiveTerminal?.clear()" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold border border-slate-700 text-[11px]">
+                  🧹 Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Wrapper du terminal -->
+            <div class="flex-1 room-terminal-wrapper" id="room-terminal-mount" style="height: 100%; min-height: 480px;">
+              <!-- Injecté par CyberTerminal -->
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     // 1. ONGLET TERMINAL BASH INTERACTIF (Pour Linux, AD, Pwn, Systems)
     if (this.activeRoomTab === 'terminal') {
       const c = this.activeChallenge;
@@ -1677,8 +1758,28 @@ class TrainingSystem {
     }
 
     // 8. ONGLET PAR DÉFAUT : TÂCHES & QUESTIONS
+    const isRunning = this.activeInstance && (this.activeInstance.status === 'RUNNING' || this.activeInstance.status === 'running');
     return `
       <div class="space-y-4 font-sans">
+        ${isRunning ? `
+          <div class="p-3.5 rounded-xl bg-gradient-to-r from-emerald-950/70 via-slate-900 to-cyan-950/70 border border-emerald-500/40 flex flex-wrap items-center justify-between gap-3 font-mono text-xs shadow-lg">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+              <div>
+                <span class="font-black text-emerald-400 uppercase">Machine Active (10.30.45.88)</span>
+                <span class="text-slate-300 block text-[11px] font-sans">Ton terminal interactif est connecté. Affiche les questions et le shell côte-à-côte !</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="window.trainingSystem.switchRoomTab('split')" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs transition shadow-md flex items-center gap-1.5">
+                <span>⚡ Mode Split-Screen</span>
+              </button>
+              <button onclick="window.trainingSystem.switchRoomTab('terminal')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-bold text-xs transition flex items-center gap-1.5">
+                <span>💻 Plein Écran</span>
+              </button>
+            </div>
+          </div>
+        ` : ''}
         ${this.activeChallenge.tasks.map((task, idx) => this.renderTaskCard(task, idx + 1)).join('')}
       </div>
     `;
@@ -2874,7 +2975,7 @@ class TrainingSystem {
       if (isWeb) {
         setTimeout(() => this.switchRoomTab('browser'), 200);
       } else {
-        setTimeout(() => this.switchRoomTab('terminal'), 200);
+        setTimeout(() => this.switchRoomTab('split'), 200);
       }
     } catch (e) {
       alert('Impossible de lancer la machine : ' + e.message);
