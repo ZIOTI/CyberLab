@@ -1514,6 +1514,17 @@
                    `--- ${host} ping statistics ---\n` +
                    `4 packets transmitted, 4 received, 0% packet loss, time 3004ms\n` +
                    `rtt min/avg/max/mdev = 0.029/0.034/0.041/0.005 ms\n`;
+          if (typeof fetch === 'function') {
+            fetch('/api/gamification/quests/track', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ quest_key: 'network_scan', amount: 1 })
+            }).then(() => {
+              if (typeof window !== 'undefined' && window.cyberGamification) {
+                window.cyberGamification.loadQuests();
+              }
+            }).catch(() => {});
+          }
           break;
         }
 
@@ -1578,6 +1589,17 @@
                    `Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel\n\n` +
                    `FLAG: CYBER{NMAP_FINGERPRINT_OBSOLETE_SERVICE_EXPOSED}\n` +
                    `Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds\n`;
+          if (typeof fetch === 'function') {
+            fetch('/api/gamification/quests/track', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ quest_key: 'network_scan', amount: 1 })
+            }).then(() => {
+              if (typeof window !== 'undefined' && window.cyberGamification) {
+                window.cyberGamification.loadQuests();
+              }
+            }).catch(() => {});
+          }
           break;
         }
 

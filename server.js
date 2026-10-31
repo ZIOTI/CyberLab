@@ -10,6 +10,7 @@ const { DatabaseSync } = require('node:sqlite');
 const updater = require('./updater');
 const TrainingManager = require('./platform/training_manager');
 const SkillTreeManager = require('./platform/skill_tree_manager');
+const GamificationManager = require('./platform/gamification_manager');
 
 const PORT = process.env.PORT || 3333;
 const HOST = process.env.HOST || '127.0.0.1';
@@ -24,6 +25,7 @@ let db;
 let targetsDb;
 let trainingManager;
 let skillTreeManager;
+let gamificationManager;
 try {
   db = new DatabaseSync(DB_PATH);
   
@@ -151,6 +153,7 @@ try {
   console.log('[DATABASE] SQLite initialisée avec succès (Mode Offensif Pro : cyberrange.db & targets.db isolés).');
   trainingManager = new TrainingManager(db);
   skillTreeManager = new SkillTreeManager(db, targetsDb, trainingManager);
+  gamificationManager = new GamificationManager(db, trainingManager, skillTreeManager);
 } catch (err) {
   console.warn('[DATABASE] Erreur SQLite :', err.message);
 }
@@ -423,6 +426,12 @@ const server = http.createServer(async (req, res) => {
           null
         );
       }
+      if (result && (result.correct || result.is_correct) && gamificationManager) {
+        const pid = body.player_id || 'current_player';
+        gamificationManager.trackQuestProgress(pid, 'solve_challenge', 1);
+        gamificationManager.trackQuestProgress(pid, 'earn_xp', result.points_awarded || 50);
+        gamificationManager.checkAndApplyStreak(pid);
+      }
       return sendJSON(res, 200, result);
     } catch (e) {
       return sendJSON(res, 500, { success: false, error: e.message });
@@ -561,6 +570,12 @@ const server = http.createServer(async (req, res) => {
       const pid = body.player_id || 'current_player';
       if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
       const result = skillTreeManager.submitDojoAnswer(pid, body.drill_id, body.answer);
+      if (result && gamificationManager) {
+        gamificationManager.trackQuestProgress(pid, 'dojo_review', 1);
+        if (result.is_correct) {
+          gamificationManager.trackQuestProgress(pid, 'earn_xp', result.xp_gain || 30);
+        }
+      }
       return sendJSON(res, 200, result);
     } catch (e) {
       return sendJSON(res, 500, { success: false, error: e.message });
@@ -574,6 +589,156 @@ const server = http.createServer(async (req, res) => {
       if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
       const result = skillTreeManager.unlockSkillNode(body.node_id, pid);
       return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // ==========================================================================
+  // PHASE 4 : GAMIFICATION AVANCÉE, QUÊTES, SÉRIES, LIGUES, CERTIFICATS & PROFIL
+  // ==========================================================================
+
+  // --- Quêtes Quotidiennes (GET & Claim) ---
+  if (pathname === '/api/gamification/quests' && method === 'GET') {
+    try {
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const pid = parsedUrl.searchParams.get('player_id') || 'current_player';
+      const quests = gamificationManager.getDailyQuests(pid);
+      return sendJSON(res, 200, { success: true, quests });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/gamification/quests/claim' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const result = gamificationManager.claimQuestReward(pid, body.quest_id);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/gamification/quests/track' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const updated = gamificationManager.trackQuestProgress(pid, body.quest_key, body.amount || 1);
+      return sendJSON(res, 200, { success: true, updated });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- Inventaire & Boutique (Streak Freeze, Potions, Boosts) ---
+  if (pathname === '/api/gamification/inventory' && method === 'GET') {
+    try {
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const pid = parsedUrl.searchParams.get('player_id') || 'current_player';
+      const inventory = gamificationManager.getInventory(pid);
+      return sendJSON(res, 200, { success: true, inventory });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/gamification/shop/buy' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const result = gamificationManager.buyShopItem(pid, body.item_id, body.quantity || 1);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- Vérification et Application du Streak (avec protection Streak Freeze) ---
+  if (pathname === '/api/gamification/streak/check' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const result = gamificationManager.checkAndApplyStreak(pid, body.activity_date);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- Ligues & Classement Hebdomadaire (Leaderboard 5 Paliers) ---
+  if (pathname === '/api/gamification/leaderboard' && method === 'GET') {
+    try {
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const pid = parsedUrl.searchParams.get('player_id') || 'current_player';
+      const leaderboard = gamificationManager.getLeaderboard(pid);
+      return sendJSON(res, 200, { success: true, ...leaderboard });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/gamification/leaderboard/set-league' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      gamificationManager.setPlayerLeague(pid, body.league_id);
+      const leaderboard = gamificationManager.getLeaderboard(pid);
+      return sendJSON(res, 200, { success: true, ...leaderboard });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- Certificats Cryptographiquement Signés (Génération & Vérification) ---
+  if (pathname === '/api/gamification/certificate/generate' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const cert = gamificationManager.generateCertificate(pid, body.track_id, body.recipient_name);
+      return sendJSON(res, 200, { success: true, certificate: cert });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/gamification/certificates' && method === 'GET') {
+    try {
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const pid = parsedUrl.searchParams.get('player_id') || 'current_player';
+      const certs = gamificationManager.getCertificates(pid);
+      return sendJSON(res, 200, { success: true, certificates: certs });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/gamification/certificate/verify' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const certData = body.certificate || body;
+      const verification = gamificationManager.verifyCertificate(certData);
+      return sendJSON(res, 200, { success: true, ...verification });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- Export de Profil de Compétences (JSON Portable) ---
+  if (pathname === '/api/gamification/profile/export' && method === 'GET') {
+    try {
+      if (!gamificationManager) throw new Error('Moteur Gamification non initialisé.');
+      const pid = parsedUrl.searchParams.get('player_id') || 'current_player';
+      const profile = gamificationManager.exportProfile(pid);
+      return sendJSON(res, 200, { success: true, ...profile });
     } catch (e) {
       return sendJSON(res, 500, { success: false, error: e.message });
     }
@@ -1740,6 +1905,12 @@ const server = http.createServer(async (req, res) => {
         );
       }
 
+      if (isCorrect && gamificationManager) {
+        gamificationManager.trackQuestProgress('current_player', 'complete_curriculum', 1);
+        gamificationManager.trackQuestProgress('current_player', 'earn_xp', 20);
+        gamificationManager.checkAndApplyStreak('current_player');
+      }
+
       return sendJSON(res, 200, {
         is_correct: !!isCorrect,
         level_id: levelId
@@ -1758,6 +1929,10 @@ const server = http.createServer(async (req, res) => {
           db.prepare('DELETE FROM user_skill_progress WHERE player_id = ?').run('current_player');
           db.prepare('DELETE FROM user_placement_results WHERE player_id = ?').run('current_player');
           db.prepare('DELETE FROM user_error_reviews WHERE player_id = ?').run('current_player');
+          db.prepare('DELETE FROM user_daily_quests WHERE player_id = ?').run('current_player');
+          db.prepare('DELETE FROM user_inventory WHERE player_id = ?').run('current_player');
+          db.prepare('DELETE FROM user_league_state WHERE player_id = ?').run('current_player');
+          db.prepare('DELETE FROM user_certificates WHERE player_id = ?').run('current_player');
         } catch {}
       }
       return sendJSON(res, 200, { success: true, message: 'Profil réinitialisé.' });
@@ -1862,6 +2037,10 @@ const server = http.createServer(async (req, res) => {
         return sendJSON(res, 400, {
           error: 'WAF Security Alert: Caractère interdit détecté ([ESPACE]). Filtre anti-RCE actif.'
         });
+      }
+
+      if (gamificationManager) {
+        gamificationManager.trackQuestProgress('current_player', 'network_scan', 1);
       }
 
       return sendJSON(res, 200, {

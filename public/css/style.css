@@ -1858,17 +1858,224 @@ code, pre, .font-mono {
 }
 
 /* ==========================================================================
-   PREFERS-REDUCED-MOTION (UI/UX PRO MAX ACCESSIBILITY REQUIREMENT)
+   PREFERS-REDUCED-MOTION & ACCESSIBILITÉ (UI/UX PRO MAX ACCESSIBILITY)
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .animate-shake, .flash-red-overlay, .heart-broken, .combo-burst-badge, .radar-ping::before {
+  .animate-shake, .flash-red-overlay, .heart-broken, .combo-burst-badge, .radar-ping::before, .node-active, .node-boss, .node-checkpoint {
     animation: none !important;
+  }
+  canvas#confetti-canvas, .confetti-canvas {
+    display: none !important;
+  }
+}
+
+body.reduced-motion,
+body.reduced-motion *,
+body.reduced-motion ::before,
+body.reduced-motion ::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+body.reduced-motion .animate-shake,
+body.reduced-motion .flash-red-overlay,
+body.reduced-motion .heart-broken,
+body.reduced-motion .combo-burst-badge,
+body.reduced-motion .radar-ping::before,
+body.reduced-motion .node-active,
+body.reduced-motion .node-boss,
+body.reduced-motion .node-checkpoint {
+  animation: none !important;
+}
+
+body.reduced-motion canvas#confetti-canvas,
+body.reduced-motion .confetti-canvas {
+  display: none !important;
+}
+
+/* Navigation et focus accessibles au clavier */
+:focus-visible {
+  outline: 2px solid #06b6d4 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.6) !important;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  background: #0284c7;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 800;
+  z-index: 9999;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ==========================================================================
+   PHASE 4 : STYLES QUÊTES, BOUTIQUE, LIGUES & CERTIFICATS OFFICIELS
+   ========================================================================== */
+
+/* Quêtes Quotidiennes */
+.quest-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  border-radius: 1rem;
+  padding: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.quest-card:hover {
+  border-color: rgba(6, 182, 212, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.quest-card.quest-completed {
+  border-color: rgba(16, 185, 129, 0.6);
+  background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.9) 80%);
+}
+
+.quest-progress-track {
+  width: 100%;
+  height: 0.6rem;
+  background: rgba(2, 6, 23, 0.8);
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+.quest-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #06b6d4, #10b981);
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+
+/* Gel de Flamme (Streak Freeze) */
+.streak-freeze-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+}
+
+/* Ligues & Classement */
+.league-zone-promotion {
+  border-left: 4px solid #10b981 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+}
+
+.league-zone-safe {
+  border-left: 4px solid #64748b !important;
+}
+
+.league-zone-relegation {
+  border-left: 4px solid #f43f5e !important;
+  background: rgba(244, 63, 94, 0.08) !important;
+}
+
+.league-player-row {
+  border: 2px solid #06b6d4 !important;
+  background: rgba(6, 182, 212, 0.12) !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
+  font-weight: 800;
+}
+
+/* Diplôme & Certificat Officiel Cryptographique */
+.certificate-frame {
+  position: relative;
+  background: #050811;
+  background-image: radial-gradient(#0e1726 1px, transparent 1px);
+  background-size: 16px 16px;
+  border: 8px double #d4af37;
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 0 45px rgba(212, 175, 55, 0.35), inset 0 0 60px rgba(0, 0, 0, 0.8);
+  color: #e2e8f0;
+}
+
+.certificate-header-crest {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.certificate-seal {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px dashed #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.certificate-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: rgba(212, 175, 55, 0.04);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.2em;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #modal-certificate-viewer,
+  #modal-certificate-viewer .certificate-frame,
+  #modal-certificate-viewer .certificate-frame * {
+    visibility: visible;
+  }
+  #modal-certificate-viewer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .certificate-frame {
+    border: 4px double #000000 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+  .no-print {
+    display: none !important;
   }
 }

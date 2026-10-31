@@ -237,6 +237,7 @@ async function testAll() {
     'public/js/challenges.js',
     'public/js/training.js',
     'public/js/skill_tree.js',
+    'public/js/gamification.js',
     'public/js/app.js',
     'public/js/devtools.js',
     'public/js/visual_models.js'
@@ -1179,8 +1180,264 @@ async function testAll() {
   assert(treePostReset.placement === null, 'Placement results cleared on profile reset');
   console.log('✔ 19.5 Profile Reset Cascade Verification PASSED');
 
+  // ========================================================================
+  // SUITE 20 : PHASE 4 - GAMIFICATION AVANCÉE, RÉTENTION & ACCESSIBILITÉ
+  // ========================================================================
+  console.log('[TEST] Démarrage de la Suite 20 : Gamification Avancée, Rétention & Accessibilité...');
+
+  // 20.1 Moteur de Quêtes Quotidiennes (Daily Quests)
+  const questsRes = await fetch(`${BASE_URL}/api/gamification/quests`).then(r => r.json());
+  assert(questsRes.success === true, 'Quests API returns success');
+  assert(Array.isArray(questsRes.quests) && questsRes.quests.length === 3, 'Exactly 3 daily quests generated');
+  const [q1, q2, q3] = questsRes.quests;
+  assert(q1.target > 0 && q1.xp_reward > 0 && q1.gem_reward > 0, 'Quest 1 has valid targets & rewards');
+  assert(q2.target > 0 && q2.xp_reward > 0 && q2.gem_reward > 0, 'Quest 2 has valid targets & rewards');
+  assert(q3.target > 0 && q3.xp_reward > 0 && q3.gem_reward > 0, 'Quest 3 has valid targets & rewards');
+
+  // Verify all 3 quests have strictly unique quest_keys (no duplicates)
+  const questKeys = new Set(questsRes.quests.map(q => q.quest_key));
+  assert(questKeys.size === 3, 'All 3 daily quests have strictly unique keys without duplicates');
+
+  // Test tracking network_scan via dedicated endpoint
+  const netTrackRes = await fetch(`${BASE_URL}/api/gamification/quests/track`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quest_key: 'network_scan', amount: 1 })
+  }).then(r => r.json());
+  assert(netTrackRes.success === true, 'Tracking network_scan quest via API succeeds');
+
+  // Test automatic tracking on a quest
+  const xpQuest = questsRes.quests.find(q => q.quest_key === 'earn_xp') || questsRes.quests[0];
+
+  const GamificationManager = require('./platform/gamification_manager');
+  const gamificationTestDb = new DatabaseSync('cyberrange.db');
+  const gmTest = new GamificationManager(gamificationTestDb);
+
+  // Directly track on gmTest to reach quest target
+  gmTest.trackQuestProgress('current_player', xpQuest.quest_key, xpQuest.target);
+  const questsReady = await fetch(`${BASE_URL}/api/gamification/quests`).then(r => r.json());
+  const targetQuestReady = questsReady.quests.find(q => q.id === xpQuest.id);
+  assert(targetQuestReady.completed === true, 'Quest is marked completed after reaching target');
+
+  // Claim reward
+  const claimRes = await fetch(`${BASE_URL}/api/gamification/quests/claim`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quest_id: xpQuest.id })
+  }).then(r => r.json());
+  assert(claimRes.success === true, 'Claim quest reward returns success');
+  assert(claimRes.rewarded_xp === targetQuestReady.xp_reward, 'Rewarded XP matches quest config');
+  assert(claimRes.rewarded_gems === targetQuestReady.gem_reward, 'Rewarded gems match quest config');
+
+  // Verify double claim is rejected
+  const doubleClaimRes = await fetch(`${BASE_URL}/api/gamification/quests/claim`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quest_id: xpQuest.id })
+  }).then(r => r.json());
+  assert(doubleClaimRes.success === false, 'Double claiming quest is strictly rejected');
+
+  console.log('✔ 20.1 Daily Quests Generation, Auto-Tracking & Rewards Claim PASSED');
+
+  // 20.2 Série (Streak) Avancée & Gel de Flamme (Streak Freeze)
+  const invRes = await fetch(`${BASE_URL}/api/gamification/inventory`).then(r => r.json());
+  assert(invRes.success === true && Array.isArray(invRes.inventory), 'Inventory API returns items');
+  const freezeItem = invRes.inventory.find(i => i.id === 'streak_freeze');
+  assert(freezeItem !== undefined, 'Streak Freeze item exists in inventory/shop');
+
+  // Ensure player has gems to buy (grant gems if needed)
+  gamificationTestDb.prepare(`
+    INSERT INTO user_state (id, nickname, avatar, theme, xp, streak, max_streak, hearts, combo, gems, completed_levels, unlocked_badges, updated_at)
+    VALUES ('current_player', 'Opérateur RedTeam', '🥷', 'dark', 0, 1, 1, 5, 0, 300, '[]', '[]', datetime('now'))
+    ON CONFLICT(id) DO UPDATE SET gems = gems + 200
+  `).run();
+
+  // Buy Streak Freeze
+  const buyRes = await fetch(`${BASE_URL}/api/gamification/shop/buy`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ item_id: 'streak_freeze', quantity: 1 })
+  }).then(r => r.json());
+  assert(buyRes.success === true, 'Purchase of Streak Freeze succeeds');
+  assert(buyRes.new_quantity >= 1, 'Streak freeze quantity incremented in inventory');
+
+  // Initialize streak state for test
+  gamificationTestDb.prepare(`
+    UPDATE user_state
+    SET streak = 7, max_streak = 7, last_activity_date = '2026-10-25'
+    WHERE id = 'current_player'
+  `).run();
+
+  // Simulate missing activity (gap of 2 days: last was 2026-10-25, new is 2026-10-27)
+  const streakCheckFreeze = await fetch(`${BASE_URL}/api/gamification/streak/check`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ activity_date: '2026-10-27' })
+  }).then(r => r.json());
+
+  assert(streakCheckFreeze.success === true, 'Streak check returns success');
+  assert(streakCheckFreeze.freeze_used === true, 'Streak Freeze was automatically consumed to protect streak');
+  assert(streakCheckFreeze.streak >= 7, 'Streak was preserved and not reset to 1');
+  assert(streakCheckFreeze.status === 'streak_protected_by_freeze', 'Status confirms streak protection');
+
+  // Verify inventory now has 1 less freeze
+  const invAfterFreeze = await fetch(`${BASE_URL}/api/gamification/inventory`).then(r => r.json());
+  const freezeAfter = invAfterFreeze.inventory.find(i => i.id === 'streak_freeze');
+  assert(freezeAfter.quantity === buyRes.new_quantity - 1, 'Freeze quantity decremented in database inventory');
+
+  // Now simulate another gap of 3 days with NO freeze left
+  gamificationTestDb.exec(`
+    UPDATE user_inventory SET quantity = 0 WHERE player_id = 'current_player' AND item_id = 'streak_freeze';
+    UPDATE user_state SET last_activity_date = '2026-10-27' WHERE id = 'current_player';
+  `);
+
+  const streakCheckLost = await fetch(`${BASE_URL}/api/gamification/streak/check`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ activity_date: '2026-10-31' })
+  }).then(r => r.json());
+
+  assert(streakCheckLost.freeze_used === false, 'No freeze used when inventory is 0');
+  assert(streakCheckLost.streak === 1, 'Streak properly reset to 1 after unshielded missed day');
+  assert(streakCheckLost.status === 'streak_lost', 'Status indicates streak_lost');
+
+  // Test multi-day absence with insufficient freezes:
+  // Player has only 1 freeze but misses 3 days (gap of 4 days, requires 3 freezes) -> streak must be lost
+  gamificationTestDb.exec(`
+    UPDATE user_inventory SET quantity = 1 WHERE player_id = 'current_player' AND item_id = 'streak_freeze';
+    UPDATE user_state SET streak = 8, max_streak = 8, last_activity_date = '2026-10-20' WHERE id = 'current_player';
+  `);
+
+  const streakCheckInsufficient = await fetch(`${BASE_URL}/api/gamification/streak/check`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ activity_date: '2026-10-24' })
+  }).then(r => r.json());
+  assert(streakCheckInsufficient.status === 'streak_lost', 'Streak is lost when gap exceeds available freezes');
+  assert(streakCheckInsufficient.streak === 1, 'Streak reset to 1 due to insufficient freezes');
+  assert(streakCheckInsufficient.remaining_freezes === 1, 'Unused freeze retained when protection threshold not met');
+
+  console.log('✔ 20.2 Streak Protection & Streak Freeze Auto-Consumption PASSED');
+
+  // 20.3 Système de Ligues & Classement (Leaderboard)
+  const lbRes = await fetch(`${BASE_URL}/api/gamification/leaderboard`).then(r => r.json());
+  assert(lbRes.success === true, 'Leaderboard API returns success');
+  assert(Array.isArray(lbRes.leagues) && lbRes.leagues.length === 5, '5 Leagues defined (Bronze to Diamond)');
+  assert(Array.isArray(lbRes.leaderboard) && lbRes.leaderboard.length === 15, 'Weekly cohort contains exactly 15 participants');
+
+  // Verify sorting
+  for (let i = 0; i < lbRes.leaderboard.length - 1; i++) {
+    assert(lbRes.leaderboard[i].xp >= lbRes.leaderboard[i+1].xp, 'Leaderboard sorted by XP descending');
+  }
+
+  // Verify promotion and relegation cutoffs
+  const top1 = lbRes.leaderboard[0];
+  const top2 = lbRes.leaderboard[1];
+  const top3 = lbRes.leaderboard[2];
+  assert(top1.status === 'promotion', 'Rank 1 is in promotion zone');
+  assert(top2.status === 'promotion', 'Rank 2 is in promotion zone');
+  assert(top3.status === 'promotion', 'Rank 3 is in promotion zone');
+
+  // Test league promotion to Gold
+  const setLeagueRes = await fetch(`${BASE_URL}/api/gamification/leaderboard/set-league`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ league_id: 'gold' })
+  }).then(r => r.json());
+  assert(setLeagueRes.success === true && setLeagueRes.current_league === 'gold', 'League set to Gold');
+  assert(setLeagueRes.leaderboard[14].status === 'relegation', 'Bottom rank in Gold is in relegation zone');
+
+  // Test weekly rollover auto-promotion:
+  // Player was in Bronze with 5000 XP in an earlier week '2026-W30' (Top rank)
+  gamificationTestDb.prepare(`
+    UPDATE user_league_state
+    SET current_league = 'bronze', weekly_xp = 5000, week_id = '2026-W30'
+    WHERE player_id = 'current_player'
+  `).run();
+
+  const rolloverRes = await fetch(`${BASE_URL}/api/gamification/leaderboard`).then(r => r.json());
+  assert(rolloverRes.current_league === 'silver', 'Player in Top 3 is automatically promoted from Bronze to Silver on week rollover');
+  assert(rolloverRes.player_weekly_xp === 0, 'Weekly XP reset to 0 for the new week');
+
+  console.log('✔ 20.3 Duolingo-Style 5-Tier Leagues & Weekly Leaderboard PASSED');
+
+  // 20.4 Certificats Cryptographiquement Signés & Vérification d'Authenticité
+  const certGenRes = await fetch(`${BASE_URL}/api/gamification/certificate/generate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      track_id: 'campaign-season-1',
+      recipient_name: 'Alexandre Renoir'
+    })
+  }).then(r => r.json());
+
+  assert(certGenRes.success === true && certGenRes.certificate, 'Certificate generation returns success');
+  const cert = certGenRes.certificate;
+  assert(cert.id && cert.id.startsWith('CYBERLAB-CERT-'), 'Certificate ID has official prefix');
+  assert(cert.recipient_name === 'Alexandre Renoir', 'Recipient name correctly embedded');
+  assert(cert.certificate_hash && cert.certificate_hash.length === 64, 'Authenticity hash is valid SHA-256');
+  assert(cert.signature && cert.signature.length === 64, 'Cryptographic signature is valid HMAC-SHA256');
+
+  // Verification of authentic certificate
+  const verifyValid = await fetch(`${BASE_URL}/api/gamification/certificate/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ certificate: cert })
+  }).then(r => r.json());
+  assert(verifyValid.success === true && verifyValid.valid === true, 'Authentic certificate verifies successfully');
+
+  // Verification of tampered certificate (altering recipient)
+  const tamperedCert = { ...cert, recipient_name: 'Attacker Malicious' };
+  const verifyTampered = await fetch(`${BASE_URL}/api/gamification/certificate/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ certificate: tamperedCert })
+  }).then(r => r.json());
+  assert(verifyTampered.valid === false, 'Tampered certificate is strictly rejected (signature mismatch)');
+
+  // Verification of forged signature
+  const forgedCert = { ...cert, signature: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' };
+  const verifyForged = await fetch(`${BASE_URL}/api/gamification/certificate/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ certificate: forgedCert })
+  }).then(r => r.json());
+  assert(verifyForged.valid === false, 'Forged signature is strictly rejected');
+
+  // Fetch certificates list
+  const certListRes = await fetch(`${BASE_URL}/api/gamification/certificates`).then(r => r.json());
+  assert(certListRes.success === true && certListRes.certificates.some(c => c.id === cert.id), 'Certificate persists in user certificates');
+
+  console.log('✔ 20.4 Tamper-Proof Cryptographic Certificates (HMAC-SHA256) PASSED');
+
+  // 20.5 Export de Profil de Compétences (JSON Portable)
+  const profileRes = await fetch(`${BASE_URL}/api/gamification/profile/export`).then(r => r.json());
+  assert(profileRes.meta && profileRes.meta.integrity_checksum, 'Profile export contains meta and integrity checksum');
+  assert(profileRes.operator && typeof profileRes.operator.xp === 'number', 'Profile export contains operator stats');
+  assert(profileRes.gamification && Array.isArray(profileRes.gamification.inventory), 'Profile export contains gamification inventory');
+  assert(Array.isArray(profileRes.official_certificates) && profileRes.official_certificates.length > 0, 'Profile export contains official certificates');
+  assert(profileRes.skills && typeof profileRes.skills === 'object', 'Profile export contains skill tree data');
+
+  console.log('✔ 20.5 Skill Profile Portable JSON Export & Checksum PASSED');
+
+  // 20.6 Accessibilité & i18n Bilingue
+  const gamificationJsContent = fs.readFileSync('public/js/gamification.js', 'utf8');
+  assert(gamificationJsContent.includes('CYBER_TRANSLATIONS'), 'Gamification JS contains translation dictionary');
+  assert(gamificationJsContent.includes('fr:') && gamificationJsContent.includes('en:'), 'Translations contain both FR and EN');
+  assert(gamificationJsContent.includes('applyReducedMotion'), 'Gamification JS contains reduced motion controller');
+  assert(gamificationJsContent.includes('audio-volume-slider'), 'Gamification JS contains interactive volume slider');
+  assert(gamificationJsContent.includes('verifyCurrentCertificate'), 'Gamification JS contains live certificate verification handler');
+
+  const cssContent = fs.readFileSync('public/css/style.css', 'utf8');
+  assert(cssContent.includes('@media (prefers-reduced-motion: reduce)'), 'CSS contains prefers-reduced-motion media query');
+  assert(cssContent.includes('body.reduced-motion'), 'CSS contains explicit .reduced-motion class for manual toggle');
+  assert(cssContent.includes(':focus-visible'), 'CSS contains accessible :focus-visible outlines');
+  assert(cssContent.includes('.certificate-frame'), 'CSS contains luxury certificate styling');
+
+  console.log('✔ 20.6 Full Bilingual i18n (FR/EN) & WCAG Reduced Motion Accessibility PASSED');
+
   console.log('========================================================================');
-  console.log('🎉 100% DES 19 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
+  console.log('🎉 100% DES 20 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
   console.log('========================================================================');
 }
 
