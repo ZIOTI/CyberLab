@@ -26,6 +26,19 @@ class MemoryRateLimiter {
     const effectiveWindow = windowMs || this.defaultWindowMs;
     const effectiveMax = max || this.defaultMax;
 
+    // Protection contre l'épuisement mémoire (DoS sur les clés)
+    if (this.hits.size > 5000) {
+      this.cleanup();
+      if (this.hits.size > 5000) {
+        const iter = this.hits.keys();
+        for (let i = 0; i < 500; i++) {
+          const next = iter.next();
+          if (next.done) break;
+          this.hits.delete(next.value);
+        }
+      }
+    }
+
     let timestamps = this.hits.get(key) || [];
     timestamps = timestamps.filter(t => (now - t) < effectiveWindow);
 
@@ -52,8 +65,9 @@ class MemoryRateLimiter {
 
   cleanup() {
     const now = Date.now();
+    const maxRetention = Math.max(this.defaultWindowMs * 2, 30000);
     for (const [key, timestamps] of this.hits.entries()) {
-      const active = timestamps.filter(t => (now - t) < 60000);
+      const active = timestamps.filter(t => (now - t) < maxRetention);
       if (active.length === 0) {
         this.hits.delete(key);
       } else {

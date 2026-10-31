@@ -23,12 +23,60 @@ process.on('unhandledRejection', (reason) => {
   console.error('[!] Unhandled Rejection interceptée :', reason);
 });
 
-// Gestion en mémoire des jetons de session Anti-CSRF
-const activeCsrfTokens = new Set();
+// Gestion en mémoire des jetons de session Anti-CSRF avec TTL (2 heures)
+const activeCsrfTokens = new Map(); // token -> timestamp ms
+
+function pruneExpiredCsrfTokens() {
+  const now = Date.now();
+  for (const [token, createdAt] of activeCsrfTokens.entries()) {
+    if (now - createdAt > 2 * 3600 * 1000) {
+      activeCsrfTokens.delete(token);
+    }
+  }
+}
+
+function isSameOrigin(req) {
+  const origin = req.headers['origin'];
+  if (!origin) return true; // Requête locale/directe ou même origine
+  try {
+    const originUrl = new URL(origin);
+    const hostHeader = req.headers['host'] || `127.0.0.1:${PORT}`;
+    const expectedHost = hostHeader.split(':')[0];
+    const expectedPort = hostHeader.split(':')[1] || '80';
+
+    if (originUrl.hostname === 'localhost' || originUrl.hostname === '127.0.0.1' || originUrl.hostname === expectedHost) {
+      if (!originUrl.port || originUrl.port === expectedPort || originUrl.port === String(PORT)) {
+        return true;
+      }
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
 
 function validateCsrfToken(req) {
+  if (!isSameOrigin(req)) return false;
   const token = req.headers['x-csrf-token'];
-  return !!(token && activeCsrfTokens.has(token));
+  if (!token || typeof token !== 'string') return false;
+  const cleanToken = token.trim();
+  if (cleanToken.length === 0 || !activeCsrfTokens.has(cleanToken)) return false;
+
+  const createdAt = activeCsrfTokens.get(cleanToken);
+  if (Date.now() - createdAt > 2 * 3600 * 1000) {
+    activeCsrfTokens.delete(cleanToken);
+    return false;
+  }
+  return true;
+}
+
+function getClientIdentifier(req) {
+  if (process.env.TRUST_PROXY === '1' || process.env.TRUST_PROXY === 'true') {
+    const xff = req.headers['x-forwarded-for'];
+    if (xff) return xff.split(',')[0].trim();
+  }
+  const remote = req.socket?.remoteAddress || '127.0.0.1';
+  return (remote === '::1' || remote === '::ffff:127.0.0.1') ? '127.0.0.1' : remote;
 }
 
 const PORT = process.env.PORT || 3333;
@@ -314,7 +362,7 @@ function parseBody(req) {
 // Serveur HTTP Principal
 const server = http.createServer(async (req, res) => {
   // Injection obligatoire des en-têtes HTTP de sécurité stricts (Phase 5)
-  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https:; frame-ancestors 'self';");
+  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https:; frame-ancestors 'self';");
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -325,8 +373,14 @@ const server = http.createServer(async (req, res) => {
   const method = req.method;
 
   if (method === 'OPTIONS') {
+    const origin = req.headers['origin'];
+    const isSensitive = pathname === '/api/csrf-token' || pathname === '/api/reset-profile' || pathname === '/api/apply-update';
+    if (isSensitive && origin && !isSameOrigin(req)) {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ success: false, error: 'Forbidden cross-origin preflight' }));
+    }
     res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': (origin && isSameOrigin(req)) ? origin : '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Custom-Auth, X-CSRF-Token'
     });
@@ -335,17 +389,33 @@ const server = http.createServer(async (req, res) => {
 
   // --- Endpoint Anti-CSRF : Distribution de jetons de session ---
   if (pathname === '/api/csrf-token' && method === 'GET') {
+    if (!isSameOrigin(req)) {
+      return sendJSON(res, 403, {
+        success: false,
+        error: 'Échec de la validation d\'origine (Cross-Origin interdit sur les jetons CSRF).'
+      });
+    }
+    pruneExpiredCsrfTokens();
     const token = crypto.randomBytes(32).toString('hex');
-    activeCsrfTokens.add(token);
+    activeCsrfTokens.set(token, Date.now());
     if (activeCsrfTokens.size > 2000) {
-      const first = activeCsrfTokens.values().next().value;
+      const first = activeCsrfTokens.keys().next().value;
       activeCsrfTokens.delete(first);
     }
-    return sendJSON(res, 200, {
+    const origin = req.headers['origin'];
+    const allowOrigin = (origin && isSameOrigin(req)) ? origin : `http://127.0.0.1:${PORT}`;
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': allowOrigin,
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, X-CSRF-Token',
+      'Vary': 'Origin'
+    });
+    return res.end(JSON.stringify({
       success: true,
       csrfToken: token,
       token: token
-    });
+    }));
   }
 
   // ==========================================================================
