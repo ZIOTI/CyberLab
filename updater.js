@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const https = require('node:https');
+const crypto = require('node:crypto');
 const { execSync } = require('node:child_process');
 
 const APP_DIR = __dirname;
@@ -110,6 +111,29 @@ function downloadFile(url, destPath) {
   });
 }
 
+// Calcul d'empreinte SHA-256 native
+function computeFileSha256(filePath) {
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`Fichier introuvable pour calcul SHA-256: ${filePath}`);
+  }
+  const hash = crypto.createHash('sha256');
+  const buffer = fs.readFileSync(filePath);
+  hash.update(buffer);
+  return hash.digest('hex');
+}
+
+// Vérification stricte d'intégrité SHA-256
+function verifyZipIntegrity(filePath, expectedSha256) {
+  const actualHash = computeFileSha256(filePath);
+  if (expectedSha256) {
+    const cleanExpected = expectedSha256.trim().toLowerCase();
+    if (actualHash.toLowerCase() !== cleanExpected) {
+      throw new Error(`Contrôle d'intégrité SHA-256 échoué ! Hash attendu: ${cleanExpected}, hash obtenu: ${actualHash}`);
+    }
+  }
+  return actualHash;
+}
+
 // 1. VÉRIFICATION DE LA DISPONIBILITÉ D'UNE MISE À JOUR
 async function checkForUpdates() {
   const config = getPackageConfig();
@@ -206,7 +230,7 @@ function copyDirRecursiveSafe(src, dest) {
 }
 
 // 3. APPLICATION COMPLÈTE DE LA MISE À JOUR
-async function applyUpdate(force = false) {
+async function applyUpdate(force = false, expectedSha256 = null) {
   const check = await checkForUpdates();
   if (!check.updateAvailable && !process.env.FORCE_UPDATE && !force) {
     return {
@@ -233,6 +257,12 @@ async function applyUpdate(force = false) {
     // Étape B : Téléchargement du ZIP de mise à jour
     console.log(`[*] Téléchargement depuis ${check.downloadUrl}...`);
     await downloadFile(check.downloadUrl, tempZip);
+
+    // Contrôle d'intégrité SHA-256 avant toute extraction sur le système de fichiers
+    const targetHash = expectedSha256 || check.expectedSha256 || process.env.EXPECTED_SHA256 || null;
+    console.log('[*] Contrôle d\'intégrité SHA-256 de l\'archive téléchargée...');
+    const computedHash = verifyZipIntegrity(tempZip, targetHash);
+    console.log(`[✔] Empreinte SHA-256 validée : ${computedHash}`);
 
     // Étape C : Extraction du ZIP
     if (fs.existsSync(tempExtract)) {
@@ -312,5 +342,7 @@ if (require.main === module) {
 module.exports = {
   checkForUpdates,
   applyUpdate,
-  getPackageConfig
+  getPackageConfig,
+  computeFileSha256,
+  verifyZipIntegrity
 };

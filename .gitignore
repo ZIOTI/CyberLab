@@ -1,10 +1,25 @@
-# Base de données locale de progression utilisateur (PRÉSERVÉE LOCALEMENT)
+# Base de données locale de progression utilisateur & cibles (PRÉSERVÉES LOCALEMENT)
 cyberrange.db
 cyberrange.db-journal
 cyberrange.db.bak
+targets.db
+targets.db-journal
 *.db
 *.db-journal
 *.db.bak
+
+# Exécutables & Binaires compilés (distribués exclusivement via GitHub Releases)
+*.exe
+*.dll
+*.zip
+dist/
+build/
+.env*
+
+# Exception explicite pour les artefacts pédagogiques des challenges (Reverse Engineering & Pwn)
+!challenges/**/files/*.exe
+!challenges/**/files/*.dll
+!challenges/**/files/*.bin
 
 # Dépendances et builds
 node_modules/

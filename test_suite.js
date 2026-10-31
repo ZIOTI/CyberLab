@@ -1338,7 +1338,11 @@ async function testAll() {
   console.log('✔ 19.4 Specialized Offense & Defense Modules (Crypto, Forensics, Reverse, AD, Cloud, AI, Ethics) PASSED');
 
   // 19.5 Reset Profile Cascade Verification
-  const resetRes = await fetch(`${BASE_URL}/api/reset-profile`, { method: 'POST' }).then(r => r.json());
+  const csrf = await fetch(`${BASE_URL}/api/csrf-token`).then(r => r.json());
+  const resetRes = await fetch(`${BASE_URL}/api/reset-profile`, {
+    method: 'POST',
+    headers: { 'X-CSRF-Token': csrf.csrfToken }
+  }).then(r => r.json());
   assert(resetRes.success === true, 'Reset profile API responds with success');
   const treePostReset = await fetch(`${BASE_URL}/api/skill-tree`).then(r => r.json());
   assert(treePostReset.placement === null, 'Placement results cleared on profile reset');
@@ -1600,8 +1604,150 @@ async function testAll() {
 
   console.log('✔ 20.6 Full Bilingual i18n (FR/EN) & WCAG Reduced Motion Accessibility PASSED');
 
+  // ========================================================================
+  // SUITE 21 : PHASE 5 - SÉCURITÉ SERVEUR, ÉCOSYSTÈME OPEN SOURCE & PORTABILITÉ
+  // ========================================================================
+  console.log('[TEST] Démarrage de la Suite 21 : Phase 5 Sécurité, Open Source & Portabilité Multiplateforme...');
+
+  // 21.1 En-têtes HTTP de Sécurité Stricts
+  const headerCheck = await fetch(`${BASE_URL}/api/version`);
+  assert(headerCheck.headers.get('content-security-policy'), 'CSP header is present');
+  assert(headerCheck.headers.get('content-security-policy').includes("default-src 'self'"), 'CSP defines default-src');
+  assert(headerCheck.headers.get('x-content-type-options') === 'nosniff', 'X-Content-Type-Options is nosniff');
+  assert(headerCheck.headers.get('x-frame-options') === 'SAMEORIGIN', 'X-Frame-Options is SAMEORIGIN');
+  assert(headerCheck.headers.get('referrer-policy') === 'strict-origin-when-cross-origin', 'Referrer-Policy is strict-origin-when-cross-origin');
+  assert(headerCheck.headers.get('permissions-policy'), 'Permissions-Policy header is present');
+  console.log('✔ 21.1 Strict HTTP Security Headers PASSED');
+
+  // 21.2 Protection Anti-CSRF sur les routes d'altération d'état
+  // A. Obtention d'un jeton de session
+  const csrfInit = await fetch(`${BASE_URL}/api/csrf-token`).then(r => r.json());
+  assert(csrfInit.success === true, 'CSRF token endpoint responds with success');
+  assert(typeof csrfInit.csrfToken === 'string' && csrfInit.csrfToken.length === 64, 'CSRF token is valid 64-char hex string');
+
+  // B. Tentative sans header X-CSRF-Token sur reset-profile -> Rejet 403
+  const badReset = await fetch(`${BASE_URL}/api/reset-profile`, { method: 'POST' });
+  assert(badReset.status === 403, 'POST /api/reset-profile without CSRF token returns 403 Forbidden');
+  const badResetBody = await badReset.json();
+  assert(badResetBody.success === false && badResetBody.error.includes('Anti-CSRF'), 'Rejection body mentions Anti-CSRF');
+
+  // C. Tentative avec token frauduleux / invalide -> Rejet 403
+  const forgedReset = await fetch(`${BASE_URL}/api/reset-profile`, {
+    method: 'POST',
+    headers: { 'X-CSRF-Token': 'forged_fake_csrf_token_1234567890' }
+  });
+  assert(forgedReset.status === 403, 'POST /api/reset-profile with invalid CSRF token returns 403');
+
+  // D. Tentative sans header sur apply-update -> Rejet 403
+  const badUpdate = await fetch(`${BASE_URL}/api/apply-update`, { method: 'POST' });
+  assert(badUpdate.status === 403, 'POST /api/apply-update without CSRF token returns 403');
+
+  // E. Requête légitime avec le header X-CSRF-Token valide -> Succès 200
+  const goodReset = await fetch(`${BASE_URL}/api/reset-profile`, {
+    method: 'POST',
+    headers: { 'X-CSRF-Token': csrfInit.csrfToken }
+  });
+  assert(goodReset.status === 200, 'POST /api/reset-profile with valid CSRF token succeeds');
+  console.log('✔ 21.2 Anti-CSRF Session Token Protection PASSED');
+
+  // 21.3 Rate Limiting en mémoire sur les endpoints sensibles
+  // Test de saturation sur /api/apply-update (limite: 5 req/10s)
+  const validCsrf = (await fetch(`${BASE_URL}/api/csrf-token`).then(r => r.json())).csrfToken;
+  let hitRateLimit = false;
+  let rateLimitStatus = 0;
+  let retryAfterHeader = null;
+  for (let i = 0; i < 7; i++) {
+    const res = await fetch(`${BASE_URL}/api/apply-update`, {
+      method: 'POST',
+      headers: { 'X-CSRF-Token': validCsrf }
+    });
+    if (res.status === 429) {
+      hitRateLimit = true;
+      rateLimitStatus = res.status;
+      retryAfterHeader = res.headers.get('retry-after');
+      const body = await res.json();
+      assert(body.success === false && body.error.includes('Trop de requêtes'), 'Rate limit error message returned');
+      break;
+    }
+  }
+  assert(hitRateLimit === true && rateLimitStatus === 429, 'Rate limiting successfully triggered 429 on rapid requests burst');
+  assert(retryAfterHeader !== null, 'Retry-After header returned on 429 response');
+  console.log('✔ 21.3 In-Memory Rate Limiting on Sensitive Endpoints PASSED');
+
+  // 21.4 Anti-Path Traversal strict sur /targets/training/download/
+  // Traversal 1: brute ../../../../server.js
+  const trav1 = await fetch(`${BASE_URL}/targets/training/download/network/net-01-wireshark-ftp/../../../../server.js`);
+  assert(trav1.status === 404, 'Direct path traversal safely rejected with 404');
+
+  // Traversal 2: URL encodé ..%2f..%2fcyberrange.db
+  const trav2 = await fetch(`${BASE_URL}/targets/training/download/crypto/crypto-01-rot-vault/..%2f..%2fcyberrange.db`);
+  assert(trav2.status === 404, 'Encoded path traversal safely rejected with 404');
+
+  // Traversal 3: cross challenge ../../
+  const trav3 = await fetch(`${BASE_URL}/targets/training/download/network/net-01-wireshark-ftp/../../web/web-01-robots/meta.json`);
+  assert(trav3.status === 404, 'Cross-challenge path traversal safely rejected with 404');
+
+  // Téléchargement légitime confiné
+  const legitDownload = await fetch(`${BASE_URL}/targets/training/download/network/net-01-wireshark-ftp/ftp_session_capture.pcap`);
+  assert(legitDownload.status === 200, 'Legitimate download inside confinement succeeds');
+  assert(legitDownload.headers.get('content-type') === 'application/octet-stream', 'Correct octet-stream MIME type');
+  const fileBytes = await legitDownload.arrayBuffer();
+  assert(fileBytes.byteLength > 100, 'PCAP file content successfully downloaded');
+  console.log('✔ 21.4 Strict Anti-Path Traversal & Confinement PASSED');
+
+  // 21.5 Contrôle d'Intégrité SHA-256 dans updater.js
+  const updaterModule = require('./updater');
+  assert(typeof updaterModule.computeFileSha256 === 'function', 'computeFileSha256 is exported');
+  assert(typeof updaterModule.verifyZipIntegrity === 'function', 'verifyZipIntegrity is exported');
+  
+  // Test calcul exact sur package.json
+  const pkgHash = updaterModule.computeFileSha256('package.json');
+  assert(typeof pkgHash === 'string' && pkgHash.length === 64, 'SHA-256 hash is a 64-char string');
+  const verifiedHash = updaterModule.verifyZipIntegrity('package.json', pkgHash);
+  assert(verifiedHash === pkgHash, 'Exact SHA-256 hash successfully verifies');
+
+  // Test altération / hash erroné -> Doit lever une exception
+  let integrityFailed = false;
+  try {
+    updaterModule.verifyZipIntegrity('package.json', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+  } catch (err) {
+    integrityFailed = true;
+    assert(err.message.includes('Contrôle d\'intégrité SHA-256 échoué'), 'Error explicitly mentions SHA-256 integrity failure');
+  }
+  assert(integrityFailed === true, 'Tampered/mismatched SHA-256 integrity check throws and halts');
+  console.log('✔ 21.5 Auto-Updater SHA-256 Cryptographic Integrity PASSED');
+
+  // 21.6 Écosystème Open Source, Portabilité Multiplateforme & GitHub Templates
+  const requiredFiles = [
+    { file: 'LICENSE', minBytes: 50, match: 'MIT License' },
+    { file: 'README.md', minBytes: 1000, match: 'Table des Matières' },
+    { file: 'CONTRIBUTING.md', minBytes: 300, match: 'Guide de Contribution' },
+    { file: 'SECURITY.md', minBytes: 300, match: 'Divulgation Responsable' },
+    { file: 'CODE_OF_CONDUCT.md', minBytes: 300, match: 'Code de Conduite' },
+    { file: 'start.sh', minBytes: 100, match: '#!/usr/bin/env bash' },
+    { file: 'update.sh', minBytes: 100, match: '#!/usr/bin/env bash' },
+    { file: '.github/ISSUE_TEMPLATE/bug_report.md', minBytes: 100, match: 'name: Signalement de Bug' },
+    { file: '.github/ISSUE_TEMPLATE/feature_request.md', minBytes: 100, match: 'name: Proposition de Fonctionnalité' },
+    { file: '.github/ISSUE_TEMPLATE/new_challenge.md', minBytes: 100, match: 'name: Nouveau Challenge' },
+    { file: '.github/PULL_REQUEST_TEMPLATE.md', minBytes: 100, match: 'Description de la Pull Request' }
+  ];
+
+  for (const rf of requiredFiles) {
+    assert(fs.existsSync(rf.file), `Required file ${rf.file} exists`);
+    const content = fs.readFileSync(rf.file, 'utf8');
+    assert(Buffer.byteLength(content, 'utf8') >= rf.minBytes, `${rf.file} meets minimum size (${rf.minBytes} bytes)`);
+    assert(content.includes(rf.match), `${rf.file} contains required content signature: "${rf.match}"`);
+  }
+
+  // Vérification de la configuration CI GitHub Actions
+  const workflowContent = fs.readFileSync('.github/workflows/release.yml', 'utf8');
+  assert(!workflowContent.includes('continue-on-error: true'), 'CI workflow has removed continue-on-error: true');
+  assert(workflowContent.includes('checksums.txt'), 'CI workflow generates checksums.txt');
+
+  console.log('✔ 21.6 Open Source Files, Multiplatform Scripts & CI Pipeline PASSED');
+
   console.log('========================================================================');
-  console.log('🎉 100% DES 20 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
+  console.log('🎉 100% DES 21 SUITES DE VALIDATION SONT AU VERT ! TOUT FONCTIONNE !');
   console.log('========================================================================');
 }
 

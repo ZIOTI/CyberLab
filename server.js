@@ -6,11 +6,21 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { DatabaseSync } = require('node:sqlite');
 const updater = require('./updater');
 const TrainingManager = require('./platform/training_manager');
 const SkillTreeManager = require('./platform/skill_tree_manager');
 const GamificationManager = require('./platform/gamification_manager');
+const { defaultLimiter: rateLimiter } = require('./platform/rate_limiter');
+
+// Gestion en mémoire des jetons de session Anti-CSRF
+const activeCsrfTokens = new Set();
+
+function validateCsrfToken(req) {
+  const token = req.headers['x-csrf-token'];
+  return !!(token && activeCsrfTokens.has(token));
+}
 
 const PORT = process.env.PORT || 3333;
 const HOST = process.env.HOST || '127.0.0.1';
@@ -259,7 +269,7 @@ function sendJSON(res, statusCode, data) {
     'Content-Type': 'application/json; charset=utf-8',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Custom-Auth'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Custom-Auth, X-CSRF-Token'
   });
   res.end(JSON.stringify(data));
 }
@@ -294,6 +304,13 @@ function parseBody(req) {
 
 // Serveur HTTP Principal
 const server = http.createServer(async (req, res) => {
+  // Injection obligatoire des en-têtes HTTP de sécurité stricts (Phase 5)
+  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https:; frame-ancestors 'self';");
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = parsedUrl.pathname;
   const method = req.method;
@@ -302,9 +319,24 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Custom-Auth'
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Custom-Auth, X-CSRF-Token'
     });
     return res.end();
+  }
+
+  // --- Endpoint Anti-CSRF : Distribution de jetons de session ---
+  if (pathname === '/api/csrf-token' && method === 'GET') {
+    const token = crypto.randomBytes(32).toString('hex');
+    activeCsrfTokens.add(token);
+    if (activeCsrfTokens.size > 2000) {
+      const first = activeCsrfTokens.values().next().value;
+      activeCsrfTokens.delete(first);
+    }
+    return sendJSON(res, 200, {
+      success: true,
+      csrfToken: token,
+      token: token
+    });
   }
 
   // ==========================================================================
@@ -401,6 +433,16 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/training/submit-flag' && method === 'POST') {
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const rateCheck = rateLimiter.check(`${clientIp}:/api/training/submit-flag`, 50, 10000);
+    if (rateCheck.limited) {
+      res.setHeader('Retry-After', String(rateCheck.retryAfter));
+      return sendJSON(res, 429, {
+        success: false,
+        error: 'Trop de requêtes sur la validation de flags. Veuillez patienter avant de réessayer.',
+        retryAfter: rateCheck.retryAfter
+      });
+    }
     try {
       const body = await parseBody(req);
       const user = db ? db.prepare('SELECT nickname FROM user_state WHERE id = ?').get('current_player') : null;
@@ -1180,20 +1222,48 @@ const server = http.createServer(async (req, res) => {
 
   // Téléchargement sécurisé des fichiers de challenges (.pcap, .bin, .eml, .jpg)
   if (pathname.startsWith('/targets/training/download/')) {
-    const parts = pathname.replace('/targets/training/download/', '').split('/');
-    if (parts.length >= 3) {
-      const [cat, chId, fileName] = parts;
-      const filePath = path.join(__dirname, 'challenges', cat, chId, 'files', fileName);
-      const safePath = path.resolve(filePath);
-      if (safePath.startsWith(path.resolve(path.join(__dirname, 'challenges'))) && fs.existsSync(safePath)) {
+    // Rejet formel des tentatives de traversée de chemin (Path Traversal) brutes ou encodées
+    const rawUrl = req.url || '';
+    let decodedUrl = '';
+    try {
+      decodedUrl = decodeURIComponent(rawUrl);
+    } catch (e) {
+      return sendJSON(res, 404, { success: false, error: 'URL invalide.' });
+    }
+
+    if (rawUrl.includes('..') || decodedUrl.includes('..') || pathname.includes('..')) {
+      return sendJSON(res, 404, { success: false, error: 'Accès refusé : tentative de traversée de chemin détectée.' });
+    }
+
+    const remainder = pathname.replace('/targets/training/download/', '');
+    const parts = remainder.split('/');
+    if (parts.length === 3) {
+      const [cat, chId, rawFileName] = parts;
+      let fileName;
+      try {
+        fileName = decodeURIComponent(rawFileName);
+      } catch (e) {
+        fileName = rawFileName;
+      }
+
+      if (fileName.includes('..') || cat.includes('..') || chId.includes('..')) {
+        return sendJSON(res, 404, { success: false, error: 'Accès refusé : chemin interdit.' });
+      }
+
+      const baseFilesDir = path.resolve(path.join(__dirname, 'challenges', cat, chId, 'files'));
+      const safePath = path.resolve(baseFilesDir, fileName);
+
+      // Confinement strict dans challenges/<cat>/<id>/files/
+      const isConfined = (safePath.startsWith(baseFilesDir + path.sep) || safePath === baseFilesDir);
+      if (isConfined && fs.existsSync(safePath) && !fs.statSync(safePath).isDirectory()) {
         res.writeHead(200, {
           'Content-Type': 'application/octet-stream',
-          'Content-Disposition': `attachment; filename="${fileName}"`
+          'Content-Disposition': `attachment; filename="${path.basename(safePath)}"`
         });
         return fs.createReadStream(safePath).pipe(res);
       }
     }
-    return sendJSON(res, 404, { error: 'Fichier d\'artefact introuvable.' });
+    return sendJSON(res, 404, { success: false, error: 'Fichier d\'artefact introuvable.' });
   }
 
   // ==========================================================================
@@ -1877,6 +1947,24 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/apply-update' && method === 'POST') {
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const rateCheck = rateLimiter.check(`${clientIp}:/api/apply-update`, 5, 10000);
+    if (rateCheck.limited) {
+      res.setHeader('Retry-After', String(rateCheck.retryAfter));
+      return sendJSON(res, 429, {
+        success: false,
+        error: 'Trop de requêtes de mise à jour. Veuillez patienter avant de réessayer.',
+        retryAfter: rateCheck.retryAfter
+      });
+    }
+
+    if (!validateCsrfToken(req)) {
+      return sendJSON(res, 403, {
+        success: false,
+        error: 'Échec de la validation Anti-CSRF : jeton de session manquant ou invalide.'
+      });
+    }
+
     try {
       const force = req.url.includes('force=true');
       const result = await updater.applyUpdate(force);
@@ -1994,6 +2082,17 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/verify-answer' && method === 'POST') {
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const rateCheck = rateLimiter.check(`${clientIp}:/api/verify-answer`, 30, 10000);
+    if (rateCheck.limited) {
+      res.setHeader('Retry-After', String(rateCheck.retryAfter));
+      return sendJSON(res, 429, {
+        success: false,
+        error: 'Trop de requêtes sur les réponses de quiz. Veuillez patienter avant de réessayer.',
+        retryAfter: rateCheck.retryAfter
+      });
+    }
+
     try {
       const body = await parseBody(req);
       const levelId = (body.level_id || '').trim();
@@ -2042,6 +2141,24 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/reset-profile' && method === 'POST') {
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const rateCheck = rateLimiter.check(`${clientIp}:/api/reset-profile`, 10, 10000);
+    if (rateCheck.limited) {
+      res.setHeader('Retry-After', String(rateCheck.retryAfter));
+      return sendJSON(res, 429, {
+        success: false,
+        error: 'Trop de requêtes de réinitialisation. Veuillez patienter avant de réessayer.',
+        retryAfter: rateCheck.retryAfter
+      });
+    }
+
+    if (!validateCsrfToken(req)) {
+      return sendJSON(res, 403, {
+        success: false,
+        error: 'Échec de la validation Anti-CSRF : jeton de session manquant ou invalide.'
+      });
+    }
+
     try {
       if (db) {
         db.prepare('DELETE FROM user_state WHERE id = ?').run('current_player');

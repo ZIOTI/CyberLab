@@ -30,7 +30,6 @@ jobs:
 
       - name: 🧪 Exécution de la suite de tests de validation
         run: node test_suite.js
-        continue-on-error: true
 
       - name: 🔨 Compilation des exécutables Windows (.EXE)
         shell: powershell
@@ -60,11 +59,18 @@ jobs:
           Copy-Item -Force package.json dist\CyberRange-PRO\
           Copy-Item -Force start.bat dist\CyberRange-PRO\
           Copy-Item -Force update.bat dist\CyberRange-PRO\
+          Copy-Item -Force start.sh dist\CyberRange-PRO\
+          Copy-Item -Force update.sh dist\CyberRange-PRO\
           Copy-Item -Force updater.js dist\CyberRange-PRO\
           Copy-Item -Force README.md dist\CyberRange-PRO\
+          Copy-Item -Force LICENSE dist\CyberRange-PRO\
+          Copy-Item -Force CONTRIBUTING.md dist\CyberRange-PRO\
+          Copy-Item -Force SECURITY.md dist\CyberRange-PRO\
+          Copy-Item -Force CODE_OF_CONDUCT.md dist\CyberRange-PRO\
 
           # Suppression explicite de toute base locale temporaire
           Remove-Item -Force -ErrorAction SilentlyContinue dist\CyberRange-PRO\cyberrange.db*
+          Remove-Item -Force -ErrorAction SilentlyContinue dist\CyberRange-PRO\targets.db*
 
           # Création du ZIP portable
           Compress-Archive -Path dist\CyberRange-PRO\* -DestinationPath dist\CyberRange-PRO.zip -Force
@@ -72,6 +78,9 @@ jobs:
 
           # Copie de l'installateur autonome dans dist/
           Copy-Item -Force CyberRange-PRO-Setup.exe dist\
+
+          # Génération automatique du fichier de contrôle d'intégrité SHA-256 (checksums.txt)
+          Get-FileHash -Algorithm SHA256 dist\CyberRange-PRO-Setup.exe, dist\CyberRange-PRO.zip, "dist\CyberRange-PRO-$versionTag.zip" | ForEach-Object { "$($_.Hash.ToLower())  $([System.IO.Path]::GetFileName($_.Path))" } | Set-Content -Encoding ascii dist\checksums.txt
 
           # Enregistre la version pour les steps suivants
           "RELEASE_TAG=$versionTag" >> $env:GITHUB_ENV
@@ -90,3 +99,4 @@ jobs:
             dist/CyberRange-PRO-Setup.exe
             dist/CyberRange-PRO.zip
             dist/CyberRange-PRO-*.zip
+            dist/checksums.txt

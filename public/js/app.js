@@ -262,10 +262,26 @@ class CyberAppPro {
     document.getElementById('nav-training')?.addEventListener('click', switchToTraining);
     document.getElementById('mob-nav-training')?.addEventListener('click', switchToTraining);
 
+// Helper de jeton de session Anti-CSRF
+async function getCsrfToken() {
+  try {
+    const res = await fetch('/api/csrf-token');
+    const data = await res.json();
+    return data.csrfToken || data.token || '';
+  } catch (e) {
+    return '';
+  }
+}
+window.getCsrfToken = getCsrfToken;
+
     // Réinitialisation du profil
     document.getElementById('btn-reset-data')?.addEventListener('click', async () => {
       if (confirm('Réinitialiser l\'ensemble de ton dossier opérateur et repartir à zéro ?')) {
-        await fetch('/api/reset-profile', { method: 'POST' });
+        const token = await getCsrfToken();
+        await fetch('/api/reset-profile', {
+          method: 'POST',
+          headers: { 'X-CSRF-Token': token }
+        });
         localStorage.removeItem('cyber_pro_state');
         window.location.reload();
       }
@@ -449,7 +465,11 @@ class CyberAppPro {
             if (progFill) progFill.style.width = '70%';
           }, 1200);
 
-          const applyRes = await fetch('/api/apply-update', { method: 'POST' });
+          const csrfToken = await getCsrfToken();
+          const applyRes = await fetch('/api/apply-update', {
+            method: 'POST',
+            headers: { 'X-CSRF-Token': csrfToken }
+          });
           clearTimeout(step2Timer);
 
           if (!applyRes.ok) {
