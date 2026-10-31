@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "username": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "default": "user",
+      "enum": [
+        "user",
+        "moderator",
+        "admin"
+      ]
+    }
+  }
+}

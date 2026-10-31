@@ -1,0 +1,2 @@
+$krb5asrep$23$j.smith@AEGIS.LOCAL:c47a98b1d4ef32901a88bb3310fedcba$f8a19c4b2210
+# Hashcat mode 18200 : hashcat -m 18200 asrep_hashes.txt wordlist.txt

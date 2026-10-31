@@ -1,7 +1,7 @@
 {
   "id": "blue-01-auth-log-brute",
   "title": "SSH Brute Force Forensic Log Analysis",
-  "organization": "Apex Enterprise Linux Bastion",
+  "organization": "TitanCorp Cloud Infrastructure",
   "category": "Blue Team & SOC",
   "target_os": "Linux",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Le serveur bastion d'accès aux infrastructures critiques a subi une tentative d'intrusion automatisée par force brute sur le port SSH. Analyse le fichier de journalisation /var/log/auth.log pour identifier l'adresse IP de l'attaquant, le nombre exact de tentatives échouées, et le compte utilisateur qui a finalement été compromis.",
   "target_port": 3333,
-  "virtual_ip": "10.10.17.19"
+  "virtual_ip": "10.10.17.19",
+  "debrief_json": {
+    "storyline": "L'attaque par dictionnaire sur le port SSH a abouti à une connexion root. Le serveur a été verrouillé : clés SSH obligatoires et bannissement fail2ban.",
+    "technical_explanation": "Un service SSH exposé avec authentification par mot de passe fait l'objet de scans et de tests automatisés continus par des botnets dans les secondes suivant son activation.",
+    "key_lesson": "L'authentification par mot de passe sur SSH doit être formellement désactivée (PasswordAuthentication no) au profit de clés cryptographiques Ed25519.",
+    "historical_case": {
+      "title": "Botnets Mirai et attaques par force brute SSH mondiales",
+      "description": "Des millions d'équipements Linux et IoT compromis par des listes d'identifiants par défaut ou faibles.",
+      "impact": "Attaques DDoS historiques de plus de 1 Tbps contre des infrastructures DNS."
+    },
+    "permanent_remediation": [
+      "Configurer /etc/ssh/sshd_config : PermitRootLogin no et PasswordAuthentication no.",
+      "Déployer fail2ban ou CrowdSec pour bloquer automatiquement les IP récidivistes."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse le fichier auth.log pour identifier l'adresse IP attaquante et le compte cible de l'attaque par force brute SSH.",
+      "sample_logs": "Failed password for invalid user admin from 192.168.1.100 port 43210 ssh2\nFailed password for root from 192.168.1.100 port 43212 ssh2 (repeated 45 times)\nAccepted password for root from 192.168.1.100 port 43290 ssh2\nATTACKER IP: 192.168.1.100",
+      "question": "Quelle adresse IP source mène les tentatives répétées de connexion SSH ?",
+      "expected_answer": "192.168.1.100"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection SSH Brute Force Success\nstatus: stable\nlogsource:\n    product: linux\n    service: auth\ndetection:\n    selection:\n        message|contains: 'Accepted password'\n        src_ip: '192.168.1.100'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "accepted password",
+        "192.168.1.100"
+      ],
+      "flag": "SIGMA{SSH_BRUTE_FORCE_AUTHENTICATION_DETECTED_100}"
+    },
+    "remediation": {
+      "type": "harden_blue_ssh_fail2ban",
+      "description": "Installe et active fail2ban, désactive l'authentification par mot de passe SSH et interdit le login root direct.",
+      "flag": "REMEDIATION{SSH_HARDENED_FAIL2BAN_ROOT_DISABLED}"
+    }
+  }
 }

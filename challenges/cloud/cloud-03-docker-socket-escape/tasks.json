@@ -22,5 +22,29 @@
     "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{DOCKER_SOCK_MOUNTED_CHROOT_HOST_BREAKOUT}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel socket de communication Unix monté dans le conteneur permet de piloter le démon Docker hôte ?",
+    "points": 20,
+    "flag": "/var/run/docker.sock",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{DOCKER_SOCKET_ESCAPE_ATTEMPT_DETECTED_003}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Proscrit le montage du socket Docker, migre vers Docker Rootless et applique un profil seccomp restrictif.",
+    "points": 20,
+    "flag": "REMEDIATION{DOCKER_SOCKET_UNMOUNTED_ROOTLESS_ENFORCED}",
+    "is_defense": true
   }
 ]

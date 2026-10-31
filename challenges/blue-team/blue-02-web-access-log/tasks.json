@@ -22,5 +22,29 @@
     "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{NGINX_LOG_ATTACK_PATTERN_SQLI_MAPPED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel fichier système critique Linux l'attaquant tente-t-il de lire via l'attaque LFI ?",
+    "points": 20,
+    "flag": "/etc/passwd",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{WEB_ATTACK_SQLI_LFI_DETECTED_077}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Configure ModSecurity WAF sur Nginx avec le jeu de règles OWASP CRS et bloque l'IP attaquante.",
+    "points": 20,
+    "flag": "REMEDIATION{NGINX_MODSECURITY_CRS_WAF_ENFORCED}",
+    "is_defense": true
   }
 ]

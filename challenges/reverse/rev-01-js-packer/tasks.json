@@ -14,5 +14,29 @@
     "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{JAVASCRIPT_DEOBFUSCATION_PACKER_CRACKED_SUCCESS}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel domaine d'exfiltration de cartes bancaires (Magecart) est masqué dans le script obfusqué ?",
+    "points": 20,
+    "flag": "mage-cart.stealer-node.net",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (YARA)",
+    "description": "Rédige et valide la règle YARA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "YARA{JAVASCRIPT_OBFUSCATED_SKIMMER_DETECTED_001}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Active l'intégrité des sous-ressources (SRI) et la politique CSP pour interdire les scripts inline et non signés.",
+    "points": 20,
+    "flag": "REMEDIATION{CSP_STRICT_AND_SRI_ENFORCED_PAYMENTS}",
+    "is_defense": true
   }
 ]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "t1",
+    "title": "Délai légal de l'alerte précoce NIS 2",
+    "description": "Quel est le délai légal imparti pour soumettre la première alerte précoce au CSIRT national (ANSSI) ?",
+    "points": 30,
+    "flag": "24 heures"
+  },
+  {
+    "id": "t2",
+    "title": "Plafond des sanctions pécuniaires pour Entité Essentielle",
+    "description": "Quel est le pourcentage maximal du chiffre d'affaires mondial pour une amende NIS 2 ?",
+    "points": 40,
+    "flag": "2%"
+  },
+  {
+    "id": "t3",
+    "title": "Validation de la chaîne de notification ANSSI",
+    "description": "Valide le dossier d'incident NIS 2 via l'API /api/modules/ethics/case.",
+    "points": 50,
+    "flag": "CYBERLAB{NIS2_DIRECTIVE_ANSSI_NOTIFICATION_24H_2026}"
+  },
+  {
+    "id": "t4",
+    "title": "Délai d'alerte précoce d'urgence",
+    "description": "Quel délai maximal s'applique pour l'alerte initiale NIS 2 ?",
+    "points": 20,
+    "flag": "24 heures",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle Sigma d'alerte de criticité NIS 2",
+    "description": "Valide la règle Sigma détectant le dépassement des seuils critiques.",
+    "points": 20,
+    "flag": "SIGMA{NIS2_CRITICAL_INFRASTRUCTURE_SEV1_ALERT_994}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Homologation du plan de crise NIS 2 / ANSSI",
+    "description": "Valide la transmission conforme de l'alerte précoce aux autorités.",
+    "points": 20,
+    "flag": "REMEDIATION{NIS2_ANSSI_NOTIFICATION_24H_VALIDATED_2026}",
+    "is_defense": true
+  }
+]

@@ -1,0 +1,5 @@
+Host bastion-gateway
+    HostName 192.168.1.50
+    User operator
+    DynamicForward 1080
+    IdentityFile ~/.ssh/id_ed25519

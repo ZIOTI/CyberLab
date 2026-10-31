@@ -22,5 +22,29 @@
     "points": 200,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BLOODHOUND_GENERICALL_DACL_SHADOW_CREDS_ADMIN}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quelle relation DACL confère les droits de modification complète et de réinitialisation de mot de passe ?",
+    "points": 20,
+    "flag": "GenericAll",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{BLOODHOUND_DACL_SHADOW_CREDS_DETECTED_006}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Implémente le modèle d'administration par paliers (Tiering Model Tier 0 / Tier 1 / Tier 2) et révoque les DACL excessives.",
+    "points": 20,
+    "flag": "REMEDIATION{AD_TIERING_MODEL_ENFORCED_DACL_CLEANED}",
+    "is_defense": true
   }
 ]

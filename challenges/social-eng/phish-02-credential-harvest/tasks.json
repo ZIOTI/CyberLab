@@ -22,5 +22,29 @@
     "points": 30,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PHISHING_CLONED_LOGIN_EXFILTRATION_POST_FOUND}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel domaine trompeur héberge la fausse page de connexion SSO de l'hôpital ?",
+    "points": 20,
+    "flag": "login-verify.com",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{PHISHING_CREDENTIAL_HARVEST_URL_DETECTED_002}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Déploie l'authentification multifacteur FIDO2 / WebAuthn résistante au phishing et bloque le domaine frauduleux sur le DNS menteur.",
+    "points": 20,
+    "flag": "REMEDIATION{FIDO2_WEBAUTHN_PHISHING_RESISTANT_MFA_ENFORCED}",
+    "is_defense": true
   }
 ]

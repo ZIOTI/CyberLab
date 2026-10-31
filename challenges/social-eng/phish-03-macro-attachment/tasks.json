@@ -1,0 +1,31 @@
+[
+  {
+    "id": "t1",
+    "title": "Interpréteur système invoqué",
+    "description": "Quel binaire système est invoqué pour exécuter le payload (powershell.exe, cmd.exe ou cscript.exe) ?",
+    "points": 30,
+    "flag": "powershell.exe"
+  },
+  {
+    "id": "t2",
+    "title": "Technique d'évasion du nom de fichier",
+    "description": "Quelle technique d'ingénierie sociale masque l'extension réelle du script ?",
+    "points": 40,
+    "flag": "DOUBLE_EXTENSION"
+  },
+  {
+    "id": "t3",
+    "title": "Analyse du Dropper & Flag",
+    "description": "Scanne la pièce jointe avec le module d'inspection et valide le drapeau.",
+    "points": 50,
+    "flag": "CYBERLAB{PHISHING_MALICIOUS_MACRO_ATTACHMENT_NEUTRALIZED_552}"
+  },
+  {
+    "id": "t4",
+    "title": "Quarantaine Passerelle Défensive",
+    "description": "Active la règle de quarantaine sur la passerelle pour bloquer les macros.",
+    "points": 30,
+    "flag": "GATEWAY_MACRO_QUARANTINE_ACTIVE",
+    "is_defense": true
+  }
+]

@@ -14,5 +14,29 @@
     "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{CAESAR_ROT13_HISTORICAL_SHIFT_UNLOCKED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel décalage fixe est employé dans le chiffrement ROT ?",
+    "points": 20,
+    "flag": "13",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{WEAK_HISTORIC_CIPHER_DETECTED_101}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Abandonne les ciphers historiques et migre vers AES-256-GCM avec gestion de clés KMS.",
+    "points": 20,
+    "flag": "REMEDIATION{HISTORIC_CIPHER_MIGRATED_TO_AES256GCM}",
+    "is_defense": true
   }
 ]

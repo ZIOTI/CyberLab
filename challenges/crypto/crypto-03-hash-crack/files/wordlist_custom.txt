@@ -1,0 +1,9 @@
+password
+admin
+123456
+secret
+hunter2
+operator
+aegis2026
+root
+chimera

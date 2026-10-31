@@ -1,7 +1,7 @@
 {
   "id": "blue-02-web-access-log",
   "title": "Nginx Access Log SQLi Attack Profiling",
-  "organization": "E-Commerce Platform SOC Monitoring",
+  "organization": "Public Health Care Web Portal",
   "category": "Blue Team & SOC",
   "target_os": "Linux",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Une alerte de l'équipe de supervision signale un volume inhabituel de requêtes HTTP 500 sur le frontal Nginx. En analysant le fichier access.log avec awk, sort et uniq, isole les motifs d'injection SQL envoyés par l'attaquant, détermine le paramètre ciblé, et découvre la table de données qui a fait l'objet d'une exfiltration.",
   "target_port": 3333,
-  "virtual_ip": "10.10.25.171"
+  "virtual_ip": "10.10.25.171",
+  "debrief_json": {
+    "storyline": "Le scan automatisé a été intercepté dans les journaux d'accès. Un WAF Nginx a été immédiatement déployé avec les règles OWASP Core Rule Set.",
+    "technical_explanation": "Les attaques LFI et SQLi sont détectables par corrélation des caractères d'échappement (../, guillemets, mots-clés SQL) dans les paramètres d'URL.",
+    "key_lesson": "La validation stricte des entrées et l'utilisation de listes blanches d'inclusions rendent ces failles inexploitables dès la couche applicative.",
+    "historical_case": {
+      "title": "Exploitation massive de failles LFI dans les appliances VPN (Pulse Secure, FortiOS)",
+      "description": "Des attaquants ont accédé aux mots de passe des sessions VPN non patchées via une simple traversée de répertoires.",
+      "impact": "Compromission de milliers de réseaux gouvernementaux et d'entreprises."
+    },
+    "permanent_remediation": [
+      "Activer un Web Application Firewall (WAF) avec règles OWASP CRS.",
+      "Utiliser basename() et des whitelists pour toute inclusion de fichier côté serveur."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse le journal nginx_access.log pour identifier les tentatives d'injection SQL et d'inclusion locale de fichiers (LFI).",
+      "sample_logs": "198.51.100.77 - - [15/Feb/2026:11:02:14 +0000] \"GET /index.php?page=../../../../etc/passwd HTTP/1.1\" 200 1842\n198.51.100.77 - - [15/Feb/2026:11:02:40 +0000] \"GET /search.php?q=' UNION SELECT 1,username,password FROM users-- HTTP/1.1\" 200 4520\nSUSPECT IP: 198.51.100.77",
+      "question": "Quel fichier système critique Linux l'attaquant tente-t-il de lire via l'attaque LFI ?",
+      "expected_answer": "/etc/passwd"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Web Path Traversal and SQL Injection in Nginx Logs\nstatus: stable\nlogsource:\n    product: nginx\n    service: access\ndetection:\n    selection:\n        c_uri|contains:\n            - '../../'\n            - 'UNION SELECT'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "../../",
+        "union select"
+      ],
+      "flag": "SIGMA{WEB_ATTACK_SQLI_LFI_DETECTED_077}"
+    },
+    "remediation": {
+      "type": "harden_blue_nginx_waf",
+      "description": "Configure ModSecurity WAF sur Nginx avec le jeu de règles OWASP CRS et bloque l'IP attaquante.",
+      "flag": "REMEDIATION{NGINX_MODSECURITY_CRS_WAF_ENFORCED}"
+    }
+  }
 }

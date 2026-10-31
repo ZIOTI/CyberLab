@@ -1042,12 +1042,133 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  if (pathname === '/api/modules/aillm/indirect-injection' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleAiIndirectInjection(body.context_document || body.context, body.user_query || body.query, body.guardrail);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/aillm/jailbreak' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleAiJailbreak(body.prompt, body.persona, body.guardrail);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/aillm/data-exfil' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleAiDataExfil(body.output_payload || body.payload, body.guardrail);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/aillm/guardrail-verify' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyAiGuardrail(body.config || body.guardrail_config || body);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
   // --- 7. Éthique & Cadre Légal (France/UE) ---
+  if (pathname === '/api/modules/ethics/cases' && method === 'GET') {
+    try {
+      const cases = skillTreeManager.getEthicsCases();
+      return sendJSON(res, 200, { success: true, cases });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
   if (pathname === '/api/modules/ethics/case' && method === 'POST') {
     try {
       const body = await parseBody(req);
       const result = skillTreeManager.handleEthicsCase(body.case_id, body.action);
       return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 8. Wi-Fi & Réseau Avancé ---
+  if (pathname === '/api/modules/wifi/wpa-handshake' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleWifiWpaHandshake(body.pcap_hex || body.pcap, body.passphrase || body.key, body.wordlist);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if ((pathname === '/api/modules/wifi/rogue-ap-detect') && (method === 'GET' || method === 'POST')) {
+    try {
+      const body = method === 'POST' ? await parseBody(req) : null;
+      const result = skillTreeManager.handleWifiRogueApDetect(body?.survey_entries);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/network/pivot' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleNetworkPivot(body);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/wifi/hardening' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyWifiHardening(body.settings || body);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 9. Ingénierie Sociale & Phishing Défensif ---
+  if (pathname === '/api/modules/phishing/analyze-email' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handlePhishingAnalyzeEmail(body.email_content || body.headers || body.raw);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/phishing/attachment-scan' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handlePhishingAttachmentScan(body.file_name, body.file_content);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/phishing/hardening' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyPhishingHardening(body.settings || body);
+      return sendJSON(res, 200, result);
     } catch (e) {
       return sendJSON(res, 500, { success: false, error: e.message });
     }

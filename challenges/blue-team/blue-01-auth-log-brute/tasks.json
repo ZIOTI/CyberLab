@@ -22,5 +22,29 @@
     "points": 40,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BLUE_TEAM_SSH_AUTH_LOG_BRUTE_FORCE_DETECTED_302}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quelle adresse IP source mène les tentatives répétées de connexion SSH ?",
+    "points": 20,
+    "flag": "192.168.1.100",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{SSH_BRUTE_FORCE_AUTHENTICATION_DETECTED_100}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Installe et active fail2ban, désactive l'authentification par mot de passe SSH et interdit le login root direct.",
+    "points": 20,
+    "flag": "REMEDIATION{SSH_HARDENED_FAIL2BAN_ROOT_DISABLED}",
+    "is_defense": true
   }
 ]

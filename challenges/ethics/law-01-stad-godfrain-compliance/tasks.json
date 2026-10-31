@@ -1,0 +1,47 @@
+[
+  {
+    "id": "t1",
+    "title": "Infraction d'accès frauduleux au STAD",
+    "description": "Quelle peine de prison maximale prévoit l'article 323-1 du Code pénal en cas de suppression ou modification de données ?",
+    "points": 30,
+    "flag": "5 ans"
+  },
+  {
+    "id": "t2",
+    "title": "Qualification de la loi fondatrice",
+    "description": "Quel est le nom de la loi française de 1988 ayant introduit la notion de STAD dans le Code pénal ?",
+    "points": 40,
+    "flag": "Loi Godfrain"
+  },
+  {
+    "id": "t3",
+    "title": "Validation du Mandat d'Audit (Flag Éthique)",
+    "description": "Valide le cas pratique d'audit autorisé via l'API /api/modules/ethics/case.",
+    "points": 40,
+    "flag": "CYBERLAB{ETHICS_LEGAL_COMPLIANCE_ROE_MANDATE_STAD_001}"
+  },
+  {
+    "id": "t4",
+    "title": "Article de référence du Code pénal",
+    "description": "Quel article punit l'accès et le maintien frauduleux dans un STAD ?",
+    "points": 15,
+    "flag": "Article 323-1",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de respect des frontières RoE",
+    "description": "Valide la règle Sigma surveillant les limites du périmètre contractuel.",
+    "points": 15,
+    "flag": "SIGMA{ETHICAL_AUDIT_ROE_BOUNDARY_VERIFIED_771}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Homologation de la convention d'audit",
+    "description": "Valide la procédure juridique et la conformité du mandat écrit préalable.",
+    "points": 10,
+    "flag": "REMEDIATION{ETHICAL_MANDATE_ROE_STAD_COMPLIANT_2026}",
+    "is_defense": true
+  }
+]

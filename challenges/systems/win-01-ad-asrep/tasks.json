@@ -22,5 +22,29 @@
     "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{ASREP_ROAST_TGT_OFFLINE_HASHCAT_CRACKED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel type de chiffrement faible (0x17) facilite le cassage rapide du ticket AS-REP ?",
+    "points": 20,
+    "flag": "RC4-HMAC",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{ASREP_ROASTING_NO_PREAUTH_DETECTED_001}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Réactive la pré-authentification Kerberos obligatoire sur tous les comptes d'utilisateurs et de services.",
+    "points": 20,
+    "flag": "REMEDIATION{KERBEROS_PREAUTH_ENFORCED_FOR_ALL_ACCOUNTS}",
+    "is_defense": true
   }
 ]

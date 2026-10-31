@@ -22,5 +22,29 @@
     "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PEB_BEING_DEBUGGED_FLAG_BYPASS_KEY_UNLOCKED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quelle API Win32 classique est appelée pour détecter la présence d'un débogueur ?",
+    "points": 20,
+    "flag": "IsDebuggerPresent",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (YARA)",
+    "description": "Rédige et valide la règle YARA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "YARA{PE32_ANTI_DEBUG_TECHNIQUE_DETECTED_006}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Implémente la signature de code numérique Authenticode et vérifie l'intégrité du PE au chargement.",
+    "points": 20,
+    "flag": "REMEDIATION{AUTHENTICODE_CODE_SIGNING_ENFORCED}",
+    "is_defense": true
   }
 ]

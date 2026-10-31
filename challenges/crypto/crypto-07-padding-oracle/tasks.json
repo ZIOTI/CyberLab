@@ -22,5 +22,29 @@
     "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PADDING_ORACLE_DECRYPTOR_BLOCK_BY_BLOCK_DECIPHER}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel standard de padding est ciblé par cette attaque d'oracle ?",
+    "points": 20,
+    "flag": "PKCS#7",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{PADDING_ORACLE_CBC_ATTACK_DETECTED_707}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Migre vers AES-256-GCM (chiffrement authentifié AEAD) et masque les messages d'erreurs cryptographiques.",
+    "points": 20,
+    "flag": "REMEDIATION{AES_GCM_AEAD_MIGRATION_COMPLETED}",
+    "is_defense": true
   }
 ]

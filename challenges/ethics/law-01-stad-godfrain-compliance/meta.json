@@ -1,0 +1,81 @@
+{
+  "id": "law-01-stad-godfrain-compliance",
+  "title": "Cadre Légal Français, STAD & Règles d'Engagement (RoE)",
+  "category": "Éthique & Cadre Légal",
+  "difficulty": "beginner",
+  "points": 150,
+  "duration_min": 35,
+  "learning_path": "ethics-legal-compliance",
+  "author": "CyberSafe Conseil Juridique",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "organization": "Cabinet d'Audit CyberSafe France",
+  "cve": "Code Pénal Art. 323-1 à 323-8",
+  "rating": 5,
+  "solves": 2100,
+  "monogram": "DROIT-1",
+  "tags": [
+    "loi-godfrain",
+    "art-323-1",
+    "stad",
+    "code-penal",
+    "rules-of-engagement",
+    "mandat-audit",
+    "ethique"
+  ],
+  "narrative_story": "Tu es recruté comme auditeur junior au sein du cabinet CyberSafe France. Avant de lancer le moindre scan ou test d'intrusion sur le réseau d'un client du secteur bancaire, tu dois impérativement maîtriser le cadre juridique applicable aux Systèmes de Traitement Automatisé de Données (STAD), instauré par la loi Godfrain de 1988 et codifié aux articles 323-1 et suivants du Code pénal. Ta mission est d'analyser un mandat d'audit contractuel, de repérer les infractions pénales encourues en l'absence d'autorisation écrite expresse, et de valider les Règles d'Engagement (RoE).",
+  "mitre_tags": [
+    "M1026 (Privileged Account Management)",
+    "M1050 (User Training)"
+  ],
+  "owasp_tags": [
+    "A05:2021-Security Misconfiguration"
+  ],
+  "rules_of_engagement": "Respect strict du périmètre IP spécifié dans le contrat d'audit préalable. Tout dépassement constitue une infraction pénale (STAD).",
+  "debrief_json": {
+    "storyline": "L'auditeur a correctement vérifié la conformité du contrat d'audit écrit et identifié les limites infranchissables de la mission. Les tests ont pu débuter en toute légalité sous le couvert protecteur de l'ordre de mission.",
+    "technical_explanation": "L'article 323-1 du Code pénal punit de 3 ans d'emprisonnement et 100 000 € d'amende le fait d'accéder ou de se maintenir, frauduleusement, dans tout ou partie d'un STAD. En l'absence d'un contrat d'audit écrit, signé par le représentant légal de l'entreprise, tout pentesteur est assimilé pénalement à un pirate informatique, y compris avec des intentions bienveillantes.",
+    "key_lesson": "En cybersécurité professionnelle, la seule différence entre un pirate informatique et un hacker éthique est l'autorisation contractuelle écrite préalable (Ordre de Mission & Mandat signé).",
+    "historical_case": {
+      "title": "Affaire Bluetouff / Anses (Cour d'Appel de Paris, 2014)",
+      "description": "Un journaliste spécialisé en informatique a téléchargé des documents publics non protégés indexés par un moteur de recherche sur le site de l'Anses. Poursuivi pour accès et maintien frauduleux dans un STAD (art. 323-1), il a été condamné pénalement car le caractère accessible sans mot de passe ne confère pas de droit d'accès implicite.",
+      "impact": "Confirmation jurisprudentielle que l'absence de mesure technique de protection n'autorise pas l'accès sans consentement du propriétaire du système."
+    },
+    "permanent_remediation": [
+      "Faire signer un Mandat d'Audit / Convention de Pentest formelle avant toute action technique.",
+      "Définir avec précision le périmètre (adresses IP, sous-réseaux, noms de domaine exclus).",
+      "Consigner par écrit les fenêtres horaires d'intervention et les contacts d'urgence (escalade 24/7).",
+      "Archiver les journaux de connexion certifiés pour prouver l'origine légale des tests en cas d'alerte."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse la convention de test d'intrusion pour vérifier la présence des mentions obligatoires et la qualification de l'infraction de l'art. 323-1.",
+      "sample_logs": "CONTRAT DE PRESTATION D'AUDIT TECHNIQUE N° 2026-CS-441\nArticle 1 : Périmètre autorisé : 192.168.10.0/24\nArticle 2 : Exclusions formelles : Serveur SWIFT 192.168.10.254 (Interdiction absolue)\nArticle 3 : Sanction en cas de maintien non autorisé : Art. 323-1 Code pénal\nSignataire autorisé : Directeur Général, TitanCorp SAS",
+      "log_file": "convention_audit.txt",
+      "question": "Quel article du Code pénal sanctionne l'accès et le maintien frauduleux dans un STAD ?",
+      "expected_answer": "Article 323-1"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle de traçabilité des actions d'audit pour corréler les IPs autorisées du prestataire avec les journaux SIEM.",
+      "starter_template": "title: Whitelist Authorized Pentest IP Activity\nstatus: stable\nlogsource:\n    product: firewall\ndetection:\n    authorized_auditor:\n        src_ip: '198.51.100.42'\n    suspicious_destination:\n        dst_ip: '192.168.10.254'\n    condition: authorized_auditor and suspicious_destination",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "authorized_auditor",
+        "192.168.10.254"
+      ],
+      "flag": "SIGMA{ETHICAL_AUDIT_ROE_BOUNDARY_VERIFIED_771}"
+    },
+    "remediation": {
+      "type": "verify_audit_mandate_compliance",
+      "description": "Valide la check-list de conformité juridique (mandat signé, RoE, périmètre IP scellé).",
+      "actions_required": [
+        "Vérifier la signature du représentant légal du STAD",
+        "Exclure formellement les environnements de production bancaire sensible"
+      ],
+      "flag": "REMEDIATION{ETHICAL_MANDATE_ROE_STAD_COMPLIANT_2026}"
+    }
+  }
+}

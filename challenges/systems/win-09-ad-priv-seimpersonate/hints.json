@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Outil recommandé",
+    "cost": 10,
+    "content": "PrintSpoofer64.exe -i -c cmd.exe permet d'intercepter le token du service Spooler local."
+  },
+  {
+    "title": "Vérification privilège",
+    "cost": 15,
+    "content": "SeImpersonatePrivilege permet d'obtenir un token SYSTEM dès qu'un service privilégié se connecte à un pipe local."
+  }
+]

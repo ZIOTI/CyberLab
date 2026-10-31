@@ -1,7 +1,7 @@
 {
   "id": "crypto-08-rsa-factor-wiener",
   "title": "Wiener Continued Fractions Attack on RSA",
-  "organization": "Aegis Cryptographic Labs",
+  "organization": "Hexagon Quantum & Cryptography Research",
   "category": "Cryptographie",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Pour accélérer les signatures cryptographiques de ses serveurs, un ingénieur a sélectionné un exposant privé d très court (d < (1/3) * N^(1/4)). Grâce au théorème de Wiener basé sur le développement en fractions continues de e/N, retrouve l'exposant privé d et factorise le module RSA N pour déchiffrer la clé de chiffrement.",
   "target_port": 3333,
-  "virtual_ip": "10.10.46.71"
+  "virtual_ip": "10.10.46.71",
+  "debrief_json": {
+    "storyline": "Le module RSA d'Hexagon a été cassé en une fraction de seconde en raison de facteurs p et q quasi identiques. La politique PKI a été durcie.",
+    "technical_explanation": "Lorsque la différence entre p et q est faible, N est proche d'un carré parfait, et l'algorithme de Fermat trouve la décomposition en quelques itérations.",
+    "key_lesson": "Les générateurs de clés RSA doivent imposer des tests de primalité stricts et vérifier l'écart entre les facteurs.",
+    "historical_case": {
+      "title": "Faille ROCA (CVE-2017-15361) sur cartes à puce Infineon",
+      "description": "Une bibliothèque logicielle générait des clés RSA factorisables, affectant des millions de cartes d'identité et ordinateurs portables.",
+      "impact": "Révocation massive de certificats et coût de plusieurs dizaines de millions d'euros."
+    },
+    "permanent_remediation": [
+      "Générer des clés de 3072 ou 4096 bits via un CSPRNG certifié FIPS 140-3.",
+      "Vérifier que |p - q| est au moins d'ordre 2^(n/2 - 100)."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Vérifie les facteurs premiers p et q très proches calculés avec l'algorithme de factorisation de Fermat.",
+      "sample_logs": "MODULUS FACTORIZATION: N = p * q\nDELTA: |p - q| is small.\nFERMAT RESULT: p and q recovered in 12 iterations.\nPRIVATE KEY d RECONSTRUCTED.",
+      "question": "Quel algorithme de factorisation résout les modules dont les facteurs premiers sont trop proches ?",
+      "expected_answer": "Fermat"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Weak RSA Key Generation Fermat Risk\nstatus: stable\nlogsource:\n    product: pki\ndetection:\n    selection:\n        key_validation: 'FAILED_CLOSE_PRIMES'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "key_validation",
+        "failed_close_primes"
+      ],
+      "flag": "SIGMA{RSA_FERMAT_FACTORIZATION_RISK_DETECTED_808}"
+    },
+    "remediation": {
+      "type": "harden_crypto_rsa_factor",
+      "description": "Valide la génération de p et q avec séparation minimale |p - q| > 2^(bits/2 - 100) et modules de 4096 bits.",
+      "flag": "REMEDIATION{RSA_KEYGEN_PRIMES_PROPERLY_SPACED_4096}"
+    }
+  }
 }

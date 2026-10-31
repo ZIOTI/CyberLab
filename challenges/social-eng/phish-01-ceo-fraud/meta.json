@@ -1,7 +1,7 @@
 {
   "id": "phish-01-ceo-fraud",
   "title": "Executive CEO Fraud Email Header Triage",
-  "organization": "Corporate Anti-Fraud Unit",
+  "organization": "Nexus Capital Investment Group",
   "category": "Social Engineering",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -32,5 +32,44 @@
   ],
   "narrative_story": "Le service comptable a reçu un courriel urgent prétendant provenir du président directeur général, demandant un virement bancaire international immédiat. En analysant les en-têtes bruts du message (RFC 822 / .eml), examine les lignes Received:, les résultats d'authentification SPF (Sender Policy Framework) et les signatures DKIM pour prouver l'usurpation d'identité.",
   "target_port": 3333,
-  "virtual_ip": "10.10.39.120"
+  "virtual_ip": "10.10.39.120",
+  "debrief_json": {
+    "storyline": "La tentative de fraude au président usurpait le domaine de la direction pour ordonner un faux virement. DMARC en p=reject a été déployé.",
+    "technical_explanation": "Le protocole SMTP originel ne vérifie pas l'en-tête From. SPF, DKIM et DMARC fournissent une chaîne cryptographique garantissant que l'émetteur est autorisé par le propriétaire du domaine.",
+    "key_lesson": "La politique DMARC doit impérativement être configurée sur 'p=reject' pour bloquer net les e-mails usurpés au niveau du serveur de réception.",
+    "historical_case": {
+      "title": "Fraude au président sur le groupe Pathé (2018)",
+      "description": "Des cybercriminels se sont fait passer pour la direction générale et ont détourné plus de 19 millions d'euros par faux ordres de virement.",
+      "impact": "Limogeage de la direction et perte financière majeure."
+    },
+    "permanent_remediation": [
+      "Configurer DMARC : v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-reports@nexus.com.",
+      "Mettre en place une procédure de double validation physique/téléphonique hors-bande pour tout virement exceptionnel."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse l'e-mail d'hameçonnage ciblé (fraude au président) et identifie l'usurpation de l'adresse de l'expéditeur et les échecs SPF/DKIM.",
+      "sample_logs": "EMAIL HEADERS:\nFrom: \"Henri de Montmirail (CEO)\" <ceo@nexus-capita1.com>\nReply-To: wire-transfers@attacker-drop.net\nSubject: URGENT // Virement confidentiel acquisition projet Falcon\nAuthentication-Results: spf=fail (sender IP 203.0.113.88 not in SPF record)\nDKIM-Signature: none",
+      "question": "Quelle adresse de réponse cachée (Reply-To) recueille les confirmations du virement frauduleux ?",
+      "expected_answer": "wire-transfers@attacker-drop.net"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection CEO Fraud Email SPF Fail and Reply-To Mismatch\nstatus: stable\nlogsource:\n    product: mail_gateway\ndetection:\n    selection:\n        spf_result: 'fail'\n        subject|contains:\n            - 'URGENT'\n            - 'Virement confidentiel'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "spf_result: 'fail'",
+        "virement confidentiel"
+      ],
+      "flag": "SIGMA{CEO_FRAUD_SPF_FAIL_DETECTED_001}"
+    },
+    "remediation": {
+      "type": "harden_phishing_dmarc_reject",
+      "description": "Active une politique DMARC stricte p=reject avec alignement SPF/DKIM et quarantaine automatique sur la passerelle de messagerie.",
+      "flag": "REMEDIATION{DMARC_POLICY_REJECT_ENFORCED_PHISHING_BLOCKED}"
+    }
+  }
 }

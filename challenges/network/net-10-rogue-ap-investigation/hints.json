@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Analyse du fichier CSV",
+    "cost": 10,
+    "content": "Ouvre aircrack_survey.csv : cherche la ligne avec le même ESSID Aegis-Corporate-Secure mais un Privacy OPN ou un BSSID anormal."
+  }
+]

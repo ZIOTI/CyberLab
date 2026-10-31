@@ -22,5 +22,29 @@
     "points": 50,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{API_MASS_ASSIGNMENT_IS_ADMIN_TRUE_ACCEPTED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel paramètre injecté a permis l'élévation de privilèges administrateur ?",
+    "points": 20,
+    "flag": "role",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{API_MASS_ASSIGNMENT_ROLE_ADMIN_DETECTED_002}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Utilise des DTO (Data Transfer Objects) avec liste blanche stricte interdisant la liaison automatique des attributs sensibles.",
+    "points": 20,
+    "flag": "REMEDIATION{API_DTO_WHITELIST_MASS_ASSIGNMENT_PROTECTED}",
+    "is_defense": true
   }
 ]

@@ -1,7 +1,7 @@
 {
   "id": "crypto-07-padding-oracle",
   "title": "Automated CBC Padding Oracle Decryption",
-  "organization": "SecureVault Enterprise Micro-API",
+  "organization": "Saint-Sauveur Telehealth Portal",
   "category": "Cryptographie",
   "target_os": "Linux",
   "machine_type": "room",
@@ -34,5 +34,45 @@
   ],
   "narrative_story": "L'API de chiffrement de cookies de SecureVault renvoie un message HTTP 500 'Invalid Padding' lorsque le bourrage PKCS#7 est corrompu, et HTTP 200 lorsqu'il est valide. En manipulant octet par octet le bloc précédent du texte chiffré (attaque de Vaudenay), interroge l'oracle pour déchiffrer l'intégralité du jeton sans posséder la clé secrète.",
   "target_port": 3333,
-  "virtual_ip": "10.10.18.69"
+  "virtual_ip": "10.10.18.69",
+  "debrief_json": {
+    "storyline": "L'oracle d'erreur de padding a permis la reconstitution du jeton d'administrateur bloc par bloc. L'API a été refondue avec un chiffrement AEAD.",
+    "technical_explanation": "L'attaque de Vaudenay exploite la distinction faite par le serveur entre un mauvais déchiffrement et un mauvais padding PKCS#7 pour tester 256 valeurs d'octets.",
+    "key_lesson": "Ne jamais déchiffrer sans vérifier au préalable l'intégrité du message (Encrypt-then-MAC ou mode AEAD natif).",
+    "historical_case": {
+      "title": "Faille POODLE (CVE-2014-3566) sur SSL 3.0 et attaques ASP.NET (2010)",
+      "description": "L'oracle de padding a permis de déchiffrer les cookies de session HTTPS en clair en forçant le downgrade SSL 3.0.",
+      "impact": "Abandon définitif du protocole SSL 3.0 sur tout le Web mondial."
+    },
+    "permanent_remediation": [
+      "Bannir le mode CBC non authentifié.",
+      "Adopter AES-GCM avec tag d'authentification 128 bits.",
+      "Renvoyer des messages d'erreur génériques en temps constant."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse les erreurs de padding PKCS#7 renvoyées par le portail web lors de requêtes manipulées.",
+      "sample_logs": "HTTP 500: Invalid PKCS#7 Padding in block 3.\nHTTP 200: Valid Padding.\nORACLE LEAK: Attacker sends 256 crafted blocks per byte to decrypt the session cookie.",
+      "question": "Quel standard de padding est ciblé par cette attaque d'oracle ?",
+      "expected_answer": "PKCS#7"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Padding Oracle Cryptographic Attack\nstatus: stable\nlogsource:\n    product: webserver\ndetection:\n    selection:\n        status_code: 500\n        uri|contains: 'token='\n    condition: selection | count() by c_ip > 50",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "status_code: 500",
+        "count()"
+      ],
+      "flag": "SIGMA{PADDING_ORACLE_CBC_ATTACK_DETECTED_707}"
+    },
+    "remediation": {
+      "type": "harden_crypto_aead",
+      "description": "Migre vers AES-256-GCM (chiffrement authentifié AEAD) et masque les messages d'erreurs cryptographiques.",
+      "flag": "REMEDIATION{AES_GCM_AEAD_MIGRATION_COMPLETED}"
+    }
+  }
 }

@@ -22,5 +22,29 @@
     "points": 120,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{WIENER_ATTACK_CONTINUED_FRACTIONS_FACTOR_N}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel algorithme de factorisation résout les modules dont les facteurs premiers sont trop proches ?",
+    "points": 20,
+    "flag": "Fermat",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{RSA_FERMAT_FACTORIZATION_RISK_DETECTED_808}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Valide la génération de p et q avec séparation minimale |p - q| > 2^(bits/2 - 100) et modules de 4096 bits.",
+    "points": 20,
+    "flag": "REMEDIATION{RSA_KEYGEN_PRIMES_PROPERLY_SPACED_4096}",
+    "is_defense": true
   }
 ]

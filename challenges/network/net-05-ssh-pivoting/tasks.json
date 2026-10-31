@@ -22,5 +22,29 @@
     "points": 90,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SSH_DYNAMIC_SOCKS5_PIVOT_INTERNAL_HOST_HIT}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel port local standard est utilisé pour ouvrir le tunnel dynamique SOCKS5 avec ssh -D ?",
+    "points": 20,
+    "flag": "1080",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{SSH_SOCKS5_PIVOT_TUNNELING_DETECTED_005}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Désactive le transfert de port SSH (AllowTcpForwarding no et PermitTunnel no) sur les serveurs passerelles DMZ et segmente les VLANs.",
+    "points": 20,
+    "flag": "REMEDIATION{SSH_TUNNELING_DISABLED_AND_VLANS_SEGMENTED}",
+    "is_defense": true
   }
 ]

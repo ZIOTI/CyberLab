@@ -14,5 +14,29 @@
     "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{RSA_SMALL_PUBLIC_EXPONENT_CBRT_DECIPHERED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quelle valeur d'exposant public e a rendu l'attaque par racine cubique possible ?",
+    "points": 20,
+    "flag": "3",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{RSA_SMALL_PUBLIC_EXPONENT_E3_DETECTED_505}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Passe l'exposant public à e=65537 et impose le schéma de padding optimal RSA-OAEP avec SHA-256.",
+    "points": 20,
+    "flag": "REMEDIATION{RSA_EXPONENT_65537_AND_OAEP_ENFORCED}",
+    "is_defense": true
   }
 ]

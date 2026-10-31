@@ -1,7 +1,7 @@
 {
   "id": "forensics-02-pcap-http",
   "title": "Wireshark Unencrypted Credential Stream",
-  "organization": "Enterprise SOC Network Surveillance",
+  "organization": "Aegis Defense R&D Labs",
   "category": "Forensics & Mémoire",
   "target_os": "Linux",
   "machine_type": "room",
@@ -34,5 +34,43 @@
   ],
   "narrative_story": "Lors d'un incident de sécurité, la sonde réseau a enregistré un fichier de capture de paquets (.pcap). Un attaquant a exfiltré un fichier d'archives confidentiel via une requête HTTP POST non chiffrée. Ouvre la capture dans Wireshark, applique des filtres d'affichage sur les requêtes HTTP, suis le flux TCP (Follow TCP Stream) et recompose le fichier transféré.",
   "target_port": 3333,
-  "virtual_ip": "10.10.28.24"
+  "virtual_ip": "10.10.28.24",
+  "debrief_json": {
+    "storyline": "L'implant HTTP de l'APT adverse a été découvert grâce à l'analyse Wireshark. Le domaine de commande a été immédiatement réorienté vers un trou noir DNS (sinkhole).",
+    "technical_explanation": "Les malwares camouflent souvent leurs balises dans du trafic HTTP/HTTPS apparemment légitime en utilisant des paramètres GET ou des cookies pour exfiltrer des données.",
+    "key_lesson": "Une analyse de flux réseau couplée à un déchiffrement TLS d'inspection de sortie permet d'identifier les balises C2 périodiques.",
+    "historical_case": {
+      "title": "Campagne SolarWinds / SUNBURST (2020)",
+      "description": "Le backdoor utilisait des balises C2 déguisées en requêtes web HTTP/DNS avec jitter pour échapper aux détections.",
+      "impact": "Compromission de centaines d'agences gouvernementales et entreprises Fortune 500."
+    },
+    "permanent_remediation": [
+      "Activer l'interception et l'inspection SSL/TLS sur le proxy de sortie.",
+      "Déployer un DNS menteur (RPZ) pour bloquer les domaines malveillants récents."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Inspecte le fichier PCAP HTTP pour isoler la balise de communication C2 et extraire le token exfiltré.",
+      "sample_logs": "GET /api/v1/telemetry?beacon=chimera_alive&node=lab-ws-04 HTTP/1.1\nHost: c2-nexus.chimera-apt.net\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Implant/2.1\nFLAG EXTRACTED: CYBERLAB{PCAP_HTTP_C2_BEACON_EXTRACTED_442}",
+      "question": "Quel est le domaine du serveur C2 interrogé par le malware dans les en-têtes Host HTTP ?",
+      "expected_answer": "c2-nexus.chimera-apt.net"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection HTTP C2 Beaconing Activity\nstatus: stable\nlogsource:\n    product: proxy\ndetection:\n    selection:\n        cs_host: 'c2-nexus.chimera-apt.net'\n        cs_method: 'GET'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "c2-nexus.chimera-apt.net"
+      ],
+      "flag": "SIGMA{HTTP_C2_BEACONING_ACTIVITY_DETECTED_442}"
+    },
+    "remediation": {
+      "type": "harden_forensics_pcap_c2",
+      "description": "Inscrit le domaine et l'adresse IP du C2 sur la liste noire du résolveur DNS menteur et du pare-feu périmétrique.",
+      "flag": "REMEDIATION{C2_DOMAIN_BLOCKED_DNS_FIREWALL_SINKHOLE}"
+    }
+  }
 }

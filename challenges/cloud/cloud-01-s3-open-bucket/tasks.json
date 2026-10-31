@@ -22,5 +22,29 @@
     "points": 40,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{AWS_S3_PUBLIC_ANONYMOUS_LISTING_EXPOSED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quelle valeur de Principal dans une politique de bucket S3 accorde l'accès anonyme à tout le Web ?",
+    "points": 20,
+    "flag": "*",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{S3_PUBLIC_BUCKET_ANONYMOUS_ACCESS_DETECTED_001}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Active le S3 Block Public Access au niveau de l'organisation AWS et chiffre les objets avec KMS.",
+    "points": 20,
+    "flag": "REMEDIATION{S3_BLOCK_PUBLIC_ACCESS_AND_KMS_ENFORCED}",
+    "is_defense": true
   }
 ]

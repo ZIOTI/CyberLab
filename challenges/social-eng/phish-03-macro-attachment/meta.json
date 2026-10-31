@@ -1,0 +1,44 @@
+{
+  "id": "phish-03-macro-attachment",
+  "title": "Malicious Macro & Double Extension Payload Analysis",
+  "category": "Ingénierie Sociale",
+  "difficulty": "easy",
+  "points": 150,
+  "duration_min": 40,
+  "learning_path": "soc-forensics",
+  "author": "Aegis DFIR Team",
+  "target_os": "Windows",
+  "machine_type": "challenge",
+  "organization": "Aegis Corporate Accounting",
+  "cve": "CWE-506",
+  "rating": 4.9,
+  "solves": 2210,
+  "monogram": "PHISH-3",
+  "tags": [
+    "phishing",
+    "vba-macro",
+    "double-extension",
+    "dropper",
+    "reverse",
+    "email-security"
+  ],
+  "narrative_story": "Le service comptabilité a reçu une notification de facture impayée urgente accompagnée d'une pièce jointe nommée Facture_Impayee_Fevrier2026.docm.vbs. L'attaquant utilise la technique de masquage par double extension pour faire passer un script exécutable pour un document bureautique Word. Ta mission est de disséquer statiquement le script, d'identifier le binaire d'exécution, l'URL de téléchargement et d'extraire la signature de la menace.",
+  "mitre_tags": [
+    "T1204.002 (User Execution: Malicious File)",
+    "T1059.005 (Visual Basic)",
+    "T1036.007 (Double File Extension)"
+  ],
+  "owasp_tags": [
+    "A03:2021-Injection"
+  ],
+  "rules_of_engagement": "Analyse statique stricte. Ne pas exécuter le script VBS en dehors de la sandbox isolée.",
+  "debrief_json": {
+    "technical_explanation": "L'extension .docm.vbs tire parti du comportement par défaut de Windows qui masque les extensions de fichiers connues, affichant ainsi Facture_Impayee_Fevrier2026.docm. Le script invoque Windows Script Host (wscript.exe) pour lancer en tâche de fond powershell.exe avec une commande encodée en Base64 afin de télécharger un cheval de Troie.",
+    "historical_case": "Technique classique massivement employée par les campagnes de rançongiciels Emotet, Qakbot et Trickbot pour infecter les réseaux d'entreprises.",
+    "remediation": "Configurer les passerelles de messagerie pour interdire et mettre en quarantaine les fichiers exécutables et scripts (.vbs, .js, .hta, .bat) même dissimulés sous double extension."
+  },
+  "defense_tasks": {
+    "objective": "Analyser et classifier la pièce jointe malveillante puis activer la quarantaine passerelle.",
+    "endpoint": "/api/modules/phishing/attachment-scan"
+  }
+}

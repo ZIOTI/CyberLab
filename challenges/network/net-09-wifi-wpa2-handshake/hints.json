@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Outil d'analyse",
+    "cost": 10,
+    "content": "Utilise aircrack-ng -w wordlist_wifi.txt -b 00:14:6C:7E:40:80 wpa2_corp_handshake.pcap ou l'API /api/modules/wifi/wpa-handshake."
+  },
+  {
+    "title": "Filtre Wireshark",
+    "cost": 15,
+    "content": "Dans Wireshark, applique le filtre eapol pour isoler les 4 trames du handshake."
+  }
+]

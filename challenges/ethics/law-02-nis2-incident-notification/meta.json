@@ -1,0 +1,81 @@
+{
+  "id": "law-02-nis2-incident-notification",
+  "title": "Directive Européenne NIS 2 & Gestion de Crise Cyber",
+  "category": "Éthique & Cadre Légal",
+  "difficulty": "intermediate",
+  "points": 180,
+  "duration_min": 40,
+  "learning_path": "ethics-legal-compliance",
+  "author": "CyberSafe Conseil Juridique",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "organization": "Hexagon Energy (Entité Essentielle OSE)",
+  "cve": "Directive UE 2022/2555 (NIS 2)",
+  "rating": 4.9,
+  "solves": 1840,
+  "monogram": "NIS2",
+  "tags": [
+    "directive-nis2",
+    "ue-2022-2555",
+    "anssi",
+    "notification-24h",
+    "rgpd",
+    "art-33",
+    "gestion-crise"
+  ],
+  "narrative_story": "Hexagon Energy, gestionnaire d'infrastructures de distribution d'électricité en France, est classée comme Entité Essentielle au titre de la directive européenne NIS 2 (transposée en droit national). Un incident majeur d'intégrité affecte le réseau SCADA de distribution. En tant que Responsable de la Sécurité des Systèmes d'Information (RSSI), tu dois piloter la chaîne de notification obligatoire sous 24h auprès de l'ANSSI (alerte précoce) et de la CNIL au titre de l'article 33 du RGPD en cas de violation de données personnelles, sous peine de lourdes sanctions administratives.",
+  "mitre_tags": [
+    "M1053 (Data Backup)",
+    "M1043 (Incident Management)"
+  ],
+  "owasp_tags": [
+    "A09:2021-Security Logging and Monitoring Failures"
+  ],
+  "rules_of_engagement": "Mise en œuvre des processus de gestion de crise et de notification réglementaire. Respect absolu des délais légaux NIS 2 (24h / 72h).",
+  "debrief_json": {
+    "storyline": "Le dossier de notification NIS 2 a été transmis dans les délais stricts de 24 heures au CSIRT national (ANSSI). L'évaluation des impacts et la communication de crise ont permis d'éviter les sanctions pécuniaires prévues par la directive.",
+    "technical_explanation": "La directive NIS 2 (UE 2022/2555) impose une notification en 3 temps aux entités essentielles et importantes : 1) Alerte précoce sous 24h indiquant si l'incident est causé par un acte malveillant ; 2) Notification d'incident détaillée sous 72h ; 3) Rapport final sous un mois. Le non-respect expose à des amendes pouvant atteindre 10 millions d'euros ou 2% du chiffre d'affaires mondial, ainsi qu'à la mise en cause de la responsabilité personnelle des dirigeants.",
+    "key_lesson": "La conformité réglementaire NIS 2 n'est pas une simple formalité administrative : c'est un mécanisme de défense collective européenne permettant au CSIRT national de diffuser des indicateurs d'endiguement à l'ensemble du tissu économique.",
+    "historical_case": {
+      "title": "Attaque sur le réseau d'électricité ukrainien Prykarpattyaoblenergo (BlackEnergy 2015)",
+      "description": "La première cyberattaque documentée ayant provoqué une coupure d'électricité massive pour 230 000 usagers a illustré l'urgence d'une coordination étatique renforcée pour la résilience des infrastructures critiques, socle de la directive NIS 2.",
+      "impact": "Fondement de l'obligation de notification rapide et du durcissement des systèmes industriels OSE/OIV."
+    },
+    "permanent_remediation": [
+      "Mettre en place un plan de réponse à incident et de notification testé semestriellement par des exercices de crise.",
+      "Établir des canaux de communication hors-bande (téléphones satellites, messagerie chiffrée isolée).",
+      "Désigner les correspondants officiels auprès de l'ANSSI et de la CNIL.",
+      "Imposer des exigences de cyber-sécurité contractuelles à l'ensemble de la chaîne d'approvisionnement (Supply Chain Security)."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Vérifie les critères de qualification de l'incident majeur selon les seuils NIS 2 et le délai de première notification ANSSI.",
+      "sample_logs": "FICHE INCIDENT MAJEUR : REF-2026-NIS2-0042\nEntité concernée : Hexagon Energy SAS (Entité Essentielle)\nImpact opérationnel : Dépassement du seuil critique de 50 000 utilisateurs impactés\nVecteur d'attaque : Compromission de compte VPN sous-traitant (Supply Chain)\nDélai légal alerte précoce ANSSI : 24 heures (Article 23 NIS 2)\nDélai notification détaillée : 72 heures",
+      "log_file": "incident_ticket_nis2.log",
+      "question": "Quel est le délai maximal pour transmettre l'alerte précoce à l'ANSSI selon la directive NIS 2 ?",
+      "expected_answer": "24 heures"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle de corrélation SIEM déclenchant l'alerte de seuil NIS 2 lors d'une indisponibilité de service critique.",
+      "starter_template": "title: Trigger NIS2 Critical Infrastructure Incident Alert\nstatus: stable\nlogsource:\n    product: scada_gateway\ndetection:\n    selection:\n        status: 'CRITICAL_OFFLINE'\n        affected_substations|gt: 3\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "critical_offline",
+        "affected_substations"
+      ],
+      "flag": "SIGMA{NIS2_CRITICAL_INFRASTRUCTURE_SEV1_ALERT_994}"
+    },
+    "remediation": {
+      "type": "verify_nis2_anssi_notification",
+      "description": "Transmets et valide le formulaire d'alerte précoce 24h à l'ANSSI.",
+      "actions_required": [
+        "Générer la notification d'alerte précoce ANSSI sous 24h",
+        "Notifier la CNIL sous 72h au titre de l'Art. 33 du RGPD"
+      ],
+      "flag": "REMEDIATION{NIS2_ANSSI_NOTIFICATION_24H_VALIDATED_2026}"
+    }
+  }
+}

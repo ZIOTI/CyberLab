@@ -1,7 +1,7 @@
 {
   "id": "win-01-ad-asrep",
   "title": "Kerberos AS-REP Roasting Without Preauth",
-  "organization": "NorthCorp Active Directory Forest",
+  "organization": "TitanCorp Enterprise Active Directory",
   "category": "Systèmes & Active Directory",
   "target_os": "Windows",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Dans le domaine Active Directory de NorthCorp, le compte de service svc_sql_backup a été configuré avec l'attribut DONT_REQ_PREAUTH (pré-authentification Kerberos désactivée). Utilise GetNPUsers.py d'Impacket pour demander un ticket AS-REP sans connaître le mot de passe, puis casse le hachage krb5asrep hors-ligne avec Hashcat.",
   "target_port": 3333,
-  "virtual_ip": "10.10.37.8"
+  "virtual_ip": "10.10.37.8",
+  "debrief_json": {
+    "storyline": "Le compte de sauvegarde sans pré-authentification a permis l'extraction d'un ticket TGT chiffré et son cassage hors-ligne. L'option DONT_REQ_PREAUTH a été révoquée.",
+    "technical_explanation": "Sans pré-authentification Kerberos, n'importe quel attaquant peut demander un AS-REP pour le compte cible au KDC, qui répond immédiatement avec un ticket chiffré avec le mot de passe de l'utilisateur.",
+    "key_lesson": "Aucun compte Active Directory ne doit avoir la case 'Ne pas exiger la pré-authentification Kerberos' cochée.",
+    "historical_case": {
+      "title": "Compromissions Active Directory par mouvements latéraux AS-REP Roasting",
+      "description": "Technique quasi systématique lors des phases initiales d'intrusion interne d'équipes Red Team et d'APT.",
+      "impact": "Élévation de privilèges vers les comptes de service du domaine."
+    },
+    "permanent_remediation": [
+      "Auditer les comptes avec PowerShell : Get-ADUser -Filter {DoesNotRequirePreAuth -eq $True}.",
+      "Forcer le chiffrement AES-256 (0x12) et désactiver DES/RC4 sur Kerberos."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Identifie les comptes AD ayant l'attribut DONT_REQ_PREAUTH activé et extrait le condensat Kerberos AS-REP.",
+      "sample_logs": "EVENT ID 4768: A Kerberos authentication ticket (TGT) was requested.\nTarget Account: backup_svc@titancorp.local\nPre-Authentication Type: 0 (No Pre-Authentication Required)\nTicket Encryption Type: 0x17 (RC4-HMAC)\nATTACK: AS-REP Roasting offline crackable.",
+      "question": "Quel type de chiffrement faible (0x17) facilite le cassage rapide du ticket AS-REP ?",
+      "expected_answer": "RC4-HMAC"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Kerberos AS-REP Roasting Activity\nstatus: stable\nlogsource:\n    product: windows\n    service: security\ndetection:\n    selection:\n        EventID: 4768\n        PreAuthType: 0\n        TicketEncryptionType: '0x17'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "eventid: 4768",
+        "preauthtype: 0"
+      ],
+      "flag": "SIGMA{ASREP_ROASTING_NO_PREAUTH_DETECTED_001}"
+    },
+    "remediation": {
+      "type": "harden_ad_require_preauth",
+      "description": "Réactive la pré-authentification Kerberos obligatoire sur tous les comptes d'utilisateurs et de services.",
+      "flag": "REMEDIATION{KERBEROS_PREAUTH_ENFORCED_FOR_ALL_ACCOUNTS}"
+    }
+  }
 }

@@ -1,7 +1,7 @@
 {
   "id": "crypto-02-xor-cracker",
   "title": "Single-Byte XOR Frequency Analysis",
-  "organization": "Aegis Interception Field Station",
+  "organization": "Nexus FinTech Vault Systems",
   "category": "Cryptographie",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,43 @@
   ],
   "narrative_story": "Les services de renseignement ont capturé un flux hexadécimal chiffré par un masque jetable corrompu : l'ensemble des octets du texte en clair a été combiné par un opérateur XOR avec un unique octet secret (0x00 à 0xFF). Développe un script de comptage de fréquences ou utilise CyberChef pour retrouver la clé et lire le message.",
   "target_port": 3333,
-  "virtual_ip": "10.10.53.80"
+  "virtual_ip": "10.10.53.80",
+  "debrief_json": {
+    "storyline": "Le canal financier protégé par un simple XOR a été cassé par cryptanalyse de Kasiski et fréquence d'octets. Le chiffrement a été durci en ChaCha20.",
+    "technical_explanation": "La réutilisation d'une clé XOR courte permet d'éliminer la clé par superposition de blocs (C1 XOR C2 = P1 XOR P2).",
+    "key_lesson": "Un chiffrement XOR n'est inconditionnellement sûr que s'il s'agit d'un masque jetable (One-Time Pad) de même longueur que le message.",
+    "historical_case": {
+      "title": "Chiffrement du protocole WEP (RC4 / XOR keystream reuse)",
+      "description": "La faiblesse des vecteurs d'initialisation de 24 bits du WEP a permis le cassage du chiffrement en quelques secondes.",
+      "impact": "Remplacement complet de la norme WEP par WPA2/WPA3."
+    },
+    "permanent_remediation": [
+      "Ne jamais employer d'opération XOR sans nonce unique et mode authentifié.",
+      "Adopter ChaCha20-Poly1305 pour les protocoles réseau légers."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse le flux chiffré par masque XOR multi-octets et retrouve la longueur de clé par indice de coïncidence.",
+      "sample_logs": "HEX STREAM: 1c0a1b181b... KEY_LEN: 4 bytes\nFREQ ANALYSIS: Byte 0x20 matches space character.\nRECOVERED KEY: KEY!",
+      "question": "Quelle clé courte répétitive est utilisée pour le chiffrement XOR ?",
+      "expected_answer": "KEY!"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Multi Byte XOR Mask Stream\nstatus: stable\nlogsource:\n    product: dlp\ndetection:\n    selection:\n        payload_entropy|lt: 4.5\n        pattern: 'XOR_STREAM'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "xor_stream"
+      ],
+      "flag": "SIGMA{XOR_STREAM_CRACK_DETECTED_202}"
+    },
+    "remediation": {
+      "type": "harden_crypto_xor",
+      "description": "Remplace le masque XOR réutilisable par un chiffre de flux ChaCha20-Poly1305 authentifié.",
+      "flag": "REMEDIATION{XOR_REPLACED_WITH_CHACHA20_POLY1305}"
+    }
+  }
 }

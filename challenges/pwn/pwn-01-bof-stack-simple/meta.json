@@ -1,7 +1,7 @@
 {
   "id": "pwn-01-bof-stack-simple",
   "title": "Classic 32-bit Stack Smash & RIP Overwrite",
-  "organization": "Legacy C Firmware Systems",
+  "organization": "Telco Core Network Switch",
   "category": "Pwn & Exploitation Mémoire",
   "target_os": "Linux",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Un service réseau développé en C utilise la fonction non sécurisée gets() pour lire l'identifiant de session sans vérifier la taille du tampon alloué (64 octets). En calculant l'offset exact écrasant le pointeur d'instruction (EIP/RIP) avec un pattern cyclique GDB, redirige le flux d'exécution vers l'adresse de la fonction secrète print_flag() présente dans le binaire.",
   "target_port": 3333,
-  "virtual_ip": "10.10.32.143"
+  "virtual_ip": "10.10.32.143",
+  "debrief_json": {
+    "storyline": "Le dépassement de tampon sur la pile a permis d'écraser saved RIP pour sauter sur la fonction win. Le binaire a été recompilé avec les canaris de pile.",
+    "technical_explanation": "L'absence de vérification de taille lors de l'appel à gets() ou strcpy() permet d'écraser les variables locales, le saved frame pointer (RBP) puis l'adresse de retour (RIP).",
+    "key_lesson": "Les fonctions non sécurisées de la libc (gets, strcpy, sprintf) doivent être systématiquement remplacées par leurs équivalents sécurisés (fgets, strncpy, snprintf).",
+    "historical_case": {
+      "title": "Ver Morris (1988) et dépassement de pile fingerd",
+      "description": "Le tout premier ver de l'histoire d'Internet exploitait un dépassement de tampon dans la fonction gets() du démon fingerd.",
+      "impact": "Mise hors-service de 10% des ordinateurs connectés à Internet à l'époque."
+    },
+    "permanent_remediation": [
+      "Compiler avec -fstack-protector-strong, -D_FORTIFY_SOURCE=2, et -Wl,-z,relro,-z,now.",
+      "Proscrire gets() et auditer le code avec des linters statiques (flawfinder, clang-tidy)."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Calcule l'offset exact de corruption de pile (72 octets) et identifie l'écrasement du pointeur d'instruction saved RIP.",
+      "sample_logs": "STACK CORRUPTION DETECTED: buffer[64] overflowed with 80 bytes.\nSAVED RIP OVERWRITTEN: 0x4141414141414141 at offset 72.\nRETURN REDIRECTED TO: 0x00401156 (print_flag)\nFLAG: CYBERLAB{PWN_BOF_STACK_OVERWRITE_RET2WIN_772}",
+      "question": "Quel est l'offset en octets nécessaire pour atteindre l'adresse de retour sauvegardée (Saved RIP) ?",
+      "expected_answer": "72"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Stack Buffer Overflow Crash Core Dump\nstatus: stable\nlogsource:\n    product: linux\n    service: kernel\ndetection:\n    selection:\n        message|contains:\n            - 'segfault'\n            - 'ip 0000000041414141'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "segfault",
+        "41414141"
+      ],
+      "flag": "SIGMA{STACK_BUFFER_OVERFLOW_SEGFAULT_DETECTED_001}"
+    },
+    "remediation": {
+      "type": "harden_pwn_stack_canary",
+      "description": "Recompile le binaire avec les protections modernes : Canaris de pile (-fstack-protector-all) et pile non-exécutable NX (-z noexecstack).",
+      "flag": "REMEDIATION{STACK_CANARY_AND_NX_PIE_COMPILATION_ENFORCED}"
+    }
+  }
 }

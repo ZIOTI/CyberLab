@@ -1,7 +1,7 @@
 {
   "id": "net-05-ssh-pivoting",
   "title": "Dual-Homed Gateway Dynamic SOCKS5 Pivot",
-  "organization": "SecOps Perimeter DMZ",
+  "organization": "Industrial Defense Perimeter Gate",
   "category": "Réseau & Infrastructure",
   "target_os": "Linux",
   "machine_type": "room",
@@ -34,5 +34,43 @@
   ],
   "narrative_story": "Tu as obtenu un accès SSH valide sur une machine passerelle possédant deux interfaces réseau : eth0 (réseau externe accessible) et eth1 (réseau interne confidentiel 172.16.10.0/24). Monte un tunnel SOCKS5 dynamique avec ssh -D 1080 et utilise proxychains pour scanner le sous-réseau interne masqué et exploiter le serveur de base de données interne.",
   "target_port": 3333,
-  "virtual_ip": "10.10.42.97"
+  "virtual_ip": "10.10.42.97",
+  "debrief_json": {
+    "storyline": "La passerelle DMZ a été utilisée pour tunneler des flux vers le réseau SCADA interne. Le transfert de port SSH a été désactivé et le pare-feu renforcé.",
+    "technical_explanation": "La commande ssh -D 1080 transforme le client SSH en un proxy SOCKS5 complet, permettant à des outils comme proxychains de router n'importe quel paquet vers le sous-réseau distant.",
+    "key_lesson": "Les serveurs passerelles (bastions) doivent interdire le port-forwarding TCP pour éviter qu'ils ne se transforment en têtes de pont de pivoting.",
+    "historical_case": {
+      "title": "Pivots latéraux dans les cyberattaques d'infrastructures d'énergie",
+      "description": "Les attaquants ont compromis un serveur web frontal pour pivoter via SSH et RDP vers les automates industriels situés dans des sous-réseaux isolés.",
+      "impact": "Coupure de disjoncteurs et perturbation industrielle."
+    },
+    "permanent_remediation": [
+      "Dans /etc/ssh/sshd_config : AllowTcpForwarding no, AllowAgentForwarding no, PermitTunnel no.",
+      "Imposer des règles de pare-feu étanches interdisant à la DMZ de contacter directement le LAN interne."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse les connexions SSH et la configuration de pont réseau pour identifier le pivot vers le sous-réseau interne 10.10.20.0/24.",
+      "sample_logs": "SSH TUNNEL ESTABLISHED: ssh -D 1080 -N auditor@192.168.1.50\nSOCKS5 PROXY ACTIVE ON PORT: 1080\nPIVOT TARGET: 10.10.20.15 (Internal SCADA Controller PLC-01)\nCOMPROMISED VIA PROXYCHAINS.",
+      "question": "Quel port local standard est utilisé pour ouvrir le tunnel dynamique SOCKS5 avec ssh -D ?",
+      "expected_answer": "1080"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Suspicious SSH Dynamic Port Forwarding SOCKS Tunnel\nstatus: stable\nlogsource:\n    product: linux\n    service: sshd\ndetection:\n    selection:\n        message|contains: 'Local forwarding'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "local forwarding"
+      ],
+      "flag": "SIGMA{SSH_SOCKS5_PIVOT_TUNNELING_DETECTED_005}"
+    },
+    "remediation": {
+      "type": "harden_network_ssh_tunneling",
+      "description": "Désactive le transfert de port SSH (AllowTcpForwarding no et PermitTunnel no) sur les serveurs passerelles DMZ et segmente les VLANs.",
+      "flag": "REMEDIATION{SSH_TUNNELING_DISABLED_AND_VLANS_SEGMENTED}"
+    }
+  }
 }

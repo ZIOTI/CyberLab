@@ -1,0 +1,81 @@
+{
+  "id": "win-09-ad-priv-seimpersonate",
+  "title": "Windows SeImpersonatePrivilege Potato Escalation",
+  "category": "Systèmes & Active Directory",
+  "difficulty": "hard",
+  "points": 250,
+  "duration_min": 50,
+  "learning_path": "ad-enterprise",
+  "author": "Aegis Windows RedOps",
+  "target_os": "Windows",
+  "machine_type": "room",
+  "organization": "Nexus FinTech Windows Core",
+  "cve": "CWE-250",
+  "rating": 4.9,
+  "solves": 1420,
+  "monogram": "SEIMP",
+  "tags": [
+    "windows",
+    "active-directory",
+    "seimpersonate",
+    "juicypotato",
+    "printspoofer",
+    "privesc",
+    "godpotato"
+  ],
+  "narrative_story": "Lors d'une intrusion sur le serveur d'applications IIS de Nexus FinTech, l'équipe offensive obtient un shell initial sous le compte de service à faibles privilèges 'iis apppool\\nexus_api'. Cependant, la commande 'whoami /priv' révèle que le privilège SeImpersonatePrivilege est activé. Ta mission est d'exploiter ce privilège via l'interception de jeton d'authentification RPC/COM local (attaque Potato) pour usurper le jeton de sécurité de NT AUTHORITY\\SYSTEM et compromettre la machine.",
+  "mitre_tags": [
+    "T1134.001 (Token Impersonation/Theft)",
+    "T1068 (Exploitation for Privilege Escalation)"
+  ],
+  "owasp_tags": [
+    "A04:2021-Insecure Design"
+  ],
+  "rules_of_engagement": "Exploitation autorisée uniquement sur le serveur local Nexus IIS. Pas de perturbation du contrôleur de domaine.",
+  "debrief_json": {
+    "storyline": "Le serveur Nexus IIS hébergeant l'API financière a été entièrement compromis en moins de 10 minutes suite à l'usurpation de jeton SYSTEM. La segmentation réseau et la politique de durcissement des privilèges ont ensuite été déployées par le SOC.",
+    "technical_explanation": "Le privilège SeImpersonatePrivilege permet à un processus d'usurper n'importe quel jeton de sécurité dont il peut obtenir un handle. Les outils de la famille Potato (JuicyPotato, PrintSpoofer, GodPotato) forcent le service local RPC/DCOM ou le spouleur d'impression à s'authentifier auprès d'un serveur nommé factice contrôlé par l'attaquant, capturant ainsi un jeton SYSTEM.",
+    "key_lesson": "Tout compte de service disposant de SeImpersonatePrivilege doit être considéré comme ayant le potentiel d'un accès administrateur total sur la machine locale.",
+    "historical_case": {
+      "title": "Élévations massives RottenPotato / JuicyPotato (CVE-2019-1337 / PrintSpoofer)",
+      "description": "Utilisé dans de multiples cyberattaques et ransomwares d'entreprise (Ryuk, LockBit) pour pivoter d'un shell web non privilégié vers les pleins privilèges SYSTEM en une seule commande.",
+      "impact": "Compromission totale de milliers de serveurs Windows exposés sur Internet."
+    },
+    "permanent_remediation": [
+      "Retirer SeImpersonatePrivilege des comptes de service applicatifs non critiques.",
+      "Configurer les pools applicatifs IIS pour s'exécuter sous des comptes virtuels isolés.",
+      "Désactiver le service Spouleur d'impression (spoolsv.exe) sur les serveurs qui n'impriment pas.",
+      "Surveiller les événements Windows 4672 (Attribution de privilèges spéciaux) et 4624 (Logon de type 9)."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse les journaux de sécurité Windows (Security.evtx) pour repérer la tentative d'usurpation de jeton et le canal nommé suspect.",
+      "sample_logs": "EventID 4672: Special privileges assigned to new logon.\nAccount Name: nexus_api\nPrivileges: SeImpersonatePrivilege, SeChangeNotifyPrivilege\n\nEventID 4624: An account was successfully logged on.\nLogon Type: 9 (NewCredentials)\nImpersonation Level: Impersonation\nProcess Name: C:\\Tools\\PrintSpoofer64.exe\nPipe Name: \\\\.\\pipe\\spoolss_nexus_privesc\nTarget User: NT AUTHORITY\\SYSTEM",
+      "log_file": "Security.evtx",
+      "question": "Quel est le nom du canal nommé (Pipe Name) utilisé par l'outil d'usurpation ?",
+      "expected_answer": "\\\\.\\pipe\\spoolss_nexus_privesc"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle Sigma pour intercepter l'élévation via PrintSpoofer et création de pipes nommés suspects.",
+      "starter_template": "title: Detection SeImpersonate Potato Pipe Abuse\nstatus: stable\nlogsource:\n    product: windows\n    service: security\ndetection:\n    selection:\n        EventID: 4624\n        ProcessName|endswith:\n            - 'PrintSpoofer64.exe'\n            - 'GodPotato-NET4.exe'\n            - 'JuicyPotato.exe'\n    condition: selection\nfields:\n    - ProcessName\n    - TargetUserName",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "printspoofer",
+        "seimpersonate"
+      ],
+      "flag": "SIGMA{SEIMPERSONATE_POTATO_ABUSE_DETECTED_882}"
+    },
+    "remediation": {
+      "type": "harden_seimpersonate_privilege",
+      "description": "Retire le privilège SeImpersonatePrivilege du compte nexus_api et neutralise le service spouleur.",
+      "actions_required": [
+        "secedit /configure /db secedit.sdb /cfg harden_privileges.inf",
+        "Stop-Service Spooler -Force; Set-Service Spooler -StartupType Disabled"
+      ],
+      "flag": "REMEDIATION{SEIMPERSONATE_PRIVILEGE_STRIPPED_SYSTEM_SAFE}"
+    }
+  }
+}

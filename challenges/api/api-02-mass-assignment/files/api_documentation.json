@@ -1,0 +1,18 @@
+{
+  "endpoint": "/api/users/profile",
+  "method": "PATCH",
+  "allowed_fields": [
+    "username",
+    "email",
+    "bio"
+  ],
+  "vulnerable_hidden_fields": [
+    "role",
+    "is_admin",
+    "is_superuser"
+  ],
+  "sample_payload": {
+    "username": "alice",
+    "role": "admin"
+  }
+}

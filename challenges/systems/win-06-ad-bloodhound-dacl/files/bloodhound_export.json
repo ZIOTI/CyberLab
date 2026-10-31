@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "ObjectIdentifier": "S-1-5-21-100-1001",
+      "Properties": {
+        "name": "J.SMITH@AEGIS.LOCAL",
+        "dontreqpreauth": true
+      }
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-100-1002",
+      "Properties": {
+        "name": "SVC_MSSQL@AEGIS.LOCAL",
+        "serviceprincipalname": "MSSQLSvc/db01.aegis.local:1433"
+      }
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-100-500",
+      "Properties": {
+        "name": "ADMINISTRATOR@AEGIS.LOCAL",
+        "admincount": true
+      }
+    }
+  ],
+  "groups": [
+    {
+      "ObjectIdentifier": "S-1-5-21-100-512",
+      "Properties": {
+        "name": "DOMAIN ADMINS@AEGIS.LOCAL"
+      }
+    },
+    {
+      "ObjectIdentifier": "S-1-5-21-100-1005",
+      "Properties": {
+        "name": "HELPDESK_GROUP@AEGIS.LOCAL"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "Source": "S-1-5-21-100-1001",
+      "Target": "S-1-5-21-100-1005",
+      "EdgeType": "GenericAll"
+    },
+    {
+      "Source": "S-1-5-21-100-1005",
+      "Target": "S-1-5-21-100-512",
+      "EdgeType": "MemberOf"
+    }
+  ],
+  "meta": {
+    "flag": "CYBERLAB{AD_PRIVILEGE_ABUSE_GENERIC_ALL_DACL_TAKEOVER_661}"
+  }
+}

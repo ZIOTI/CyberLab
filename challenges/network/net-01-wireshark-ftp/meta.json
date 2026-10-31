@@ -1,7 +1,7 @@
 {
   "id": "net-01-wireshark-ftp",
   "title": "Cleartext FTP Session Sniffing",
-  "organization": "Legacy Datacenter Storage Link",
+  "organization": "Logistics Port Terminal Alpha",
   "category": "Réseau & Infrastructure",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,43 @@
   ],
   "narrative_story": "Le protocole de transfert de fichiers FTP transmet les identifiants et les données en clair sur le réseau (port 21). Dans une capture de trafic réseau réalisée sur le commutateur central, filtre sur le trafic FTP pour retrouver le nom d'utilisateur, le mot de passe de l'administrateur et le fichier confidentiel téléchargé.",
   "target_port": 3333,
-  "virtual_ip": "10.10.46.174"
+  "virtual_ip": "10.10.46.174",
+  "debrief_json": {
+    "storyline": "La session FTP a été écoutée passivement sur le commutateur du port maritime. Le mot de passe administrateur a été immédiatement révoqué et SFTP activé.",
+    "technical_explanation": "Le protocole FTP envoie toutes les commandes (y compris USER et PASS) en texte brut sur la connexion de contrôle TCP 21, lisible par toute écoute réseau.",
+    "key_lesson": "Aucun protocole transmettant des secrets en clair ne doit être toléré sur un réseau d'entreprise.",
+    "historical_case": {
+      "title": "Interception d'identifiants Telnet et FTP sur réseaux d'entreprises",
+      "description": "Des milliers de compromissions d'équipements industriels découlent de l'utilisation persistante de FTP et Telnet.",
+      "impact": "Piratage d'infrastructures de contrôle et de routeurs de bordure."
+    },
+    "permanent_remediation": [
+      "Bloquer le port TCP 21 au niveau du pare-feu d'entreprise.",
+      "Migrer les flux automatisés vers SFTP ou rsync over SSH."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse la capture réseau PCAP pour reconstituer la session FTP non chiffrée et extraire les identifiants.",
+      "sample_logs": "PACKET 14: USER backup_admin\nPACKET 16: 331 Please specify the password.\nPACKET 18: PASS PortAlphaSecure#2026\nPACKET 20: 230 Login successful.\nFLAG FILE: RETR secret_port_manifest.txt",
+      "question": "Quel protocole de transfert de fichiers non chiffré transmet les identifiants en clair sur le port 21 ?",
+      "expected_answer": "FTP"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Cleartext FTP Credentials In Transit\nstatus: stable\nlogsource:\n    product: zeek\n    service: ftp\ndetection:\n    selection:\n        command: 'PASS'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "command: 'pass'"
+      ],
+      "flag": "SIGMA{CLEARTEXT_FTP_AUTH_DETECTED_001}"
+    },
+    "remediation": {
+      "type": "harden_network_ftp",
+      "description": "Désactive le service FTP en clair et bascule les transferts vers SFTP (SSH port 22) ou FTPS avec certificat TLS.",
+      "flag": "REMEDIATION{CLEARTEXT_FTP_MIGRATED_TO_SFTP}"
+    }
+  }
 }

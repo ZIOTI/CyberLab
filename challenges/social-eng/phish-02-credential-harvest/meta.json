@@ -1,7 +1,7 @@
 {
   "id": "phish-02-credential-harvest",
   "title": "Cloned SSO Credential Harvester Analysis",
-  "organization": "Phishing Threat Defense Team",
+  "organization": "Saint-Sauveur Hospital SSO Portal",
   "category": "Social Engineering",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -32,5 +32,43 @@
   ],
   "narrative_story": "Une campagne d'hameçonnage a diffusé un lien vers un clone parfait de la mire d'authentification Microsoft 365 de l'entreprise. En inspectant le code source de la page web malveillante (form action, scripts de capture de frappe JavaScript), découvre le serveur de commandement (C2) vers lequel les identifiants volés sont expédiés en arrière-plan.",
   "target_port": 3333,
-  "virtual_ip": "10.10.16.129"
+  "virtual_ip": "10.10.16.129",
+  "debrief_json": {
+    "storyline": "La fausse page de connexion hospitalière a été neutralisée. La direction a migré tous les soignants vers des clés de sécurité physiques FIDO2.",
+    "technical_explanation": "Les kits de phishing modernes (Evilginx2) interceptent en temps réel les identifiants et les codes TOTP. Seul le standard FIDO2 lie cryptographiquement le jeton à l'URL exacte du navigateur.",
+    "key_lesson": "Seul le MFA basé sur FIDO2 / WebAuthn protège mathématiquement contre le vol de session par phishing.",
+    "historical_case": {
+      "title": "Attaque sur Uber et Twilio par kits de phishing Reverse Proxy (2022)",
+      "description": "Les attaquants ont contourné les SMS et applications d'authentification en interceptant les cookies de session via un faux portail d'entreprise.",
+      "impact": "Compromission des réseaux internes et de dépôts de code source."
+    },
+    "permanent_remediation": [
+      "Migrer le portail SSO d'entreprise vers FIDO2 (clés YubiKey / Windows Hello).",
+      "Déployer un filtre de réputation d'URL en temps réel sur les flux web de sortie."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse l'e-mail de phishing usurpant le portail SSO de l'hôpital et extrait le lien du collecteur d'identifiants.",
+      "sample_logs": "EMAIL CONTENT:\nObjet : Réinitialisation obligatoire de votre mot de passe hospitalier\nLien cliquable : https://sso-stsauveur-auth.login-verify.com/login\nIP SERVEUR HAMEÇONNAGE : 198.51.100.99\nCOLLECTOR: login-verify.com",
+      "question": "Quel domaine trompeur héberge la fausse page de connexion SSO de l'hôpital ?",
+      "expected_answer": "login-verify.com"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Phishing Credential Harvest URL Click\nstatus: stable\nlogsource:\n    product: proxy\ndetection:\n    selection:\n        c_uri|contains: 'sso-stsauveur-auth.login-verify.com'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "sso-stsauveur-auth.login-verify.com"
+      ],
+      "flag": "SIGMA{PHISHING_CREDENTIAL_HARVEST_URL_DETECTED_002}"
+    },
+    "remediation": {
+      "type": "harden_phishing_fido2_mfa",
+      "description": "Déploie l'authentification multifacteur FIDO2 / WebAuthn résistante au phishing et bloque le domaine frauduleux sur le DNS menteur.",
+      "flag": "REMEDIATION{FIDO2_WEBAUTHN_PHISHING_RESISTANT_MFA_ENFORCED}"
+    }
+  }
 }

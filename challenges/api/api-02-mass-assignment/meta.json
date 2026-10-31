@@ -1,7 +1,7 @@
 {
   "id": "api-02-mass-assignment",
   "title": "Rest API Role Escalation via Mass Assignment",
-  "organization": "SaaS Multi-Tenant Billing Gateway",
+  "organization": "TitanCorp Employee Onboarding API",
   "category": "APIs & Microservices",
   "target_os": "API",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "L'endpoint de mise à jour de profil utilisateur PUT /api/v1/user/profile prend directement l'ensemble du payload JSON entrant et l'applique aveuglément au modèle de données ORM sans filtrer les attributs protégés (Mass Assignment). Injecte les propriétés non documentées \"is_admin\": true et \"verified\": true pour élever tes privilèges.",
   "target_port": 3333,
-  "virtual_ip": "10.10.13.140"
+  "virtual_ip": "10.10.13.140",
+  "debrief_json": {
+    "storyline": "L'attribution automatique des propriétés JSON a permis à un simple employé de s'auto-promouvoir administrateur. Des DTO stricts ont été mis en place.",
+    "technical_explanation": "Le Mass Assignment survient lorsque les frameworks web (Express, Spring, Rails) associent directement les propriétés d'un payload JSON à l'entité de base de données sans filtrage préalable.",
+    "key_lesson": "Ne jamais injecter directement req.body dans une méthode d'enregistrement de base de données ; définir des DTO explicites.",
+    "historical_case": {
+      "title": "Faille GitHub Mass Assignment par Egor Homakov (2012)",
+      "description": "Un chercheur a injecté sa propre clé SSH publique dans l'organisation officielle de Ruby on Rails sur GitHub via un paramètre masqué.",
+      "impact": "Prise de conscience mondiale sur la dangerosité du Mass Assignment dans les frameworks modernes."
+    },
+    "permanent_remediation": [
+      "Définir des DTO avec sélection explicite : const { name, bio } = req.body.",
+      "Garantir que les rôles et permissions ne peuvent être modifiés que par des routes dédiées réservées aux super-admins."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Identifie l'injection du paramètre privilégié role: admin lors de la mise à jour du profil utilisateur.",
+      "sample_logs": "PATCH /api/users/profile HTTP/1.1\nHost: api.titancorp.local\nPayload: { \"username\": \"alice\", \"email\": \"alice@titancorp.local\", \"role\": \"admin\", \"is_superuser\": true }\nRESPONSE 200: { \"status\": \"updated\", \"role\": \"admin\" } (MASS ASSIGNMENT)",
+      "question": "Quel paramètre injecté a permis l'élévation de privilèges administrateur ?",
+      "expected_answer": "role"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection API Mass Assignment Privilege Escalation\nstatus: stable\nlogsource:\n    product: api_gateway\ndetection:\n    selection:\n        cs_method: 'PATCH'\n        request_body|contains:\n            - '\"role\": \"admin\"'\n            - '\"is_superuser\": true'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "is_superuser",
+        "admin"
+      ],
+      "flag": "SIGMA{API_MASS_ASSIGNMENT_ROLE_ADMIN_DETECTED_002}"
+    },
+    "remediation": {
+      "type": "harden_api_dto_whitelist",
+      "description": "Utilise des DTO (Data Transfer Objects) avec liste blanche stricte interdisant la liaison automatique des attributs sensibles.",
+      "flag": "REMEDIATION{API_DTO_WHITELIST_MASS_ASSIGNMENT_PROTECTED}"
+    }
+  }
 }

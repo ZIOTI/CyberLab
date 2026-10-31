@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Délais NIS 2",
+    "cost": 10,
+    "content": "NIS 2 prévoit une alerte précoce en 24h, une notification détaillée en 72h et un rapport final sous 1 mois."
+  },
+  {
+    "title": "Autorité nationale",
+    "cost": 15,
+    "content": "En France, l'ANSSI est l'autorité nationale compétente et le point de contact unique pour NIS 2."
+  }
+]

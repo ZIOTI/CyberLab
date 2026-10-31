@@ -22,5 +22,29 @@
     "points": 30,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BOLA_DOCUHEALTH_PATIENT_RECORDS_EXPOSED_882}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel acronyme OWASP API désigne le défaut d'autorisation d'accès aux objets (Broken Object Level Authorization) ?",
+    "points": 20,
+    "flag": "BOLA",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{API_BOLA_SEQUENTIAL_IDOR_DETECTED_001}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Implémente une vérification d'autorisation contextuelle basée sur l'identité du jeton JWT et remplace les ID séquentiels par des UUID v4.",
+    "points": 20,
+    "flag": "REMEDIATION{API_BOLA_ABAC_UUID_AUTHORIZATION_ENFORCED}",
+    "is_defense": true
   }
 ]

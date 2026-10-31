@@ -14,5 +14,29 @@
     "points": 90,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SINGLE_BYTE_XOR_FREQUENCY_ANALYSIS_SOLVED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quelle clé courte répétitive est utilisée pour le chiffrement XOR ?",
+    "points": 20,
+    "flag": "KEY!",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{XOR_STREAM_CRACK_DETECTED_202}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Remplace le masque XOR réutilisable par un chiffre de flux ChaCha20-Poly1305 authentifié.",
+    "points": 20,
+    "flag": "REMEDIATION{XOR_REPLACED_WITH_CHACHA20_POLY1305}",
+    "is_defense": true
   }
 ]

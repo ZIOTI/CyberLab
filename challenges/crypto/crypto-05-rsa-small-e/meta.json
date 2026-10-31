@@ -1,7 +1,7 @@
 {
   "id": "crypto-05-rsa-small-e",
   "title": "RSA Low Public Exponent Attack (e=3)",
-  "organization": "QuantumSec Research Facility",
+  "organization": "Aerospace Satellite Broadcast Relay",
   "category": "Cryptographie",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Un cryptosystème RSA utilise un exposant public e=3 sans bourrage cryptographique standard (pas d'OAEP). Le message en clair m est court, de sorte que m^3 < N (le produit n'a pas dépassé le module RSA N). Effectue une simple extraction de racine cubique sur le texte chiffré pour récupérer le message en clair sans avoir à factoriser N.",
   "target_port": 3333,
-  "virtual_ip": "10.10.36.46"
+  "virtual_ip": "10.10.36.46",
+  "debrief_json": {
+    "storyline": "Le message d'ordre de vol a été déchiffré directement par racine cubique car le texte était court et l'exposant e=3. La configuration a été sécurisée avec e=65537.",
+    "technical_explanation": "Lorsque m^e < N, aucune réduction modulaire n'a lieu, et le message est retrouvé par une simple racine e-ième dans les entiers.",
+    "key_lesson": "Toujours utiliser un exposant standard e=65537 (Fermat F4) et un padding randomisé prouvé comme OAEP.",
+    "historical_case": {
+      "title": "Attaque de Coppersmith et attaques sur les cartes à puce (1996-2000)",
+      "description": "De nombreux matériels embarqués employaient e=3 pour accélérer le calcul, permettant le déchiffrement de paquets courts.",
+      "impact": "Standardisation d'e=65537 dans toutes les RFC modernes (PKCS#1)."
+    },
+    "permanent_remediation": [
+      "Forcer e = 65537 (0x10001) sur toutes les clés RSA générées.",
+      "Remplacer le padding PKCS#1 v1.5 par RSA-OAEP."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Identifie la faiblesse du module RSA utilisant un exposant public e=3 sans padding OAEP suffisant.",
+      "sample_logs": "RSA BROADCAST CAPTURE: e = 3, N = 1024-bit composite.\nCIPHERTEXT: C = M^3 mod N. Because M^3 < N, M = cbrt(C).\nFLAG DECRYPTED WITHOUT FACTORING.",
+      "question": "Quelle valeur d'exposant public e a rendu l'attaque par racine cubique possible ?",
+      "expected_answer": "3"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Weak RSA Small Exponent Usage\nstatus: stable\nlogsource:\n    product: tls_auditor\ndetection:\n    selection:\n        rsa_public_exponent: 3\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "rsa_public_exponent",
+        "3"
+      ],
+      "flag": "SIGMA{RSA_SMALL_PUBLIC_EXPONENT_E3_DETECTED_505}"
+    },
+    "remediation": {
+      "type": "harden_crypto_rsa_oaep",
+      "description": "Passe l'exposant public à e=65537 et impose le schéma de padding optimal RSA-OAEP avec SHA-256.",
+      "flag": "REMEDIATION{RSA_EXPONENT_65537_AND_OAEP_ENFORCED}"
+    }
+  }
 }

@@ -1,0 +1,43 @@
+{
+  "id": "net-10-rogue-ap-investigation",
+  "title": "Evil Twin & Rogue Access Point Triangulation",
+  "category": "Réseau",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 40,
+  "learning_path": "soc-forensics",
+  "author": "Aegis SOC Team",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "organization": "Aegis Regional Campus",
+  "cve": "CWE-290",
+  "rating": 4.8,
+  "solves": 1640,
+  "monogram": "WIFI-2",
+  "tags": [
+    "wifi",
+    "rogue-ap",
+    "evil-twin",
+    "karma-attack",
+    "wips",
+    "dfir"
+  ],
+  "narrative_story": "Plusieurs collaborateurs signalent des déconnexions brutales et des alertes d'avertissement SSL lors de leur connexion au réseau sans-fil d'entreprise. L'équipe d'intervention SOC effectue un relevé du spectre avec airodump-ng. Ta mission est d'analyser le dump CSV, de démasquer le point d'accès pirate (Evil Twin) qui usurpe le SSID corporate et d'extraire la signature de l'attaquant.",
+  "mitre_tags": [
+    "T1040 (Network Sniffing)",
+    "T1557 (Adversary-in-the-Middle)"
+  ],
+  "owasp_tags": [
+    "A07:2021-Identification and Authentication Failures"
+  ],
+  "rules_of_engagement": "Surveillance et détection de rogue AP passives. Aucun déni de service radio (deauth).",
+  "debrief_json": {
+    "technical_explanation": "L'attaque Evil Twin consiste à diffuser un SSID identique avec une puissance de signal supérieure (ici -32 dBm contre -48 dBm) pour forcer l'itinérance des victimes vers la fausse borne. L'attaquant rétrograde souvent le chiffrement en mode OPEN ou installe un portail captif d'interception d'identifiants.",
+    "historical_case": "Cas célèbre de l'attaque Wi-Fi sur les diplomates et sportifs lors des JO de Sotchi et multiples incidents Evil Twin dans les aéroports internationaux.",
+    "remediation": "Déployer un système WIPS (Wireless Intrusion Prevention System) assurant la surveillance continue des BSSID autorisés et l'émission automatique de trames de confinement."
+  },
+  "defense_tasks": {
+    "objective": "Identifier et isoler la borne pirate via l'alerte WIPS.",
+    "endpoint": "/api/modules/wifi/rogue-ap-detect"
+  }
+}

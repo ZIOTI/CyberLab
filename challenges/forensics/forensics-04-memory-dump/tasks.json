@@ -22,5 +22,29 @@
     "points": 80,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{MEMORY_DUMP_VOLATILITY_HASHES_EXTRACTED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel processus système Windows a subi une injection de DLL réflective (Process Injection) ?",
+    "points": 20,
+    "flag": "svchost.exe",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (YARA)",
+    "description": "Rédige et valide la règle YARA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "YARA{COBALT_STRIKE_MEMORY_INJECTION_DETECTED_339}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Active la protection exploit guard ACG (Arbitrary Code Guard) et isole le poste infecté du réseau local.",
+    "points": 20,
+    "flag": "REMEDIATION{ENDPOINT_ISOLATED_AND_ACG_ENFORCED}",
+    "is_defense": true
   }
 ]

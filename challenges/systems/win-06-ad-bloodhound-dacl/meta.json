@@ -34,5 +34,44 @@
   ],
   "narrative_story": "L'ingestion des données SharpHound dans BloodHound révèle un chemin d'attaque critique : le groupe 'Helpdesk Support' possède la permission GenericAll sur l'objet utilisateur 'Tier1_Admin', qui lui-même possède WriteDacl sur un contrôleur de domaine. Exploite cette chaîne de privilèges pour réinitialiser le mot de passe ou poser des Shadow Credentials (msDS-KeyCredentialLink) et devenir Domain Admin.",
   "target_port": 3333,
-  "virtual_ip": "10.10.45.183"
+  "virtual_ip": "10.10.45.183",
+  "debrief_json": {
+    "storyline": "Le chemin d'attaque le plus court cartographié par BloodHound menait au contrôle total du domaine via une permission DACL orpheline. Le modèle Tiering a été appliqué.",
+    "technical_explanation": "Les permissions Active Directory (DACL) mal déléguées permettent des élévations indirectes : GenericAll autorise le changement forcé de mot de passe sans connaître l'ancien.",
+    "key_lesson": "Les droits d'administration doivent être strictement cloisonnés : un groupe de support Tier 2 ne doit jamais avoir de permission de modification sur un objet Tier 1 ou Tier 0.",
+    "historical_case": {
+      "title": "Rapport d'audit ANSSI sur les architectures Active Directory (2020-2023)",
+      "description": "L'accumulation historique de délégations DACL orphelines est le vecteur de prise de contrôle n°1 des domaines français.",
+      "impact": "Mise à niveau obligatoire vers l'architecture de séparation Tiering / Red Forest."
+    },
+    "permanent_remediation": [
+      "Auditer régulièrement l'Active Directory avec SharpHound / BloodHound.",
+      "Supprimer les permissions GenericAll, WriteDacl et GenericWrite non indispensables sur les objets de sécurité."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Examine le graphe de contrôle BloodHound révélant la permission GenericAll sur Tier1_Admin.",
+      "sample_logs": "BLOODHOUND ATTACK PATH: (Helpdesk Support) -[GenericAll]-> (Tier1_Admin) -[WriteDacl]-> (DC01.titancorp.local)\nACTION: Attacker resets Tier1_Admin password or injects Shadow Credentials (msDS-KeyCredentialLink).",
+      "question": "Quelle relation DACL confère les droits de modification complète et de réinitialisation de mot de passe ?",
+      "expected_answer": "GenericAll"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Dangerous DACL Modification or Shadow Credentials Injection\nstatus: stable\nlogsource:\n    product: windows\n    service: security\ndetection:\n    selection:\n        EventID: 5136\n        AttributeLDAPDisplayName: 'msDS-KeyCredentialLink'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "eventid: 5136",
+        "msds-keycredentiallink"
+      ],
+      "flag": "SIGMA{BLOODHOUND_DACL_SHADOW_CREDS_DETECTED_006}"
+    },
+    "remediation": {
+      "type": "harden_ad_dacl_tiering",
+      "description": "Implémente le modèle d'administration par paliers (Tiering Model Tier 0 / Tier 1 / Tier 2) et révoque les DACL excessives.",
+      "flag": "REMEDIATION{AD_TIERING_MODEL_ENFORCED_DACL_CLEANED}"
+    }
+  }
 }

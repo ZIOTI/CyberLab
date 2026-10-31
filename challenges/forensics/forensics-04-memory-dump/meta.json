@@ -1,7 +1,7 @@
 {
   "id": "forensics-04-memory-dump",
   "title": "RAM Footprint Memory Analysis (Volatility 3)",
-  "organization": "Incident Response Blue Cell",
+  "organization": "Nexus Private Banking Workstations",
   "category": "Forensics & Mémoire",
   "target_os": "Linux",
   "machine_type": "room",
@@ -34,5 +34,45 @@
   ],
   "narrative_story": "Une machine compromise a fait l'objet d'une acquisition de mémoire vive complète (dump brut de 512 Mo). Utilise le framework forensique Volatility 3 pour lister les processus en cours d'exécution au moment du crash (windows.pslist), identifier le processus injecté suspect et extraire les commandes passées dans la console cmd.",
   "target_port": 3333,
-  "virtual_ip": "10.10.56.189"
+  "virtual_ip": "10.10.56.189",
+  "debrief_json": {
+    "storyline": "L'analyse forensique de la mémoire a révélé une région mémoire RWX suspecte contenant le loader de Cobalt Strike. Le poste a été isolé et assaini.",
+    "technical_explanation": "La technique du Reflective DLL Injection alloue de la mémoire RWX dans un processus légitime via VirtualAllocEx et y injecte le binaire sans passer par l'API LoadLibrary de Windows.",
+    "key_lesson": "Les protections modernes de l'EDR doivent bloquer les pages mémoires exécutables et modifiables (RWX) et surveiller les appels CreateRemoteThread.",
+    "historical_case": {
+      "title": "Utilisation massive de Cobalt Strike par des groupes APT et ransomwares (Conti, LockBit)",
+      "description": "Les implants mémoire restent le moyen de persistance et de pivot privilégié des cybercriminels dans Active Directory.",
+      "impact": "Mise à l'arrêt d'établissements de santé et d'infrastructures financières."
+    },
+    "permanent_remediation": [
+      "Activer l'option de réduction de la surface d'attaque (ASR) bloquant les injections de code dans d'autres processus.",
+      "Déployer un EDR avec surveillance active des hooks de mémoire (ETW TI)."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse le dump de mémoire vive du processus svchost.exe infecté et repère l'injection de shellcode Cobalt Strike.",
+      "sample_logs": "PROCESS DUMP: svchost.exe (PID 1428)\nVAD ALLOCATION: 0x00400000 - PAGE_EXECUTE_READWRITE (RWX)\nSTRINGS DETECTED: ReflectiveLoader, /api/v2/beacon, CobaltStrike\nFLAG RECOVERED: CYBERLAB{MEMORY_DUMP_PROCESS_INJECTION_SVCHOST_339}",
+      "question": "Quel processus système Windows a subi une injection de DLL réflective (Process Injection) ?",
+      "expected_answer": "svchost.exe"
+    },
+    "detection_rule": {
+      "type": "yara",
+      "description": "Règle YARA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "rule CobaltStrike_Beacon_Memory_Injection {\n    meta:\n        description = \"Detects injected Cobalt Strike beacon shellcode in memory\"\n    strings:\n        $reflective = \"ReflectiveLoader\"\n        $c2_uri = \"/api/v2/beacon\"\n    condition:\n        all of them\n}",
+      "keywords_required": [
+        "rule",
+        "strings:",
+        "condition:",
+        "$reflective",
+        "all of them"
+      ],
+      "flag": "YARA{COBALT_STRIKE_MEMORY_INJECTION_DETECTED_339}"
+    },
+    "remediation": {
+      "type": "harden_forensics_memory_injection",
+      "description": "Active la protection exploit guard ACG (Arbitrary Code Guard) et isole le poste infecté du réseau local.",
+      "flag": "REMEDIATION{ENDPOINT_ISOLATED_AND_ACG_ENFORCED}"
+    }
+  }
 }

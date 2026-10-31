@@ -1,0 +1,2 @@
+# Règle Snort / Suricata à compléter
+# alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"C2 Beacon Detected"; http_user_agent; content:"CobaltPhantom"; sid:1000001; rev:1;)

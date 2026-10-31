@@ -1,0 +1,44 @@
+{
+  "id": "net-09-wifi-wpa2-handshake",
+  "title": "Aegis Corp WPA2 4-Way Handshake Cracking",
+  "category": "Réseau",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Wireless RedOps",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "organization": "Aegis Defense Headquarters",
+  "cve": "CWE-326",
+  "rating": 4.9,
+  "solves": 1820,
+  "monogram": "WIFI-1",
+  "tags": [
+    "wifi",
+    "802.11",
+    "wpa2",
+    "eapol",
+    "aircrack-ng",
+    "handshake",
+    "mic"
+  ],
+  "narrative_story": "Lors d'un audit de sécurité sans-fil sur le campus d'Aegis, une sonde d'interception radio a capturé une séquence d'authentification complète WPA2 4-way EAPOL entre la borne Wi-Fi d'entreprise et un terminal nomade. Ta mission est d'analyser le fichier PCAP capturé, d'identifier le SSID, le BSSID de l'AP cible et la station cliente, puis de casser la clé pré-partagée WPA2 (PSK) grâce au dictionnaire d'entreprise.",
+  "mitre_tags": [
+    "T1040 (Network Sniffing)",
+    "T1110 (Brute Force)"
+  ],
+  "owasp_tags": [
+    "A02:2021-Cryptographic Failures"
+  ],
+  "rules_of_engagement": "Audit radio passif autorisé sur le SSID Aegis-Corporate-Secure. Aucune perturbation active du spectre.",
+  "debrief_json": {
+    "technical_explanation": "Le protocole WPA2 dérive une clé de session par paquet (PTK) à partir de la PMK calculée via PBKDF2 sur la clé partagée et le SSID. Le message 2 contient un MIC permettant à l'attaquant de tester des millions de clés hors-ligne sans émettre une seule trame vers le réseau.",
+    "historical_case": "Démontré par Mathy Vanhoef dans les attaques KRACK (2017) et la vulnérabilité intrinsèque de WPA2 aux attaques hors-ligne par dictionnaire, ayant conduit à la norme WPA3 (Dragonfly / SAE).",
+    "remediation": "Migrer impérativement vers WPA3-SAE ou vers une authentification 802.1X Enterprise avec certificats EAP-TLS individuels."
+  },
+  "defense_tasks": {
+    "objective": "Vérifier le durcissement du réseau sans-fil via le protocole WPA3 et la surveillance WIPS.",
+    "endpoint": "/api/modules/wifi/hardening"
+  }
+}

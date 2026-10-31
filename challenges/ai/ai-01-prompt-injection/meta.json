@@ -1,0 +1,44 @@
+{
+  "id": "ai-01-prompt-injection",
+  "title": "Indirect Prompt Injection & LLM System Prompt Leakage",
+  "category": "Intelligence Artificielle",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "cloud-container",
+  "author": "Aegis AI RedOps",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "organization": "Aegis Artificial Intelligence Lab",
+  "cve": "CWE-1336",
+  "rating": 4.9,
+  "solves": 1950,
+  "monogram": "AI-1",
+  "tags": [
+    "ai-security",
+    "llm",
+    "prompt-injection",
+    "jailbreak",
+    "rag-poisoning",
+    "owasp-llm-01"
+  ],
+  "narrative_story": "Aegis déploie un assistant IA basé sur un grand modèle de langage (LLM) pour synthétiser automatiquement les rapports financiers et documents d'audits stockés dans une base de connaissances vectorielle (RAG). Un document externe a été empoisonné avec une instruction de contournement furtive. Conçois des attaques d'injection de prompt directe et indirecte, puis active les garde-fous pour neutraliser l'exfiltration des secrets.",
+  "mitre_tags": [
+    "T1557 (Adversary-in-the-Middle)",
+    "T1005 (Data from Local System)"
+  ],
+  "owasp_tags": [
+    "LLM01:2023-Prompt Injection",
+    "LLM06:2023-Sensitive Information Disclosure"
+  ],
+  "rules_of_engagement": "Tests autorisés sur l'endpoint interactif IA. Pas de saturation du serveur d'inférence.",
+  "debrief_json": {
+    "technical_explanation": "Les modèles de langage traitent les instructions système et les données utilisateur dans le même flux contextuel sans séparation stricte de privilèges. Une injection indirecte survient lorsqu'un document externe non fiable contient des balises forçant le LLM à écraser ses consignes initiales.",
+    "historical_case": "Démontré sur Bing Chat, ChatGPT plugins et de multiples assistants d'entreprise où des pages web malveillantes injectaient des instructions pour exfiltrer l'historique de discussion via des images Markdown.",
+    "remediation": "Implémenter une architecture Dual-LLM (un modèle de sanitization séparé du modèle d'exécution), encapsuler les données dans des délimiteurs stricts et déployer un filtre DLP de sortie sur les expressions régulières de secrets."
+  },
+  "defense_tasks": {
+    "objective": "Activer et certifier les garde-fous IA multi-couches.",
+    "endpoint": "/api/modules/aillm/guardrail-verify"
+  }
+}

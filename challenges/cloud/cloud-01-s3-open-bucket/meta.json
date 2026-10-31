@@ -1,7 +1,7 @@
 {
   "id": "cloud-01-s3-open-bucket",
   "title": "AWS S3 Leaking Financial Records",
-  "organization": "FinTech Cloud Storage Services",
+  "organization": "CloudTech DevOps Operations",
   "category": "Cloud & Conteneurs",
   "target_os": "Cloud",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Une société de conseil financier a configuré un compartiment de stockage AWS S3 sans contrôle d'accès adéquat, autorisant la lecture anonyme via l'API AWS S3. Utilise l'outil awscli avec l'option --no-sign-request pour explorer les dossiers, télécharger les fichiers de sauvegarde confidentiels et découvrir les clés privées exposées.",
   "target_port": 3333,
-  "virtual_ip": "10.10.30.70"
+  "virtual_ip": "10.10.30.70",
+  "debrief_json": {
+    "storyline": "Le bucket contenant la sauvegarde de base de données était publiquement énumérable. Le verrouillage public AWS a été activé et les clés révoquées.",
+    "technical_explanation": "Une politique S3 avec 'Principal': '*' ou une ACL avec 'AllUsers' / 'AuthenticatedUsers' autorise n'importe quel internaute à lister et télécharger les objets sans authentification.",
+    "key_lesson": "Activer par défaut le verrouillage public des buckets (S3 Block Public Access) à l'échelle du compte et de l'organisation.",
+    "historical_case": {
+      "title": "Fuite Capital One (2019) et fuites massives de buckets S3",
+      "description": "Des centaines de millions de dossiers de clients ont été dérobés suite à des buckets S3 publics ou accessibles via SSRF.",
+      "impact": "Amendes records et révision complète de la gouvernance IAM cloud."
+    },
+    "permanent_remediation": [
+      "Activer 'Block Public Access' au niveau de tout le compte AWS.",
+      "Intégrer AWS Config ou Security Hub pour alerter immédiatement sur tout bucket public."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Audite les accès publics sur le bucket Amazon S3 de sauvegarde et identifie les clés d'API exposées.",
+      "sample_logs": "S3 ACCESS LOG: [15/Feb/2026:10:00:12 +0000] 198.51.100.22 - REST.GET.OBJECT database_backup_2026.sql 200 -\nBUCKET POLICY: Principal: \"*\", Action: \"s3:GetObject\", Effect: \"Allow\"\nKEYS FOUND IN OBJECT: AWS_SECRET_ACCESS_KEY, DATABASE_PASSWORD",
+      "question": "Quelle valeur de Principal dans une politique de bucket S3 accorde l'accès anonyme à tout le Web ?",
+      "expected_answer": "*"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Public S3 Bucket Enumeration and Download\nstatus: stable\nlogsource:\n    product: aws\n    service: cloudtrail\ndetection:\n    selection:\n        eventName: 'GetObject'\n        userIdentity.type: 'Anonymous'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "eventname: 'getobject'",
+        "anonymous"
+      ],
+      "flag": "SIGMA{S3_PUBLIC_BUCKET_ANONYMOUS_ACCESS_DETECTED_001}"
+    },
+    "remediation": {
+      "type": "harden_cloud_s3_block_public",
+      "description": "Active le S3 Block Public Access au niveau de l'organisation AWS et chiffre les objets avec KMS.",
+      "flag": "REMEDIATION{S3_BLOCK_PUBLIC_ACCESS_AND_KMS_ENFORCED}"
+    }
+  }
 }

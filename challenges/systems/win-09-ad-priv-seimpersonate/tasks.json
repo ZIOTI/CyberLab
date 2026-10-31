@@ -1,0 +1,47 @@
+[
+  {
+    "id": "t1",
+    "title": "Énumération des privilèges du token courant",
+    "description": "Quel privilège d'usurpation dangereux est listé dans la sortie de whoami /priv ?",
+    "points": 50,
+    "flag": "SeImpersonatePrivilege"
+  },
+  {
+    "id": "t2",
+    "title": "Création du serveur nommé RPC/Pipe factice",
+    "description": "Quel binaire d'usurpation moderne (PrintSpoofer/GodPotato) cible le spouleur d'impression Windows ?",
+    "points": 60,
+    "flag": "PrintSpoofer64.exe"
+  },
+  {
+    "id": "t3",
+    "title": "Élévation de privilèges vers SYSTEM & Root Flag",
+    "description": "Exécute la commande avec succès pour récupérer le flag root dans C:\\SystemSecret\\system_flag.txt.",
+    "points": 80,
+    "flag": "CYBERLAB{SEIMPERSONATE_POTATO_SYSTEM_TOKEN_STEAL_991}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC sur le canal nommé",
+    "description": "Identifie le canal nommé (Pipe Name) d'attaque dans les logs d'audit.",
+    "points": 20,
+    "flag": "\\\\.\\pipe\\spoolss_nexus_privesc",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Déploiement Règle Sigma Détection Potato",
+    "description": "Valide la règle Sigma interceptant les processus de vol de token.",
+    "points": 20,
+    "flag": "SIGMA{SEIMPERSONATE_POTATO_ABUSE_DETECTED_882}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Durcissement des privilèges du compte de service",
+    "description": "Retire le droit SeImpersonate et désactive le spouleur d'impression.",
+    "points": 20,
+    "flag": "REMEDIATION{SEIMPERSONATE_PRIVILEGE_STRIPPED_SYSTEM_SAFE}",
+    "is_defense": true
+  }
+]

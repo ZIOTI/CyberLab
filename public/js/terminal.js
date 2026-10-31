@@ -1633,6 +1633,35 @@
           break;
         }
 
+        case 'aircrack-ng': {
+          if (!args.length || args.includes('-h') || args.includes('--help')) {
+            stdout = 'Usage: aircrack-ng [options] <.cap / .pcap files>\n' +
+                     '  -b <bssid> : Access Point MAC address filter\n' +
+                     '  -w <words> : Path to wordlist(s)\n' +
+                     '  -q         : Quiet mode\n';
+            break;
+          }
+          const hasPcap = args.some(a => a.toLowerCase().includes('pcap') || a.toLowerCase().includes('.cap'));
+          const wordlist = args.includes('-w') ? args[args.indexOf('-w') + 1] : 'wordlist_wifi.txt';
+          const bssid = args.includes('-b') ? args[args.indexOf('-b') + 1] : '00:14:6C:7E:40:80';
+
+          if (!hasPcap) {
+            stderr = 'aircrack-ng: Please specify a valid capture file (.pcap or .cap)\n';
+            exitCode = 1;
+            break;
+          }
+
+          stdout = `                               Aircrack-ng 1.7 \n\n` +
+                   ` [00:00:02] Tested 1820 keys (got 890.2 k/s)\n\n` +
+                   `      KEY FOUND! [ AegisSecureWiFi#2026 ]\n\n` +
+                   `      Master Key     : 9B 42 E1 04 88 F3 C2 10 99 21 D4 88 12 EF 77 AA\n` +
+                   `      Transient Key  : 41 8A CC 09 88 12 B9 01 22 45 99 FF 10 23 88 11\n` +
+                   `      EAPOL MIC      : Valid (WPA2-PSK 4-way handshake verified for ${bssid})\n` +
+                   `      Wordlist used  : ${wordlist}\n` +
+                   `      FLAG           : CYBERLAB{WIFI_WPA2_4WAY_HANDSHAKE_MIC_CRACKED_993}\n`;
+          break;
+        }
+
         // --- Élévation de privilèges & Sudo ---
         case 'sudo': {
           if (args.includes('-l')) {

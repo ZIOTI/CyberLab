@@ -1,0 +1,9 @@
+{
+  "contract_id": "ROE-2026-FR-09",
+  "client": "TitanCorp SAS",
+  "authorized_range": "192.168.10.0/24",
+  "prohibited_ips": [
+    "192.168.10.254"
+  ],
+  "contact_anssi": "cert-fr@ssi.gouv.fr"
+}

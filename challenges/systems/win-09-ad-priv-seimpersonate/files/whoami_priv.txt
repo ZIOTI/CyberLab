@@ -1,0 +1,9 @@
+PRIVILEGES INFORMATION
+----------------------
+Privilege Name                Description                               State
+============================= ========================================= ========
+SeAssignPrimaryTokenPrivilege Replace a process level token             Disabled
+SeIncreaseQuotaPrivilege      Adjust memory quotas for a process        Disabled
+SeImpersonatePrivilege        Impersonate a client after authentication Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled
+SeCreateGlobalPrivilege       Create global objects                     Enabled

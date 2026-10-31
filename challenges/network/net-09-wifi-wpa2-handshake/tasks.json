@@ -1,0 +1,31 @@
+[
+  {
+    "id": "t1",
+    "title": "Extraction du SSID de l'AP cible",
+    "description": "Quel est le nom du réseau sans-fil (SSID) capturé dans la trame Beacon ?",
+    "points": 40,
+    "flag": "Aegis-Corporate-Secure"
+  },
+  {
+    "id": "t2",
+    "title": "Identification de l'adresse MAC de la borne",
+    "description": "Quelle est l'adresse MAC matérielle (BSSID) du point d'accès Wi-Fi ?",
+    "points": 50,
+    "flag": "00:14:6c:7e:40:80"
+  },
+  {
+    "id": "t3",
+    "title": "Cassage de la clé PSK & Flag Master",
+    "description": "Casse le Message Integrity Check (MIC) de la trame EAPOL 2 avec wordlist_wifi.txt.",
+    "points": 70,
+    "flag": "CYBERLAB{WIFI_WPA2_4WAY_HANDSHAKE_MIC_CRACKED_993}"
+  },
+  {
+    "id": "t4",
+    "title": "Validation du durcissement WPA3",
+    "description": "Valide le durcissement WPA3-SAE et WIPS contre les attaques hors-ligne.",
+    "points": 40,
+    "flag": "WPA3_SAE_WIPS_HARDENED",
+    "is_defense": true
+  }
+]

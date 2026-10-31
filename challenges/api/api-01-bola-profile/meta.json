@@ -1,7 +1,7 @@
 {
   "id": "api-01-bola-profile",
   "title": "DocuHealth Telehealth BOLA / IDOR Vulnerability",
-  "organization": "DocuHealth Telemedicine Platform",
+  "organization": "Saint-Sauveur Telehealth API",
   "category": "APIs & Microservices",
   "target_os": "API",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "L'application de télémédecine DocuHealth expose un endpoint REST /api/patients/:id/medical-records. L'API vérifie que l'utilisateur est authentifié, mais omet de vérifier s'il est autorisé à consulter le dossier médical du patient ciblé (Broken Object Level Authorization - BOLA / IDOR). En incrémentant l'ID séquentiel vers l'ID 01, consulte le dossier médical du président du conseil d'administration.",
   "target_port": 3333,
-  "virtual_ip": "10.10.35.92"
+  "virtual_ip": "10.10.35.92",
+  "debrief_json": {
+    "storyline": "L'API médicale permettait à n'importe quel patient de lire les dossiers d'autres patients en changeant l'ID dans l'URL. Le contrôle d'accès a été renforcé.",
+    "technical_explanation": "La faille BOLA survient lorsque le contrôleur API utilise l'identifiant fourni par le client pour requêter la base sans vérifier que l'objet appartient bien à l'utilisateur authentifié.",
+    "key_lesson": "Chaque route manipulant un objet doit valider formellement la relation d'appartenance entre le demandeur et la ressource.",
+    "historical_case": {
+      "title": "Faille Uber BOLA (2019) et faille mSpy",
+      "description": "Des chercheurs ont pu accéder aux profils et positions de millions d'utilisateurs en modifiant simplement les identifiants d'API.",
+      "impact": "Divulgation massive de données personnelles et primes de bug bounty record."
+    },
+    "permanent_remediation": [
+      "Valider req.user.id === resource.owner_id dans chaque endpoint API.",
+      "Remplacer les entiers séquentiels par des UUID v4 aléatoires imprédictibles."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse les requêtes HTTP de l'API /api/patients/:id montrant un accès non autorisé à d'autres identifiants patients (BOLA).",
+      "sample_logs": "GET /api/patients/1001 HTTP/1.1 -> Auth User: patient_1001 (200 OK)\nGET /api/patients/1002 HTTP/1.1 -> Auth User: patient_1001 (200 OK - BOLA VULN)\nLEAKED VIP RECORD: Nom: Ministre de la Santé, Dossier médical confidentiel",
+      "question": "Quel acronyme OWASP API désigne le défaut d'autorisation d'accès aux objets (Broken Object Level Authorization) ?",
+      "expected_answer": "BOLA"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection API BOLA IDOR Sequential Crawling\nstatus: stable\nlogsource:\n    product: api_gateway\ndetection:\n    selection:\n        uri|startswith: '/api/patients/'\n    condition: selection | count() by c_ip > 30",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "uri|startswith: '/api/patients/'",
+        "count()"
+      ],
+      "flag": "SIGMA{API_BOLA_SEQUENTIAL_IDOR_DETECTED_001}"
+    },
+    "remediation": {
+      "type": "harden_api_bola_context_auth",
+      "description": "Implémente une vérification d'autorisation contextuelle basée sur l'identité du jeton JWT et remplace les ID séquentiels par des UUID v4.",
+      "flag": "REMEDIATION{API_BOLA_ABAC_UUID_AUTHORIZATION_ENFORCED}"
+    }
+  }
 }

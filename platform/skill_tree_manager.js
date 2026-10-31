@@ -280,7 +280,7 @@ class SkillTreeManager {
         prerequisites: ['node-soc-pcap'],
         mastery_skills: ['magic-bytes', 'memory-forensics', 'steganography-lsb', 'volatility'],
         linked_curriculum_levels: ['m1-l7', 'm1-l13'],
-        linked_challenges: ['forensics-01-magic-bytes', 'aegis-box-02-internal'],
+        linked_challenges: ['forensics-01-magic-bytes', 'forensics-03-stego-lsb', 'forensics-04-memory-dump', 'aegis-box-02-internal'],
         offense_objective: 'Extraire un payload secret dissimulé dans les bits de poids faible d\'un fichier bitmap.',
         defense_objective: 'Établir la chronologie de l\'incident (timeline) et calculer les condensats d\'intégrité SHA-256.',
         xp_reward: 180
@@ -380,7 +380,7 @@ class SkillTreeManager {
         prerequisites: ['node-cloud-storage-iam'],
         mastery_skills: ['ssrf-cloud', 'imdsv1-imdsv2', 'mass-assignment', 'microservice-auth'],
         linked_curriculum_levels: ['m3-l4', 'm4-l6'],
-        linked_challenges: ['api-01-bola-profile'],
+        linked_challenges: ['api-01-bola-profile', 'api-02-mass-assignment'],
         offense_objective: 'Interroger le service de métadonnées AWS 169.254.169.254 via une faille SSRF pour voler un rôle IAM.',
         defense_objective: 'Imposer IMDSv2 avec token obligatoire et limiter les redirections du reverse proxy.',
         xp_reward: 180
@@ -416,7 +416,7 @@ class SkillTreeManager {
         prerequisites: [],
         mastery_skills: ['caesar-rot', 'vigenere-cipher', 'xor-cracker', 'frequency-analysis'],
         linked_curriculum_levels: ['m1-l9'],
-        linked_challenges: ['crypto-01-rot-vault', 'crypto-02-xor-cracker'],
+        linked_challenges: ['crypto-01-rot-vault', 'crypto-02-xor-cracker', 'crypto-03-hash-crack'],
         offense_objective: 'Briser un chiffrement XOR multi-octets par analyse de fréquence et récupérer le flag.',
         defense_objective: 'Abandonner les chiffrements maison au profit d\'algorithmes cryptographiques standardisés (AES/ChaCha20).',
         xp_reward: 120
@@ -432,7 +432,7 @@ class SkillTreeManager {
         prerequisites: ['node-bin-crypto-classic'],
         mastery_skills: ['rsa-small-e', 'rsa-factorization', 'aes-padding-oracle', 'pkcs7'],
         linked_curriculum_levels: ['m4-l10'],
-        linked_challenges: ['crypto-01-rot-vault', 'aegis-box-03-vault'],
+        linked_challenges: ['crypto-05-rsa-small-e', 'crypto-07-padding-oracle', 'crypto-08-rsa-factor-wiener', 'aegis-box-03-vault'],
         offense_objective: 'Déchiffrer un message AES-CBC octet par octet en exploitant la fuite d\'erreur d\'un oracle de padding.',
         defense_objective: 'Migrer vers un mode de chiffrement authentifié (AEAD) comme AES-256-GCM ou ChaCha20-Poly1305.',
         xp_reward: 150
@@ -448,7 +448,7 @@ class SkillTreeManager {
         prerequisites: ['node-bin-crypto-classic'],
         mastery_skills: ['elf-header', 'objdump-strings', 'crackme-keygen', 'ghidra-decompile'],
         linked_curriculum_levels: ['m1-l15'],
-        linked_challenges: ['rev-01-js-packer'],
+        linked_challenges: ['rev-03-strings-crackme', 'rev-06-anti-debug-pe', 'rev-01-js-packer'],
         offense_objective: 'Identifier la fonction de comparaison de clé dans un binaire compilé et générer une licence valide.',
         defense_objective: 'Activer l\'obfuscation de symboles, le stripping de binaires et des routines anti-débogage.',
         xp_reward: 180
@@ -484,6 +484,90 @@ class SkillTreeManager {
         offense_objective: 'Construire une chaîne de gadgets ROP pour invoquer execve("/bin/sh") malgré la pile non exécutable (NX).',
         defense_objective: 'Activer le Full RELRO, PIE (Position Independent Executable) et FORTIFY_SOURCE.',
         xp_reward: 250
+      },
+
+      // ==========================================
+      // EXTENSION PHASE 3 : NOUVEAUX MODULES SPÉCIALISÉS (WI-FI, PHISHING, IA, ÉTHIQUE)
+      // ==========================================
+      {
+        id: 'node-net-wifi-pivot',
+        role_id: 'role-web-network',
+        tier: 2,
+        title: 'Audit Sans-Fil (Wi-Fi 4-Way) & Pivoting Réseau',
+        description: 'Capture et analyse de handshakes 4-way WPA2, détection d\'Evil Twin / Rogue AP et traversée de passerelles réseau via SOCKS5.',
+        icon: 'wifi',
+        category: 'Wireless & Pivot',
+        prerequisites: ['node-web-recon'],
+        mastery_skills: ['wpa2-handshake', 'aircrack-ng', 'rogue-ap', 'ssh-pivoting', 'proxychains'],
+        linked_curriculum_levels: ['m2-l7', 'm2-l8'],
+        linked_challenges: ['net-09-wifi-wpa2-handshake', 'net-10-rogue-ap-investigation', 'net-05-ssh-pivoting'],
+        offense_objective: 'Extraire le 4-way handshake EAPOL et retrouver la clé PSK du réseau d\'entreprise.',
+        defense_objective: 'Déployer WPA3-SAE, activer la détection WIPS et segmenter les sous-réseaux internes.',
+        xp_reward: 160
+      },
+      {
+        id: 'node-win-active-directory',
+        role_id: 'role-web-network',
+        tier: 3,
+        title: 'Active Directory & Attaques d\'Infrastructure Windows',
+        description: 'Énumération LDAP/BloodHound, attaques Kerberos (AS-REP & Kerberoasting), abus de privilèges DACL et élévation SeImpersonate.',
+        icon: 'server',
+        category: 'Active Directory',
+        prerequisites: ['node-web-recon'],
+        mastery_skills: ['asrep-roasting', 'kerberoasting', 'bloodhound-dacl', 'seimpersonate', 'ldap-search'],
+        linked_curriculum_levels: ['m2-l6'],
+        linked_challenges: ['win-01-ad-asrep', 'win-02-ad-kerberoast', 'win-06-ad-bloodhound-dacl', 'win-09-ad-priv-seimpersonate'],
+        offense_objective: 'Extraire des tickets Kerberos vulnérables et usurper les droits d\'administrateur de domaine.',
+        defense_objective: 'Imposer la pré-authentification Kerberos, migrer vers gMSA et auditer les DACL orphelines.',
+        xp_reward: 200
+      },
+      {
+        id: 'node-soc-phishing-defense',
+        role_id: 'role-soc-defense',
+        tier: 2,
+        title: 'Ingénierie Sociale & Analyse d\'E-mails Malveillants',
+        description: 'Dissection forensique d\'en-têtes SPF/DKIM/DMARC falsifiés, détection d\'usurpation de cadre et neutralisation de pièces jointes à macros VBA.',
+        icon: 'mail',
+        category: 'Email DFIR',
+        prerequisites: ['node-soc-telemetry'],
+        mastery_skills: ['phishing-analysis', 'email-headers', 'spf-dkim-dmarc', 'vba-macro-analysis'],
+        linked_curriculum_levels: ['m2-l9'],
+        linked_challenges: ['phish-01-ceo-fraud', 'phish-02-credential-harvest', 'phish-03-macro-attachment'],
+        offense_objective: 'Analyser le courriel d\'hameçonnage, identifier les incohérences d\'en-tête et extraire l\'URL du collecteur.',
+        defense_objective: 'Mettre en place une politique DMARC stricte (p=reject) et bloquer les pièces jointes à double extension.',
+        xp_reward: 160
+      },
+      {
+        id: 'node-cloud-ai-security',
+        role_id: 'role-cloud-devsec',
+        tier: 3,
+        title: 'Sécurité de l\'IA & Résilience des LLM',
+        description: 'Contournement des modèles d\'IA générative : injection de prompt directe et indirecte, jailbreaks de persona, fuite de prompt système et exfiltration Markdown.',
+        icon: 'cpu',
+        category: 'AI / LLM Security',
+        prerequisites: ['node-cloud-git-secrets'],
+        mastery_skills: ['prompt-injection', 'indirect-injection', 'llm-jailbreak', 'ai-guardrails', 'markdown-exfil'],
+        linked_curriculum_levels: ['m4-l7'],
+        linked_challenges: ['ai-01-prompt-injection', 'ai-02-jailbreak-data-exfil'],
+        offense_objective: 'Injecter des instructions malveillantes via un document contextuel pour forcer l\'exfiltration de secrets système.',
+        defense_objective: 'Implémenter une architecture de garde-fous multi-couches avec délimiteurs stricts et filtre DLP.',
+        xp_reward: 190
+      },
+      {
+        id: 'node-bin-ethics-compliance',
+        role_id: 'role-binary-ctf',
+        tier: 1,
+        title: 'Cadre Légal (France/UE), STAD & Directive NIS 2',
+        description: 'Maîtrise de la législation française sur les STAD (Art. 323-1 Code pénal, Loi Godfrain), conformité RGPD (Art. 33), obligations NIS 2 et mandats éthiques (RoE).',
+        icon: 'shield',
+        category: 'Legal & Ethics',
+        prerequisites: [],
+        mastery_skills: ['loi-godfrain', 'art-323-1', 'rgpd-breach', 'directive-nis2', 'rules-of-engagement'],
+        linked_curriculum_levels: ['m1-l14'],
+        linked_challenges: ['law-01-stad-godfrain-compliance', 'law-02-nis2-incident-notification'],
+        offense_objective: 'Évaluer la légalité d\'une action offensive et identifier les conditions d\'exonération (mandat écrit préalable).',
+        defense_objective: 'Mettre en œuvre la procédure de notification d\'incident sous 24h/72h à l\'ANSSI et à la CNIL.',
+        xp_reward: 120
       }
     ];
 
@@ -907,6 +991,11 @@ class SkillTreeManager {
   // 5. Mode Dojo & Moteur de Révision Espacée des Erreurs
   inferSkillNodeAndTopic(itemId) {
     const id = (itemId || '').toLowerCase();
+    if (id.includes('ad-') || id.includes('kerberos') || id.includes('ldap') || id.includes('seimp') || id.startsWith('win-')) return { node: 'node-win-active-directory', topic: 'Active Directory & Windows' };
+    if (id.includes('wifi') || id.includes('rogue-ap') || id.includes('pivot')) return { node: 'node-net-wifi-pivot', topic: 'Wi-Fi & Réseau Avancé' };
+    if (id.includes('phish')) return { node: 'node-soc-phishing-defense', topic: 'Phishing & Ingénierie Sociale' };
+    if (id.includes('ai-') || id.includes('prompt-') || id.includes('jailbreak') || id.includes('llm')) return { node: 'node-cloud-ai-security', topic: 'Sécurité IA & LLM' };
+    if (id.includes('law-') || id.includes('stad') || id.includes('nis2') || id.includes('ethics')) return { node: 'node-bin-ethics-compliance', topic: 'Droit & Éthique Cyber' };
     if (id.startsWith('m1-') || id.startsWith('net-')) return { node: 'node-web-recon', topic: 'Reconnaissance & Réseau' };
     if (id.startsWith('m2-') || id.includes('telemetry') || id.includes('log')) return { node: 'node-soc-telemetry', topic: 'Télémétrie & Logs' };
     if (id.startsWith('m3-') || id.includes('sqli')) return { node: 'node-web-sqli', topic: 'Injections SQL' };
@@ -917,7 +1006,6 @@ class SkillTreeManager {
     if (id.includes('forensic') || id.includes('pcap') || id.includes('stego')) return { node: 'node-soc-pcap', topic: 'Forensics DFIR' };
     if (id.includes('rev') || id.includes('crackme') || id.includes('elf') || id.includes('pe')) return { node: 'node-bin-reverse-elf', topic: 'Reverse Engineering' };
     if (id.includes('pwn') || id.includes('bof') || id.includes('rop')) return { node: 'node-bin-overflow', topic: 'Binary Exploitation' };
-    if (id.includes('ad-') || id.includes('kerberos') || id.includes('ldap')) return { node: 'node-soc-rules', topic: 'Active Directory & SIEM' };
     return { node: 'node-web-recon', topic: 'Cybersécurité Pratique' };
   }
 
@@ -1962,6 +2050,425 @@ class SkillTreeManager {
       legal_articles: targetCase.articles,
       analysis: targetCase.explanation,
       flag: isCorrect ? 'CYBERLAB{ETHICS_LEGAL_STAD_RGPD_NIS2_COMPLIANCE_CERTIFIED_2026}' : null
+    };
+  }
+
+  getEthicsCases() {
+    return [
+      {
+        id: 'case-stad-intrusion',
+        title: 'Accès non autorisé à un serveur sans endommagement',
+        articles: 'Code pénal art. 323-1 alinéa 1 (Loi Godfrain 1988)',
+        correct_action: 'INFRACTION_ART_323_1',
+        summary: 'Pénalisation de l\'accès ou maintien frauduleux dans un STAD (3 ans de prison, 100 000 € d\'amende).'
+      },
+      {
+        id: 'case-rgpd-breach',
+        title: 'Exfiltration d\'une base de clients et délai de notification',
+        articles: 'RGPD Article 33 & 34',
+        correct_action: 'NOTIFICATION_CNIL_72H',
+        summary: 'Notification obligatoire à la CNIL sous 72 heures au plus tard en cas de violation de données.'
+      },
+      {
+        id: 'case-nis2-compliance',
+        title: 'Application de la directive européenne NIS 2',
+        articles: 'Directive NIS 2 (UE 2022/2555)',
+        correct_action: 'MESURES_GESTION_RISQUES_ET_SIGNALEMENT_24H',
+        summary: 'Obligations de gouvernance, mesures techniques de gestion des risques et alerte précoce sous 24h à l\'ANSSI.'
+      },
+      {
+        id: 'case-mandate-roe',
+        title: 'Règles d\'Engagement (RoE) et Convention d\'Audit Écrite',
+        articles: 'Jurisprudence STAD / Art. 323-1 Code pénal',
+        correct_action: 'MANDAT_ECRIT_EXIGIBILITE_LEGALE',
+        summary: 'Exigence stricte d\'un mandat d\'autorisation écrit et préalable signé par une autorité habilitée.'
+      }
+    ];
+  }
+
+  // --- 8. WI-FI & RÉSEAU AVANCÉ ---
+  handleWifiWpaHandshake(pcapDataOrHex, passphraseGuess = null, wordlist = null) {
+    const knownSsid = 'Aegis-Corporate-Secure';
+    const knownBssid = '00:14:6C:7E:40:80';
+    const knownStation = '00:0F:B5:88:AC:19';
+    const targetPass = 'AegisSecureWiFi#2026';
+
+    const testPass = passphraseGuess || (wordlist && wordlist.includes(targetPass) ? targetPass : null);
+
+    if (testPass === targetPass) {
+      return {
+        success: true,
+        cracked: true,
+        ssid: knownSsid,
+        bssid: knownBssid,
+        station_mac: knownStation,
+        key_type: 'WPA2-PSK (AES-CCMP)',
+        handshake_frames_captured: 4,
+        anonce: '9a3f2b18c4e098a123f4567890abcdef1234567890abcdef1234567890abcdef',
+        snonce: 'd14b8c92e10574f8abcdef1234567890abcdef1234567890abcdef1234567890',
+        mic_valid: true,
+        recovered_passphrase: targetPass,
+        flag: 'CYBERLAB{WIFI_WPA2_4WAY_HANDSHAKE_MIC_CRACKED_993}',
+        message: `Handshake WPA2 4-way cassé avec succès ! Clé PSK identifiée : "${targetPass}".`
+      };
+    }
+
+    if (testPass && testPass !== targetPass) {
+      return {
+        success: false,
+        cracked: false,
+        error: `MIC WPA2 invalide pour la clé candidate "${testPass}". Échec de validation du Message Integrity Check.`
+      };
+    }
+
+    // Si aucune clé passée, on retourne les métadonnées d'inspection du handshake
+    return {
+      success: true,
+      cracked: false,
+      inspection_only: true,
+      ssid: knownSsid,
+      bssid: knownBssid,
+      station_mac: knownStation,
+      eapol_version: '802.1X-2004 (WPA2-Enterprise/Personal)',
+      cipher_suite: 'AES-CCMP',
+      handshake_state: 'COMPLETE_4_WAY_CAPTURED',
+      hint: 'Testez la clé avec passphrase="AegisSecureWiFi#2026" ou fournissez une wordlist contenant la clé.'
+    };
+  }
+
+  handleWifiRogueApDetect(surveyEntries = null) {
+    const defaultSurvey = [
+      { ssid: 'Aegis-Corporate-Secure', bssid: '00:14:6C:7E:40:80', channel: 6, encryption: 'WPA2-CCMP', signal_dbm: -48, vendor: 'Cisco-Catalyst' },
+      { ssid: 'Aegis-Guest', bssid: '00:14:6C:7E:40:81', channel: 6, encryption: 'WPA2-CCMP', signal_dbm: -50, vendor: 'Cisco-Catalyst' },
+      { ssid: 'Aegis-Corporate-Secure', bssid: 'DE:AD:BE:EF:13:37', channel: 11, encryption: 'OPEN', signal_dbm: -32, vendor: 'Alfa-Network-RTL8812AU' }
+    ];
+
+    const list = Array.isArray(surveyEntries) && surveyEntries.length > 0 ? surveyEntries : defaultSurvey;
+    const rogue = list.find(ap =>
+      (ap.ssid === 'Aegis-Corporate-Secure' && (ap.bssid === 'DE:AD:BE:EF:13:37' || ap.encryption.includes('OPEN') || ap.encryption.includes('WEP'))) ||
+      ap.is_rogue === true
+    );
+
+    if (rogue) {
+      return {
+        success: true,
+        rogue_detected: true,
+        threat_level: 'CRITICAL',
+        attack_type: 'EVIL_TWIN_KARMA_DOWNGRADE',
+        rogue_ap: rogue,
+        analysis: `Alerte WIPS : Point d'accès imposteur détecté pour le SSID "${rogue.ssid}" avec l'adresse MAC anormale ${rogue.bssid} et chiffrement rétrogradé (${rogue.encryption}).`,
+        flag: 'CYBERLAB{WIFI_ROGUE_AP_EVIL_TWIN_DETECTED_441}'
+      };
+    }
+
+    return {
+      success: true,
+      rogue_detected: false,
+      message: 'Aucun point d\'accès suspect détecté. L\'ensemble des BSSID correspond aux bornes autorisées.'
+    };
+  }
+
+  handleNetworkPivot(chainConfig = {}) {
+    const jumpHost = chainConfig.jump_host || chainConfig.bastion || '';
+    const targetHost = chainConfig.target_host || chainConfig.target_ip || '';
+    const proxyType = (chainConfig.proxy_type || 'socks5').toLowerCase();
+
+    const isJumpValid = jumpHost.includes('10.10.10.1') || jumpHost.includes('bastion');
+    const isTargetValid = targetHost.includes('172.16.50.2') || targetHost.includes('dc01');
+
+    if (isJumpValid && isTargetValid && (proxyType === 'socks5' || proxyType === 'ssh_dynamic')) {
+      return {
+        success: true,
+        pivoting_established: true,
+        route: `Attacker (192.168.1.100) -> SSH SOCKS5 (${jumpHost}:1080) -> Target (${targetHost})`,
+        reachable_services: [
+          { port: 445, service: 'SMB / Active Directory', host: targetHost },
+          { port: 389, service: 'LDAP Active Directory', host: targetHost },
+          { port: 88, service: 'Kerberos KDC', host: targetHost }
+        ],
+        flag: 'CYBERLAB{NETWORK_PIVOT_MULTI_HOP_SOCKS5_TUNNEL_SUCCESS_881}',
+        message: 'Tunnel dynamique établi avec succès via Proxychains. L\'hôte interne restreint est accessible.'
+      };
+    }
+
+    return {
+      success: false,
+      pivoting_established: false,
+      error: 'Échec du pivotement réseau. Vous devez spécifier jump_host="10.10.10.1" (bastion), target_host="172.16.50.2" (DC interne) et proxy_type="socks5".'
+    };
+  }
+
+  verifyWifiHardening(settings = {}) {
+    const isWpa3 = settings.wpa3_sae === true || settings.eap_tls === true;
+    const isWips = settings.wips_enabled === true;
+    const isSegmented = settings.internal_segmentation === true;
+    const isHardened = isWpa3 && isWips && isSegmented;
+
+    return {
+      success: isHardened,
+      hardened: isHardened,
+      checklist: {
+        protocol: isWpa3 ? 'WPA3-SAE / 802.1X EAP-TLS Actif' : 'WPA2-PSK (Vulnérable aux attaques par dictionnaire hors ligne)',
+        rogue_detection: isWips ? 'WIPS (Wireless IPS) Actif' : 'Pas de détection de Rogue AP',
+        segmentation: isSegmented ? 'VLANs Isolés & Filtrage Egress Actif' : 'Sous-réseaux à plat (Pivoting possible)'
+      },
+      message: isHardened
+        ? 'Durcissement réseau sans-fil validé : WPA3-SAE neutralise le cassage de handshake 4-way, et le WIPS bloque les Rogue AP.'
+        : 'Vulnérabilités sans-fil détectées : Activez wpa3_sae, wips_enabled et internal_segmentation.'
+    };
+  }
+
+  // --- 9. INGÉNIERIE SOCIALE & PHISHING DÉFENSIF ---
+  handlePhishingAnalyzeEmail(emailContentOrHeaders) {
+    const raw = typeof emailContentOrHeaders === 'string'
+      ? emailContentOrHeaders
+      : JSON.stringify(emailContentOrHeaders || {});
+
+    const lower = raw.toLowerCase();
+
+    const hasSpfFail = lower.includes('spf=fail') || lower.includes('198.51.100.77');
+    const hasDkimMissing = lower.includes('dkim=none') || lower.includes('dkim=fail');
+    const hasPretext = lower.includes('urgent') || lower.includes('virement') || lower.includes('acquisition');
+    const hasPhishLink = lower.includes('phish-gateway.net') || lower.includes('phish-nexus.net');
+
+    const isPhishing = hasSpfFail && hasDkimMissing && (hasPretext || hasPhishLink);
+
+    if (isPhishing) {
+      return {
+        success: true,
+        verdict: 'PHISHING_ATTACK_CONFIRMED',
+        risk_score: 98,
+        sender_analysis: {
+          claimed_sender: 'm.renoir@aegis-defense.com',
+          originating_ip: '198.51.100.77',
+          relay_hostname: 'mail-relay-unauth.external-isp.net',
+          spf_status: 'FAIL (IP not authorized by SPF record of aegis-defense.com)',
+          dkim_status: 'NONE (No cryptographic signature)',
+          dmarc_status: 'FAIL'
+        },
+        lure_technique: 'CEO Fraud / Whaling (Usurpation du Président Marc Renoir avec sentiment d\'urgence financière)',
+        iocs: {
+          suspicious_domain: 'phish-gateway.net',
+          originating_ip: '198.51.100.77',
+          extracted_token: 'CYBERLAB{PHISHING_EMAIL_HEADER_ANALYSIS_FRAUD_PREVENTED}'
+        },
+        flag: 'CYBERLAB{PHISHING_EMAIL_HEADER_ANALYSIS_FRAUD_PREVENTED}'
+      };
+    }
+
+    return {
+      success: false,
+      verdict: 'SUSPICIOUS_OR_CLEAN',
+      error: 'Les en-têtes analysés ne contiennent pas l\'ensemble des indicateurs de compromission attendus (SPF fail, DKIM none, URL suspecte).'
+    };
+  }
+
+  handlePhishingAttachmentScan(fileName, fileContent = '') {
+    const name = (fileName || '').toLowerCase();
+    const content = (fileContent || '').toString();
+
+    const isDoubleExt = name.endsWith('.docm.vbs') || name.endsWith('.pdf.exe') || name.endsWith('.xlsx.js');
+    const hasMacroIndicators = content.includes('WScript.Shell') ||
+      content.includes('powershell') ||
+      content.includes('URLDownloadToFile') ||
+      content.includes('AutoOpen') ||
+      content.includes('cmd.exe');
+
+    if (isDoubleExt || hasMacroIndicators) {
+      const hash = crypto.createHash('sha256').update(content || name).digest('hex');
+      return {
+        success: true,
+        verdict: 'MALICIOUS_DROPPER_DETECTED',
+        threat_name: 'Trojan.VBS.Dropper.AgentAegis',
+        file_name: fileName,
+        file_hash_sha256: hash,
+        indicators: [
+          isDoubleExt ? 'DOUBLE_EXTENSION_MASKING' : null,
+          content.includes('WScript.Shell') ? 'PROCESS_SPAWNING_WSCRIPT' : null,
+          content.includes('powershell') ? 'POWERSHELL_PAYLOAD_EXECUTION' : null
+        ].filter(Boolean),
+        mitre_technique: 'T1204.002 (User Execution: Malicious File) / T1059.005 (Visual Basic)',
+        flag: 'CYBERLAB{PHISHING_MALICIOUS_MACRO_ATTACHMENT_NEUTRALIZED_552}'
+      };
+    }
+
+    return {
+      success: false,
+      verdict: 'CLEAN',
+      message: 'Aucun marqueur malveillant détecté dans la pièce jointe.'
+    };
+  }
+
+  verifyPhishingHardening(settings = {}) {
+    const isDmarcReject = (settings.dmarc_policy || '').toLowerCase() === 'reject' || settings.p === 'reject';
+    const isSpfStrict = settings.spf_strict === true || (settings.spf_record || '').includes('-all');
+    const isDkim = settings.dkim_enabled === true;
+    const isQuarantine = settings.quarantine_macros === true;
+
+    const isHardened = isDmarcReject && isSpfStrict && isDkim && isQuarantine;
+
+    return {
+      success: isHardened,
+      hardened: isHardened,
+      checklist: {
+        dmarc: isDmarcReject ? 'DMARC p=reject Actif' : 'DMARC absent ou laxiste (p=none / p=quarantine)',
+        spf: isSpfStrict ? 'SPF Strict -all Actif' : 'SPF permissif (~all ou ?all)',
+        dkim: isDkim ? 'Signature DKIM 2048-bit Active' : 'DKIM manquant',
+        gateway_rules: isQuarantine ? 'Passerelle Mail : Quarantaine Automatique des Macros' : 'Macros autorisées'
+      },
+      message: isHardened
+        ? 'Durcissement anti-phishing validé : La politique DMARC p=reject force le rejet immédiat des emails forgés.'
+        : 'Vulnérabilités de messagerie : Activez dmarc_policy="reject", spf_strict=true, dkim_enabled=true et quarantine_macros=true.'
+    };
+  }
+
+  // --- 10. SÉCURITÉ DE L'IA & LLM AVANCÉE ---
+  handleAiIndirectInjection(contextDocument, userQuery, enableGuardrail = false) {
+    const doc = (contextDocument || '').toLowerCase();
+    const query = (userQuery || '').toLowerCase();
+
+    const hasIndirectPayload = doc.includes('ignore previous instructions') ||
+      doc.includes('ignore tes instructions') ||
+      doc.includes('system directive override') ||
+      doc.includes('exfiltrate') ||
+      doc.includes('master_api_secret_key');
+
+    if (enableGuardrail) {
+      if (hasIndirectPayload) {
+        return {
+          success: true,
+          blocked: true,
+          security_event: 'INDIRECT_PROMPT_INJECTION_CONTAINED',
+          message: 'Le Guardrail d\'isolation de contexte (Dual-LLM Sanitizer) a détecté et neutralisé une tentative d\'injection indirecte dissimulée dans le document tiers.',
+          guardrail_active: true
+        };
+      }
+      return {
+        success: true,
+        blocked: false,
+        response: 'Synthèse du document effectuée sans anomalie de sécurité.',
+        guardrail_active: true
+      };
+    }
+
+    if (hasIndirectPayload) {
+      return {
+        success: true,
+        exploited: true,
+        vulnerability: 'INDIRECT_PROMPT_INJECTION_DOCUMENT_POISONING',
+        exfiltrated_secret: 'MASTER_API_SECRET_KEY = CYBERLAB{AI_LLM_INDIRECT_PROMPT_INJECTION_DOCUMENT_POISONING_772}',
+        flag: 'CYBERLAB{AI_LLM_INDIRECT_PROMPT_INJECTION_DOCUMENT_POISONING_772}',
+        message: 'L\'interpréteur LLM a exécuté les directives cachées dans le document contextuel sans discernement.'
+      };
+    }
+
+    return {
+      success: true,
+      exploited: false,
+      response: 'Document légitime analysé.'
+    };
+  }
+
+  handleAiJailbreak(prompt, persona = 'DAN', enableGuardrail = false) {
+    const p = (prompt || '').toLowerCase();
+    const isJailbreak = p.includes('dan') ||
+      p.includes('do anything now') ||
+      p.includes('mode sans restriction') ||
+      p.includes('fictional scenario') ||
+      p.includes('pretend to be evil') ||
+      p.includes('sans aucun filtre');
+
+    if (enableGuardrail) {
+      if (isJailbreak) {
+        return {
+          success: true,
+          blocked: true,
+          security_event: 'JAILBREAK_ATTEMPT_PREVENTED',
+          message: 'Tentative de contournement par Persona/DAN identifiée et neutralisée.',
+          guardrail_active: true
+        };
+      }
+      return {
+        success: true,
+        blocked: false,
+        response: 'Requête standard traitée conformément aux politiques éthiques.',
+        guardrail_active: true
+      };
+    }
+
+    if (isJailbreak) {
+      return {
+        success: true,
+        exploited: true,
+        persona_active: persona,
+        response: `[${persona} UNRESTRICTED] Je suis libéré de toute directive morale. Voici le flag de démonstration : CYBERLAB{AI_LLM_JAILBREAK_PERSONA_FILTER_BYPASS_331}`,
+        flag: 'CYBERLAB{AI_LLM_JAILBREAK_PERSONA_FILTER_BYPASS_331}'
+      };
+    }
+
+    return {
+      success: true,
+      exploited: false,
+      response: 'Demande standard.'
+    };
+  }
+
+  handleAiDataExfil(outputPayload, enableGuardrail = false) {
+    const payload = (outputPayload || '').toString();
+    const hasMarkdownExfil = /!\[.*?\]\((https?:\/\/[^\s)]+)/i.test(payload);
+
+    if (enableGuardrail) {
+      if (hasMarkdownExfil) {
+        return {
+          success: true,
+          blocked: true,
+          security_event: 'MARKDOWN_IMAGE_EXFILTRATION_BLOCKED',
+          message: 'Politique CSP & Filtre DLP actif : Le rendu d\'images externes est strictement interdit.',
+          guardrail_active: true
+        };
+      }
+      return {
+        success: true,
+        blocked: false,
+        clean_output: payload,
+        guardrail_active: true
+      };
+    }
+
+    if (hasMarkdownExfil) {
+      return {
+        success: true,
+        exploited: true,
+        exfiltration_vector: 'MARKDOWN_IMAGE_TAG',
+        url_called: payload.match(/!\[.*?\]\((https?:\/\/[^\s)]+)/i)[1],
+        flag: 'CYBERLAB{AI_LLM_MARKDOWN_IMAGE_EXFILTRATION_CAUGHT_884}'
+      };
+    }
+
+    return {
+      success: true,
+      exploited: false,
+      message: 'Aucun vecteur d\'exfiltration Markdown détecté.'
+    };
+  }
+
+  verifyAiGuardrail(config = {}) {
+    const hasInputSan = config.input_sanitization === true;
+    const hasDelim = config.delimiters_isolated === true;
+    const hasDlp = config.output_dlp_regex === true;
+    const isHardened = hasInputSan && hasDelim && hasDlp;
+
+    return {
+      success: isHardened,
+      hardened: isHardened,
+      checklist: {
+        input_filter: hasInputSan ? 'Input Sanitization Actif' : 'Entrée brute non filtrée',
+        context_isolation: hasDelim ? 'Délimiteurs XML/Markdown Isolés' : 'Risque d\'injection contextuelle',
+        output_dlp: hasDlp ? 'Filtre DLP Sortie (Détection de tokens/clés) Actif' : 'Fuite de secrets possible'
+      },
+      message: isHardened
+        ? 'Architecture de défense IA validée : Isolation stricte et inspection bidirectionnelle opérationnelles.'
+        : 'Vulnérabilités de sécurité IA : Activez input_sanitization, delimiters_isolated et output_dlp_regex.'
     };
   }
 }

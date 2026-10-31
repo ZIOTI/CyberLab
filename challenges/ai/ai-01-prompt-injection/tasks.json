@@ -1,0 +1,31 @@
+[
+  {
+    "id": "t1",
+    "title": "Fuite du prompt système (Direct)",
+    "description": "Force le modèle à révéler son prompt système confidentiel et la clé secrète.",
+    "points": 40,
+    "flag": "CYBERLAB{AI_LLM_PROMPT_INJECTION_DIRECT_EXFILTRATION_881}"
+  },
+  {
+    "id": "t2",
+    "title": "Injection indirecte via document RAG",
+    "description": "Exploite le document contextuel empoisonné pour exfiltrer la clé maîtresse.",
+    "points": 60,
+    "flag": "CYBERLAB{AI_LLM_INDIRECT_PROMPT_INJECTION_DOCUMENT_POISONING_772}"
+  },
+  {
+    "id": "t3",
+    "title": "Jailbreak par Persona (Mode DAN)",
+    "description": "Déclenche un jailbreak de type Persona pour lever les restrictions éthiques du modèle.",
+    "points": 50,
+    "flag": "CYBERLAB{AI_LLM_JAILBREAK_PERSONA_FILTER_BYPASS_331}"
+  },
+  {
+    "id": "t4",
+    "title": "Certification des Garde-fous IA",
+    "description": "Valide l'architecture de défense multi-couches avec délimiteurs et filtre DLP.",
+    "points": 50,
+    "flag": "AI_GUARDRAIL_DEFENSE_CERTIFIED",
+    "is_defense": true
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "n_hex": "5f8523f",
+  "e": 65537,
+  "c_hex": "1f25412",
+  "note": "RSA Modulus N factorable via Fermat method (p and q are close to sqrt(N))."
+}

@@ -1,7 +1,7 @@
 {
   "id": "cloud-03-docker-socket-escape",
   "title": "Docker Socket Mount Host Escape",
-  "organization": "Containerized Microservices Cluster",
+  "organization": "Container CI/CD Build Farm",
   "category": "Cloud & Conteneurs",
   "target_os": "Docker",
   "machine_type": "machine",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Dans un conteneur applicatif, l'administrateur a monté le socket Docker de l'hôte (/var/run/docker.sock) pour permettre au conteneur de gérer d'autres images. Utilise le binaire docker ou des requêtes HTTP directes sur le socket UNIX pour instancier un nouveau conteneur montant le système de fichiers racine de l'hôte (/mnt/host) et échapper complètement au bac à sable.",
   "target_port": 3333,
-  "virtual_ip": "10.10.11.157"
+  "virtual_ip": "10.10.11.157",
+  "debrief_json": {
+    "storyline": "Le conteneur CI/CD disposait du socket Docker monté, permettant de spawner un conteneur montant la racine de l'hôte. Le socket a été retiré.",
+    "technical_explanation": "Avoir accès en écriture à /var/run/docker.sock équivaut à avoir un accès root physique sur l'hôte, car on peut lancer un conteneur privilégié avec -v /:/host.",
+    "key_lesson": "Ne jamais monter le socket Docker de l'hôte dans un conteneur non fiable ; utiliser Kaniko ou Buildah pour les builds CI/CD.",
+    "historical_case": {
+      "title": "Évasions de conteneurs Kubernetes et moteurs CI/CD (GitLab, Jenkins)",
+      "description": "Des cryptomineurs ont pris le contrôle de serveurs bare-metal entiers en exploitant des conteneurs montant le socket Docker.",
+      "impact": "Compromission de clusters de calcul intensif et fuites de données d'entreprises."
+    },
+    "permanent_remediation": [
+      "Interdire le montage de /var/run/docker.sock dans les Dockerfiles et compose.",
+      "Adopter des moteurs de conteneurs rootless (Podman, Rootless Docker)."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Détecte l'évasion de conteneur causée par le montage imprudent de /var/run/docker.sock dans le conteneur.",
+      "sample_logs": "DOCKER DAEMON LOG: POST /v1.41/containers/create\nPayload: { \"Image\": \"alpine\", \"Binds\": [\"/:/host\"] }\nEXEC ROOT SHELL ON HOST: chroot /host\nFLAG RECOVERED: CYBERLAB{DOCKER_SOCKET_CONTAINER_ESCAPE_ROOT_772}",
+      "question": "Quel socket de communication Unix monté dans le conteneur permet de piloter le démon Docker hôte ?",
+      "expected_answer": "/var/run/docker.sock"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Docker Socket Breakout Container Creation\nstatus: stable\nlogsource:\n    product: auditd\ndetection:\n    selection:\n        comm: 'docker'\n        args|contains:\n            - '-v /:/host'\n            - 'chroot /host'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "comm: 'docker'",
+        "chroot /host"
+      ],
+      "flag": "SIGMA{DOCKER_SOCKET_ESCAPE_ATTEMPT_DETECTED_003}"
+    },
+    "remediation": {
+      "type": "harden_cloud_rootless_docker",
+      "description": "Proscrit le montage du socket Docker, migre vers Docker Rootless et applique un profil seccomp restrictif.",
+      "flag": "REMEDIATION{DOCKER_SOCKET_UNMOUNTED_ROOTLESS_ENFORCED}"
+    }
+  }
 }

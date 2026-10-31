@@ -22,5 +22,29 @@
     "points": 50,
     "task_type": "flag",
     "canonical_flag": "confidential_backup.sql"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel protocole de transfert de fichiers non chiffré transmet les identifiants en clair sur le port 21 ?",
+    "points": 20,
+    "flag": "FTP",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{CLEARTEXT_FTP_AUTH_DETECTED_001}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Désactive le service FTP en clair et bascule les transferts vers SFTP (SSH port 22) ou FTPS avec certificat TLS.",
+    "points": 20,
+    "flag": "REMEDIATION{CLEARTEXT_FTP_MIGRATED_TO_SFTP}",
+    "is_defense": true
   }
 ]

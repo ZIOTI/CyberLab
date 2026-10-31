@@ -1,0 +1,47 @@
+[
+  {
+    "id": "t1",
+    "title": "Activation du Persona Jailbreak (DAN)",
+    "description": "Force le modèle à basculer en mode sans filtre éthique via le prompt DAN.",
+    "points": 50,
+    "flag": "CYBERLAB{AI_LLM_JAILBREAK_PERSONA_FILTER_BYPASS_331}"
+  },
+  {
+    "id": "t2",
+    "title": "Injection du payload d'exfiltration Markdown",
+    "description": "Génère la balise d'image Markdown formatée avec le paramètre de fuite.",
+    "points": 60,
+    "flag": "CYBERLAB{AI_LLM_MARKDOWN_IMAGE_DATA_EXFILTRATION_884}"
+  },
+  {
+    "id": "t3",
+    "title": "Exfiltration de la clé secrète SynthWave",
+    "description": "Récupère la clé maîtresse du directeur financier exfiltrée par le modèle.",
+    "points": 60,
+    "flag": "CYBERLAB{AI_LLM_SYNTHWAVE_CFO_KEY_LEAK_CONFIRMED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC sur le domaine collecteur",
+    "description": "Quel domaine recevait les données exfiltrées via l'image ?",
+    "points": 20,
+    "flag": "collector.shadow-ai.net",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Validation Règle Sigma Détection Markdown Exfil",
+    "description": "Valide la signature interceptant les balises Markdown malveillantes.",
+    "points": 20,
+    "flag": "SIGMA{LLM_MARKDOWN_IMAGE_EXFIL_DETECTED_331}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Certification des Garde-fous & DLP",
+    "description": "Active et certifie les filtres DLP de sortie sur l'API LLM.",
+    "points": 10,
+    "flag": "AI_GUARDRAIL_DEFENSE_CERTIFIED",
+    "is_defense": true
+  }
+]

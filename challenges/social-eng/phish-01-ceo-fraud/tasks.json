@@ -22,5 +22,29 @@
     "points": 30,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{CEO_FRAUD_EMAIL_HEADER_ANALYSIS_UNMASKED_551}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quelle adresse de réponse cachée (Reply-To) recueille les confirmations du virement frauduleux ?",
+    "points": 20,
+    "flag": "wire-transfers@attacker-drop.net",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{CEO_FRAUD_SPF_FAIL_DETECTED_001}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Active une politique DMARC stricte p=reject avec alignement SPF/DKIM et quarantaine automatique sur la passerelle de messagerie.",
+    "points": 20,
+    "flag": "REMEDIATION{DMARC_POLICY_REJECT_ENFORCED_PHISHING_BLOCKED}",
+    "is_defense": true
   }
 ]

@@ -1,0 +1,5 @@
+192.168.1.0/24 (DMZ Public Facing)
+  └── 192.168.1.50 (Bastion Linux)
+        └── [SOCKS5 Tunnel 1080]
+              └── 10.10.20.0/24 (Isolated SCADA Controller VLAN)
+                    └── 10.10.20.15 (PLC Modbus Switch)

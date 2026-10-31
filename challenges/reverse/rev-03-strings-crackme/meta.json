@@ -1,7 +1,7 @@
 {
   "id": "rev-03-strings-crackme",
   "title": "ELF Binary Hardcoded Validation Crackme",
-  "organization": "Aegis Binary Analysis Unit",
+  "organization": "Industrial SCADA Automation Valve",
   "category": "Reverse Engineering",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,45 @@
   ],
   "narrative_story": "Un exécutable Linux ELF x86_64 demande un mot de passe d'activation. L'ingénieur novice a stocké la clé de validation directement en clair dans la section de données en lecture seule (.rodata) du binaire. Utilise l'utilitaire strings ou l'explorateur Ghidra pour extraire la chaîne secrète sans exécuter le fichier.",
   "target_port": 3333,
-  "virtual_ip": "10.10.28.59"
+  "virtual_ip": "10.10.28.59",
+  "debrief_json": {
+    "storyline": "Le mot de passe de commande industrielle a été lu en clair avec la simple commande strings. Le binaire a été épuré de tous ses symboles.",
+    "technical_explanation": "Compiler un binaire sans l'option de stripping laisse intactes la table des symboles (.symtab) et les chaînes de débogage, facilitant le rétro-ingénierie.",
+    "key_lesson": "Les binaires de production doivent impérativement être strippés et leurs constantes sensibles chiffrées à la compilation.",
+    "historical_case": {
+      "title": "Rétro-ingénierie du malware Stuxnet (2010)",
+      "description": "Les analystes ont disséqué le code compilé contrôlant les centrifugeuses d'enrichissement d'uranium iraniennes.",
+      "impact": "Mise en lumière de la première cyber-arme étatique destructrice."
+    },
+    "permanent_remediation": [
+      "Exécuter strip --strip-all sur les binaires compilés avant déploiement.",
+      "Chiffrer les chaînes de caractères en mémoire avec un wrapper XOR à l'exécution."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Examine la table des chaînes et symboles de l'exécutable ELF64 pour retrouver la clé de licence de la vanne industrielle.",
+      "sample_logs": "READELF / STRINGS OUTPUT:\n00001040  43 59 42 45 52 4c 41 42  |CYBERLAB|\n00001048  7b 53 54 52 49 4e 47 53  |{STRINGS|\nLICENSE KEY FOUND: CYBERLAB{STRINGS_CRACKME_REVERSED_STATIC_992}\nFUNCTION: validate_license_key()",
+      "question": "Quelle fonction de validation de licence est identifiée dans la table des symboles du binaire ?",
+      "expected_answer": "validate_license_key"
+    },
+    "detection_rule": {
+      "type": "yara",
+      "description": "Règle YARA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "rule Elf64_Unstripped_Crackme_License {\n    meta:\n        description = \"Detects unstripped ELF64 binary with cleartext license strings\"\n    strings:\n        $func = \"validate_license_key\"\n        $elf_magic = { 7f 45 4c 46 }\n    condition:\n        $elf_magic at 0 and $func\n}",
+      "keywords_required": [
+        "rule",
+        "strings:",
+        "condition:",
+        "$elf_magic at 0",
+        "$func"
+      ],
+      "flag": "YARA{ELF64_UNSTRIPPED_LICENSE_FUNCTION_DETECTED_003}"
+    },
+    "remediation": {
+      "type": "harden_reverse_strip_symbols",
+      "description": "Compile avec l'option strip (--strip-all) et active l'offuscation de contrôle de flux (OLLVM).",
+      "flag": "REMEDIATION{ELF64_STRIPPED_AND_OBFUSCATED_SUCCESS}"
+    }
+  }
 }

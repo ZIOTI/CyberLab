@@ -1,0 +1,16 @@
+From: "Aegis IT Helpdesk" <support@aegis-defense.com>
+To: "Employés Aegis" <all-staff@aegis-defense.local>
+Subject: URGENT : Réinitialisation Obligatoire du Mot de Passe SSO
+Date: Fri, 25 Oct 2026 08:30:10 +0200
+Received: from relay-untrusted.external-host.com (198.51.100.77)
+Authentication-Results: mail.aegis-defense.local;
+    spf=fail (198.51.100.77 not allowed);
+    dkim=none;
+    dmarc=fail
+
+Bonjour,
+
+Suite à une alerte de sécurité sur l'annuaire Active Directory, vous devez valider votre mot de passe sous 2 heures :
+https://sso-portal.aegis-defense.com.phish-gateway.net/auth/sso
+
+Service Informatique Interne.

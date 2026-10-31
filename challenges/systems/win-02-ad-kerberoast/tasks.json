@@ -22,5 +22,29 @@
     "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{KERBEROASTING_TGS_SPN_MSSQL_CRACKED_SUCCESS}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel type d'événement Windows (Event ID) enregistre les demandes de tickets de service TGS ?",
+    "points": 20,
+    "flag": "4769",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{KERBEROASTING_TGS_SPN_DETECTED_002}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Migre les comptes de service vers des Group Managed Service Accounts (gMSA) à mot de passe aléatoire de 128 caractères géré par l'AD.",
+    "points": 20,
+    "flag": "REMEDIATION{GMSA_MIGRATION_COMPLETED_KERBEROAST_IMMUNE}",
+    "is_defense": true
   }
 ]

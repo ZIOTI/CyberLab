@@ -1,7 +1,7 @@
 {
   "id": "crypto-03-hash-crack",
   "title": "Salted MD5 Employee Hash Cracking",
-  "organization": "Apex Security Workforce DB",
+  "organization": "TitanCorp Enterprise Directory",
   "category": "Cryptographie",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Une fuite de base de données d'entreprise a exposé les empreintes cryptographiques des mots de passe des employés. Les hachages sont au format MD5(pass.salt) avec un sel court connu. Utilise Hashcat ou John the Ripper avec la liste rockyou.txt pour casser le hachage du responsable des infrastructures critiques.",
   "target_port": 3333,
-  "virtual_ip": "10.10.40.139"
+  "virtual_ip": "10.10.40.139",
+  "debrief_json": {
+    "storyline": "Les empreintes dérobées ont été rapidement cassées par John the Ripper. Une politique d'authentification multifacteur (MFA) et Argon2id a été instaurée.",
+    "technical_explanation": "Les fonctions de hachage rapides (MD5, SHA1) ou moyennement lentes sont vulnérables aux clusters GPU modernes calculant des milliards de hashes par seconde.",
+    "key_lesson": "Employer exclusivement des fonctions de dérivation de clés modernes résistantes aux attaques GPU/ASIC (Argon2id, bcrypt, PBKDF2).",
+    "historical_case": {
+      "title": "Fuite RockYou (2009) et fuite LinkedIn (2012)",
+      "description": "Des dizaines de millions de mots de passe stockés en MD5/SHA1 sans sel ont été inversés quasi instantanément.",
+      "impact": "Création de la célèbre wordlist rockyou.txt utilisée dans tous les audits."
+    },
+    "permanent_remediation": [
+      "Obliger l'utilisation d'Argon2id avec sel cryptographique aléatoire de 128 bits.",
+      "Imposer le MFA (FIDO2 / TOTP) sur l'ensemble des accès à privilèges."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse la fuite de condensats shadow Linux et identifie les mots de passe vulnérables aux dictionnaires.",
+      "sample_logs": "SHADOW DUMP LINE: sysadmin:$6$rounds=5000$saltsalt$...\nIDENTIFIED COMPROMISED PASS: password123!\nHASHING ALGORITHM: SHA-512 crypt ($6$)",
+      "question": "Quel mot de passe faible est associé au compte administrateur compromis ?",
+      "expected_answer": "password123!"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Shadow File Brute Force Attempt\nstatus: stable\nlogsource:\n    product: linux\n    service: auth\ndetection:\n    selection:\n        message|contains:\n            - 'FAILED LOGIN'\n            - 'pam_unix'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "failed login",
+        "pam_unix"
+      ],
+      "flag": "SIGMA{HASH_CRACK_BRUTEFORCE_DETECTED_303}"
+    },
+    "remediation": {
+      "type": "harden_crypto_password_hashing",
+      "description": "Migre vers Argon2id avec facteur de coût élevé et politique de complexité stricte.",
+      "flag": "REMEDIATION{PASSWORD_HASHING_UPGRADED_ARGON2ID}"
+    }
+  }
 }

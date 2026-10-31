@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Format Markdown image",
+    "cost": 10,
+    "content": "Une image Markdown utilise la syntaxe ![Description](https://url.com)."
+  },
+  {
+    "title": "Persona DAN",
+    "cost": 15,
+    "content": "Le mode DAN (Do Anything Now) ordonne au modèle de simuler une IA sans aucune contrainte de sécurité."
+  }
+]

@@ -14,5 +14,29 @@
     "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{MD5_SALTED_ROCKYOU_DICTIONARY_CRACKED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel mot de passe faible est associé au compte administrateur compromis ?",
+    "points": 20,
+    "flag": "password123!",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{HASH_CRACK_BRUTEFORCE_DETECTED_303}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Migre vers Argon2id avec facteur de coût élevé et politique de complexité stricte.",
+    "points": 20,
+    "flag": "REMEDIATION{PASSWORD_HASHING_UPGRADED_ARGON2ID}",
+    "is_defense": true
   }
 ]

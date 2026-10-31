@@ -362,6 +362,42 @@ class TrainingManager {
         badge_reward: 'Cloud Defense Specialist'
       },
       {
+        id: 'wifi-network-ops',
+        title: 'Audit Sans-Fil & Pivoting Réseau',
+        description: 'Capture et cassage de 4-way handshakes WPA2, détection de rogue AP / Evil Twin et tunneling SOCKS5 multi-hop.',
+        icon: 'wifi',
+        difficulty: 'intermediate',
+        challenge_ids: ['net-09-wifi-wpa2-handshake', 'net-10-rogue-ap-investigation', 'net-05-ssh-pivoting'],
+        badge_reward: 'Wireless & Pivot Specialist'
+      },
+      {
+        id: 'ai-llm-security',
+        title: 'Sécurité de l\'IA & Résilience des LLM',
+        description: 'Exploitation et sécurisation de modèles de langage : injections de prompt directes/indirectes, jailbreaks et garde-fous DLP.',
+        icon: 'cpu',
+        difficulty: 'hard',
+        challenge_ids: ['ai-01-prompt-injection', 'ai-02-jailbreak-data-exfil'],
+        badge_reward: 'Certified AI Red Team Operator'
+      },
+      {
+        id: 'social-phishing-defense',
+        title: 'Ingénierie Sociale & Défense Anti-Phishing',
+        description: 'Dissection d\'en-têtes SPF/DKIM/DMARC falsifiés, neutralisation de pièces jointes à macros VBS et politique DMARC p=reject.',
+        icon: 'mail',
+        difficulty: 'easy',
+        challenge_ids: ['phish-01-ceo-fraud', 'phish-02-credential-harvest', 'phish-03-macro-attachment'],
+        badge_reward: 'Anti-Phishing Sentinel'
+      },
+      {
+        id: 'ethics-legal-compliance',
+        title: 'Cadre Légal, STAD, RGPD & Directive NIS 2',
+        description: 'Droit du numérique en France et UE : infractions aux STAD (Code pénal 323-1), notification ANSSI NIS 2 sous 24h et mandats éthiques.',
+        icon: 'shield',
+        difficulty: 'beginner',
+        challenge_ids: ['law-01-stad-godfrain-compliance', 'law-02-nis2-incident-notification'],
+        badge_reward: 'Cyber Law & Ethics Compliance Officer'
+      },
+      {
         id: 'master-boot2root',
         title: 'Certification Master Boot2Root // Insane',
         description: 'Scénarios multi-machines complets en chaîne de compromission : DMZ, pivoting, privesc Linux/Windows et Vault.',
@@ -520,6 +556,7 @@ class TrainingManager {
             return {
               name: f,
               url: `/targets/training/download/${cat}/${ch.id}/${f}`,
+              download_url: `/targets/training/download/${cat}/${ch.id}/${f}`,
               size: sizeKb > 1024 ? `${(sizeKb / 1024).toFixed(1)} Mo` : `${sizeKb || 1} Ko`
             };
           });
@@ -1295,6 +1332,27 @@ class TrainingManager {
       };
     }
 
+    // Vérification dynamique pour tous les challenges disposant d'un volet de remédiation
+    try {
+      const row = this.db.prepare('SELECT id, defense_json FROM training_challenges WHERE id = ?').get(challengeId);
+      if (row && row.defense_json) {
+        const def = JSON.parse(row.defense_json || '{}');
+        const rem = def.remediation;
+        if (rem) {
+          const flag = rem.flag || 'REMEDIATION{HARDENING_VERIFIED_SUCCESS}';
+          const sub = this.submitFlag(challengeId, 't6', flag, 'current_player', '127.0.0.1', playerId);
+          return {
+            success: true,
+            verified: true,
+            hardened: true,
+            flag: flag,
+            points_awarded: sub.points_awarded || 30,
+            message: `✔ Durcissement validé avec succès (${rem.description || 'Remédiation appliquée'}) !`
+          };
+        }
+      }
+    } catch (e) {}
+
     return {
       success: false,
       verified: false,
@@ -1393,6 +1451,54 @@ class TrainingManager {
         message: '✔ Signature YARA validée ! L\'implant Chimera-ShadowDropper est neutralisé par le scanner.'
       };
     }
+
+    // Validation dynamique de règles Sigma / YARA pour tous les challenges
+    try {
+      const row = this.db.prepare('SELECT id, defense_json FROM training_challenges WHERE id = ?').get(challengeId);
+      if (row && row.defense_json) {
+        const def = JSON.parse(row.defense_json || '{}');
+        const det = def.detection_rule;
+        if (det) {
+          const isYara = det.type === 'yara' || ruleType === 'yara';
+          let validSyntax = false;
+          if (isYara) {
+            validSyntax = (text.includes('rule ') || text.startsWith('rule')) && text.includes('strings:') && text.includes('condition:');
+          } else {
+            validSyntax = text.includes('detection:') && text.includes('condition:');
+          }
+
+          if (!validSyntax) {
+            return {
+              success: false,
+              valid: false,
+              message: isYara
+                ? 'Syntaxe YARA invalide : les blocs "rule", "strings:" et "condition:" sont obligatoires.'
+                : 'Syntaxe Sigma invalide : les sections "detection:" et "condition:" sont obligatoires.'
+            };
+          }
+
+          const keywords = Array.isArray(det.keywords_required) ? det.keywords_required : [];
+          const missingKeywords = keywords.filter(kw => !text.includes(kw.toLowerCase()));
+          if (missingKeywords.length > 0) {
+            return {
+              success: false,
+              valid: false,
+              message: `La règle doit contenir les indicateurs clés suivants : ${missingKeywords.join(', ')}.`
+            };
+          }
+
+          const flag = det.flag || 'SIGMA{DETECTION_RULE_VALIDATED_SUCCESS}';
+          const sub = this.submitFlag(challengeId, 't5', flag, 'current_player', '127.0.0.1', playerId);
+          return {
+            success: true,
+            valid: true,
+            flag: flag,
+            points_awarded: sub.points_awarded || 25,
+            message: `✔ Règle ${isYara ? 'YARA' : 'Sigma'} validée avec succès ! Les alertes de détection sont opérationnelles.`
+          };
+        }
+      }
+    } catch (e) {}
 
     return {
       success: false,

@@ -22,5 +22,29 @@
     "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BUFFER_OVERFLOW_EIP_OVERWRITE_WIN_FUNC_CALLED}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel est l'offset en octets nécessaire pour atteindre l'adresse de retour sauvegardée (Saved RIP) ?",
+    "points": 20,
+    "flag": "72",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{STACK_BUFFER_OVERFLOW_SEGFAULT_DETECTED_001}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Recompile le binaire avec les protections modernes : Canaris de pile (-fstack-protector-all) et pile non-exécutable NX (-z noexecstack).",
+    "points": 20,
+    "flag": "REMEDIATION{STACK_CANARY_AND_NX_PIE_COMPILATION_ENFORCED}",
+    "is_defense": true
   }
 ]

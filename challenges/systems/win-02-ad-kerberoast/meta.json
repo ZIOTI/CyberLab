@@ -1,7 +1,7 @@
 {
   "id": "win-02-ad-kerberoast",
   "title": "Active Directory Kerberoasting SPN Ticket",
-  "organization": "Global Health Enterprise AD",
+  "organization": "TitanCorp Enterprise Domain",
   "category": "Systèmes & Active Directory",
   "target_os": "Windows",
   "machine_type": "room",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Un compte utilisateur MSSQLService possède un Service Principal Name (SPN) enregistré dans le domaine. N'importe quel utilisateur authentifié peut solliciter un ticket TGS chiffré avec le hachage NTLM du compte de service. Extrais le ticket TGS avec GetUserSPNs.py ou Rubeus, puis effectue une attaque par dictionnaire hors-ligne.",
   "target_port": 3333,
-  "virtual_ip": "10.10.28.95"
+  "virtual_ip": "10.10.28.95",
+  "debrief_json": {
+    "storyline": "Le mot de passe du compte de service SQL a été récupéré en cassant le ticket TGS. Les comptes de service ont été migrés vers des gMSA.",
+    "technical_explanation": "Tout utilisateur authentifié du domaine peut demander un ticket TGS pour n'importe quel SPN enregistré, puis tenter de casser hors-ligne le secret dérivé du mot de passe du compte de service.",
+    "key_lesson": "Les comptes de service associés à des SPN doivent être protégés par des mots de passe de plus de 30 caractères ou convertis en gMSA.",
+    "historical_case": {
+      "title": "Utilisation du Kerberoasting dans les attaques NotPetya et intrusions massives",
+      "description": "Permet de pivoter d'un simple poste utilisateur vers les serveurs de bases de données et hyperviseurs.",
+      "impact": "Piratage des comptes à hauts privilèges d'infrastructures entières."
+    },
+    "permanent_remediation": [
+      "Convertir tous les comptes de service en Group Managed Service Accounts (gMSA).",
+      "Configurer des mots de passe de 64 caractères aléatoires pour les comptes ne supportant pas les gMSA."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse les requêtes de tickets de service TGS Kerberos pour des SPN avec chiffrement RC4.",
+      "sample_logs": "EVENT ID 4769: A Kerberos service ticket was requested.\nService Name: MSSQLSvc/sql01.titancorp.local:1433\nAccount Name: sql_service\nTicket Encryption Type: 0x17 (RC4_HMAC_MD5)\nFLAG: CYBERLAB{KERBEROASTING_SPN_TGS_EXTRACTED_331}",
+      "question": "Quel type d'événement Windows (Event ID) enregistre les demandes de tickets de service TGS ?",
+      "expected_answer": "4769"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Kerberoasting Service Ticket Request\nstatus: stable\nlogsource:\n    product: windows\n    service: security\ndetection:\n    selection:\n        EventID: 4769\n        TicketEncryptionType: '0x17'\n    condition: selection | count() by TargetUserName > 5",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "eventid: 4769",
+        "ticketencryptiontype: '0x17'"
+      ],
+      "flag": "SIGMA{KERBEROASTING_TGS_SPN_DETECTED_002}"
+    },
+    "remediation": {
+      "type": "harden_ad_gmsa_migration",
+      "description": "Migre les comptes de service vers des Group Managed Service Accounts (gMSA) à mot de passe aléatoire de 128 caractères géré par l'AD.",
+      "flag": "REMEDIATION{GMSA_MIGRATION_COMPLETED_KERBEROAST_IMMUNE}"
+    }
+  }
 }

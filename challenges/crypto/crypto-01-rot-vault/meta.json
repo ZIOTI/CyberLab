@@ -1,7 +1,7 @@
 {
   "id": "crypto-01-rot-vault",
   "title": "Ancient Caesar Vault Mechanism",
-  "organization": "Bibliothèque Antique d'Alexandrie Numérique",
+  "organization": "Aegis Foreign Diplomatic Service",
   "category": "Cryptographie",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Une archive historique chiffrée a été découverte sur un serveur de conservation archéologique. Le texte est encodé par un algorithme de substitution monoalphabétique à décalage constant. Détermine la valeur du décalage (ROT-N) grâce à l'analyse de fréquence des lettres et déchiffre la sentence latine.",
   "target_port": 3333,
-  "virtual_ip": "10.10.11.113"
+  "virtual_ip": "10.10.11.113",
+  "debrief_json": {
+    "storyline": "Le télégramme diplomatique chiffré avec un ROT antique a été instantanément décrypté par fréquence statistique. Une migration immédiate vers un chiffrement symétrique moderne a été ordonnée.",
+    "technical_explanation": "Les chiffrements par substitution mono-alphabétique (César, ROT) ne modifient pas la distribution des fréquences de lettres, rendant l'attaque élémentaire.",
+    "key_lesson": "Tout algorithme cryptographique non standardisé ou historique doit être banni des flux confidentiels.",
+    "historical_case": {
+      "title": "Affaire du Télégramme Zimmermann (1917) et capture de clés Enigma",
+      "description": "L'emploi de chiffrements historiques faibles a entraîné des déroutes diplomatiques majeures.",
+      "impact": "Entrée des États-Unis dans la Première Guerre mondiale."
+    },
+    "permanent_remediation": [
+      "Interdire tout chiffrement par rotation ou substitution simple dans le code.",
+      "Utiliser la bibliothèque standardisée WebCrypto / OpenSSL pour AES-256-GCM.",
+      "Proscrire les secrets en dur dans les fichiers de configuration."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse le télégramme intercepté pour identifier le chiffre de substitution antique et l'offset.",
+      "sample_logs": "TELECOM INTERCEPT ID: 0942-DIPLO\nENCRYPTION: CAESAR / ROT-13\nCIPHERTEXT: PLOREYNO{PNRFNE_EBGNGVBA_IVTRARE_NYTBEVGUZ_101}\nDECRYPTED: CYBERLAB{CAESAR_ROTATION_VIGENERE_ALGORITHM_101}",
+      "question": "Quel décalage fixe est employé dans le chiffrement ROT ?",
+      "expected_answer": "13"
+    },
+    "detection_rule": {
+      "type": "sigma",
+      "description": "Règle SIGMA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "title: Detection Weak Historic Cipher In Transit\nstatus: stable\nlogsource:\n    product: proxy\ndetection:\n    selection:\n        c_uri|contains: 'rot13'\n    condition: selection",
+      "keywords_required": [
+        "detection:",
+        "condition:",
+        "rot13"
+      ],
+      "flag": "SIGMA{WEAK_HISTORIC_CIPHER_DETECTED_101}"
+    },
+    "remediation": {
+      "type": "harden_crypto_historic",
+      "description": "Abandonne les ciphers historiques et migre vers AES-256-GCM avec gestion de clés KMS.",
+      "flag": "REMEDIATION{HISTORIC_CIPHER_MIGRATED_TO_AES256GCM}"
+    }
+  }
 }

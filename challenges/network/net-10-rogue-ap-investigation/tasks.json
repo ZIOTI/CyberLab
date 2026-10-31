@@ -1,0 +1,31 @@
+[
+  {
+    "id": "t1",
+    "title": "Adresse MAC du Rogue AP",
+    "description": "Quelle est l'adresse MAC (BSSID) du point d'accès pirate détecté dans le relevé ?",
+    "points": 40,
+    "flag": "DE:AD:BE:EF:13:37"
+  },
+  {
+    "id": "t2",
+    "title": "Canal radio de la borne pirate",
+    "description": "Sur quel canal radio (Channel) le Rogue AP émet-il pour tromper les clients ?",
+    "points": 40,
+    "flag": "11"
+  },
+  {
+    "id": "t3",
+    "title": "Détection WIPS & Flag",
+    "description": "Valide la détection de l'attaque Evil Twin auprès du module de surveillance.",
+    "points": 80,
+    "flag": "CYBERLAB{WIFI_ROGUE_AP_EVIL_TWIN_DETECTED_441}"
+  },
+  {
+    "id": "t4",
+    "title": "Confinement WIPS Défensif",
+    "description": "Confirme le confinement et le blocage de la borne pirate.",
+    "points": 40,
+    "flag": "WIPS_ROGUE_AP_CONTAINED",
+    "is_defense": true
+  }
+]

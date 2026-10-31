@@ -1,0 +1,4 @@
+BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
+00:14:6C:7E:40:80, 2026-10-31 10:00:00, 2026-10-31 10:15:20, 6, 54, WPA2, CCMP, PSK, -48, 1420, 310, 0.0.0.0, 21, Aegis-Corporate-Secure, 
+00:14:6C:7E:40:81, 2026-10-31 10:00:01, 2026-10-31 10:15:20, 6, 54, WPA2, CCMP, PSK, -50, 1390, 84, 0.0.0.0, 11, Aegis-Guest, 
+DE:AD:BE:EF:13:37, 2026-10-31 10:02:14, 2026-10-31 10:15:20, 11, 54, OPN, , , -32, 2840, 12, 0.0.0.0, 21, Aegis-Corporate-Secure, 

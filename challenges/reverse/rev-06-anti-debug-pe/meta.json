@@ -1,7 +1,7 @@
 {
   "id": "rev-06-anti-debug-pe",
   "title": "Bypassing PE IsDebuggerPresent & PEB Detection",
-  "organization": "FinTech Desktop Security Core",
+  "organization": "Sentinel Endpoint Defense Agent",
   "category": "Reverse Engineering",
   "target_os": "Windows",
   "machine_type": "room",
@@ -34,5 +34,45 @@
   ],
   "narrative_story": "Un agent Windows PE intègre des techniques sophistiquées d'anti-débogage : appel à l'API IsDebuggerPresent(), inspection manuelle du champ BeingDebugged dans le Process Environment Block (PEB) à fs:[0x30], et mesure du temps avec rdtsc pour détecter les points d'arrêt. Utilise x64dbg avec le plugin ScyllaHide pour contourner ces défenses et déchiffrer la charge utile.",
   "target_port": 3333,
-  "virtual_ip": "10.10.33.12"
+  "virtual_ip": "10.10.33.12",
+  "debrief_json": {
+    "storyline": "L'exécutable déployait des techniques anti-débogage pour déjouer l'analyse. Un patch de registre PEB a permis de poursuivre l'inspection.",
+    "technical_explanation": "L'API IsDebuggerPresent lit le champ BeingDebugged du bloc d'environnement de processus (PEB). Un analyste peut contourner cette vérification avec un plugin comme ScyllaHide.",
+    "key_lesson": "L'anti-débogage retarde l'analyse mais ne protège jamais durablement un binaire contre un ingénieur inverse expérimenté.",
+    "historical_case": {
+      "title": "Mécanismes d'évasion de sandbox du ransomware WannaCry (2017)",
+      "description": "WannaCry vérifiait la présence d'un domaine de killswitch et de débogueurs avant de déclencher le chiffrement.",
+      "impact": "Chiffrement de 200 000 ordinateurs dans 150 pays."
+    },
+    "permanent_remediation": [
+      "Signer numériquement les exécutables avec un certificat EV Authenticode.",
+      "Activer Windows Defender Device Guard / AppLocker."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Analyse l'exécutable Windows PE32+ et identifie l'appel API IsDebuggerPresent pour contrer l'analyse dynamique.",
+      "sample_logs": "IMPORT TABLE: KERNEL32.dll!IsDebuggerPresent\nPEB CHECK: fs:[0x30] -> BeingDebugged byte\nACTION: Process terminates if debugger attached.",
+      "question": "Quelle API Win32 classique est appelée pour détecter la présence d'un débogueur ?",
+      "expected_answer": "IsDebuggerPresent"
+    },
+    "detection_rule": {
+      "type": "yara",
+      "description": "Règle YARA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "rule PE32_Anti_Debug_Techniques {\n    meta:\n        description = \"Detects PE executables with IsDebuggerPresent imports\"\n    strings:\n        $api = \"IsDebuggerPresent\"\n        $mz = { 4d 5a }\n    condition:\n        $mz at 0 and $api\n}",
+      "keywords_required": [
+        "rule",
+        "strings:",
+        "condition:",
+        "$mz at 0",
+        "$api"
+      ],
+      "flag": "YARA{PE32_ANTI_DEBUG_TECHNIQUE_DETECTED_006}"
+    },
+    "remediation": {
+      "type": "harden_reverse_pe_integrity",
+      "description": "Implémente la signature de code numérique Authenticode et vérifie l'intégrité du PE au chargement.",
+      "flag": "REMEDIATION{AUTHENTICODE_CODE_SIGNING_ENFORCED}"
+    }
+  }
 }

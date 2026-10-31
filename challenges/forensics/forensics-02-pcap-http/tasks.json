@@ -22,5 +22,29 @@
     "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{WIRESHARK_HTTP_MULTIPART_EXFILTRATION_CAUGHT}"
+  },
+  {
+    "id": "t4",
+    "title": "Investigation SOC & Détection d'Artefact",
+    "description": "Quel est le domaine du serveur C2 interrogé par le malware dans les en-têtes Host HTTP ?",
+    "points": 20,
+    "flag": "c2-nexus.chimera-apt.net",
+    "is_defense": true
+  },
+  {
+    "id": "t5",
+    "title": "Règle de Détection (SIGMA)",
+    "description": "Rédige et valide la règle SIGMA pour ce vecteur d'attaque.",
+    "points": 20,
+    "flag": "SIGMA{HTTP_C2_BEACONING_ACTIVITY_DETECTED_442}",
+    "is_defense": true
+  },
+  {
+    "id": "t6",
+    "title": "Remédiation & Durcissement Vérifié",
+    "description": "Inscrit le domaine et l'adresse IP du C2 sur la liste noire du résolveur DNS menteur et du pare-feu périmétrique.",
+    "points": 20,
+    "flag": "REMEDIATION{C2_DOMAIN_BLOCKED_DNS_FIREWALL_SINKHOLE}",
+    "is_defense": true
   }
 ]
