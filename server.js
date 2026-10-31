@@ -879,7 +879,15 @@ const server = http.createServer(async (req, res) => {
     if (!rest || rest === '') rest = 'index.html';
 
     if (chId) {
-      const categories = ['web', 'api', 'osint', 'crypto', 'forensics', 'network', 'linux', 'reverse', 'pwn', 'cloud', 'social', 'blue', 'b2r'];
+      let categories = ['web', 'api', 'osint', 'crypto', 'forensics', 'network', 'systems', 'linux', 'reverse', 'pwn', 'cloud', 'social-eng', 'social', 'blue-team', 'blue', 'b2r'];
+      try {
+        const chalDir = path.join(__dirname, 'challenges');
+        if (fs.existsSync(chalDir)) {
+          const diskCats = fs.readdirSync(chalDir).filter(f => fs.statSync(path.join(chalDir, f)).isDirectory());
+          categories = Array.from(new Set([...categories, ...diskCats]));
+        }
+      } catch (e) {}
+
       for (const cat of categories) {
         const candidate = path.join(__dirname, 'challenges', cat, chId, 'src', rest);
         if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {

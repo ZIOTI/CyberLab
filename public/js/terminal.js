@@ -18,9 +18,9 @@ class CyberTerminal {
     // Arborescence du système de fichiers virtuel POSIX
     this.fs = {
       '/': ['bin', 'etc', 'home', 'var', 'opt', 'proc', 'tmp', 'root', 'usr'],
-      '/bin': ['bash', 'sh', 'ls', 'cat', 'pwd', 'cd', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'head', 'tail', 'wc', 'grep', 'find', 'curl', 'ping', 'ss', 'id', 'whoami', 'uname', 'hostname', 'clear', 'echo', 'chmod', 'chown'],
+      '/bin': ['bash', 'sh', 'ls', 'cat', 'pwd', 'cd', 'mkdir', 'touch', 'cp', 'mv', 'rm', 'head', 'tail', 'wc', 'grep', 'find', 'curl', 'ping', 'ss', 'id', 'whoami', 'uname', 'hostname', 'clear', 'echo', 'chmod', 'chown', 'getcap'],
       '/usr': ['bin', 'local', 'share'],
-      '/usr/bin': ['python3', 'python3.10', 'nmap', 'dig', 'nslookup', 'base64', 'which', 'top', 'ps', 'kill'],
+      '/usr/bin': ['python3', 'python3.8', 'python3.10', 'nmap', 'dig', 'nslookup', 'base64', 'which', 'top', 'ps', 'kill', 'getcap'],
       '/etc': ['passwd', 'shadow', 'hosts', 'crontab', 'resolv.conf', 'os-release', 'apt'],
       '/etc/apt': ['sources.list'],
       '/etc/apt/sources.list': 'deb http://deb.debian.org/debian bookworm main\ndeb http://security.debian.org/debian-security bookworm-security main\n',
@@ -31,13 +31,46 @@ class CyberTerminal {
       '/etc/os-release': 'NAME="Debian GNU/Linux"\nVERSION="12 (bookworm)"\nID=debian\n',
       '/etc/crontab': '# /etc/crontab: system-wide crontab\nSHELL=/bin/sh\nPATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin\n* * * * * root /opt/maintenance/cleanup.sh\n',
       '/home': ['operator'],
-      '/home/operator': ['notes.txt', '.bashrc', '.bash_history', 'projet_secret'],
+      '/home/operator': ['notes.txt', 'user.txt', '.bashrc', '.bash_history', 'projet_secret'],
       '/home/operator/notes.txt': 'BIENVENUE DANS TON LAB CYBER :\n- Le terminal est ton outil n°1.\n- Utilise pwd pour savoir où tu es, ls pour voir les fichiers, cd pour te déplacer.\n- La curiosité est la clé de tout apprentissage !\n',
+      '/home/operator/user.txt': 'CYBERLAB{user_linux_capabilities_enumerated_441}',
       '/home/operator/.bashrc': '# ~/.bashrc\nexport PATH=$PATH:/usr/local/bin\nalias ll="ls -la"\n',
       '/home/operator/.bash_history': 'pwd\nls -la\ncat notes.txt\n',
       '/home/operator/projet_secret': ['flag_novice.txt'],
       '/home/operator/projet_secret/flag_novice.txt': 'CYBER{LINUX_NAVIGATOR_LEVEL_COMPLETED}\n',
       '/opt': ['maintenance', 'telemetry'],
+      '/opt/maintenance': ['cleanup.sh'],
+      '/opt/maintenance/cleanup.sh': '#!/bin/bash\n# Script de maintenance execute par root chaque minute\nrm -rf /tmp/cache/*\n',
+      '/opt/telemetry': ['beacon.sh'],
+      '/var': ['log', 'www'],
+      '/var/log': ['nginx', 'auth.log', 'syslog', 'incident'],
+      '/var/log/incident': ['report.log', '.forensic_case'],
+      '/var/log/incident/report.log': '[SOC INCIDENT REPORT #2026-9041]\nTimestamp: 2026-10-27T10:14:02Z\nVector: Unauthorized SSH session\nAlert: Forensic evidence stored in hidden casefile\nStatus: UNRESOLVED\n',
+      '/var/log/incident/.forensic_case': '[EVIDENCE ARTEFACT]\nCASE_ID: #AEGIS-INC-9942\nMD5: 8f4b1192e27c1a\nFLAG: CYBER{LINUX_MID_EVAL_FORENSIC_MASTERED}\nNOTE: Threat actor traced to internal gateway.\n',
+      '/var/log/auth.log': 'Oct 27 08:12:01 aegis-server CRON[4102]: (root) CMD (/opt/maintenance/cleanup.sh)\nOct 27 08:14:22 aegis-server sshd[4150]: Accepted password for operator from 192.168.1.42\n',
+      '/var/log/nginx': ['access.log', 'error.log'],
+      '/var/log/nginx/access.log': '192.168.1.42 - - [27/Oct/2026:08:15:10] "GET / HTTP/1.1" 200 42\n192.168.1.42 - - [27/Oct/2026:08:16:00] "GET /robots.txt HTTP/1.1" 200 128 FLAG=CYBER{HTTP_GET_ROBOTS_TXT_FOUND}\n',
+      '/tmp': ['cache'],
+      '/root': ['flag.txt', 'root.txt', 'final_flag.txt'],
+      '/root/flag.txt': 'CYBERLAB{LINUX_CAP_SETUID_PYTHON3_ROOT_SHELL}',
+      '/root/root.txt': 'CYBERLAB{LINUX_CAP_SETUID_PYTHON3_ROOT_SHELL}',
+      '/root/final_flag.txt': 'CYBER{M5_BOSS_ROOT_COMPROMISE_FINAL_FLAG}'
+    };
+
+    if (this.options && this.options.challenge) {
+      this.challenge = this.options.challenge;
+      const tasks = this.challenge.tasks || [];
+      const rootTask = tasks.find(t => (t.title || '').toLowerCase().includes('root') || (t.canonical_flag || '').toLowerCase().includes('root') || (t.description || '').toLowerCase().includes('root')) || tasks[tasks.length - 1];
+      const userTask = tasks.find(t => (t.title || '').toLowerCase().includes('user') || (t.canonical_flag || '').toLowerCase().includes('user')) || tasks[0];
+
+      if (rootTask && rootTask.canonical_flag) {
+        this.fs['/root/root.txt'] = rootTask.canonical_flag;
+        this.fs['/root/flag.txt'] = rootTask.canonical_flag;
+      }
+      if (userTask && userTask.canonical_flag) {
+        this.fs['/home/operator/user.txt'] = userTask.canonical_flag;
+      }
+    }
       '/opt/maintenance': ['cleanup.sh'],
       '/opt/maintenance/cleanup.sh': '#!/bin/bash\n# Script de maintenance execute par root chaque minute\nrm -rf /tmp/cache/*\n',
       '/opt/telemetry': ['beacon.sh'],
@@ -184,6 +217,16 @@ class CyberTerminal {
     }
   }
 
+  runCommand(cmdStr) {
+    if (!cmdStr) return;
+    this.history.push(cmdStr);
+    this.historyIndex = this.history.length;
+    this.executePipeline(cmdStr);
+    if (this.inputElement) this.inputElement.value = '';
+    const termBody = document.getElementById('term-body');
+    if (termBody) termBody.scrollTop = termBody.scrollHeight;
+  }
+
   executePipeline(rawCmd) {
     if (window.cyberAudio) window.cyberAudio.playTactileClick();
     this.print(`<span class="${this.isRoot ? 'text-rose-500 font-black' : 'text-emerald-400 font-black'}">${this.getPrompt()}</span> <span class="text-white font-mono font-semibold">${this.escapeHTML(rawCmd)}</span>`, true);
@@ -209,6 +252,44 @@ class CyberTerminal {
     const args = parts.slice(1);
 
     switch (cmd) {
+      case 'getcap': {
+        const isCap = this.challenge && (this.challenge.id || '').includes('cap');
+        if (isCap) {
+          return '/usr/bin/python3.8 = cap_setuid+ep\n/usr/bin/ping = cap_net_raw+ep';
+        }
+        return '/usr/bin/ping = cap_net_raw+ep';
+      }
+
+      case 'python':
+      case 'python3':
+      case 'python3.8':
+      case 'python3.10': {
+        if (cmdStr.includes('setuid') || cmdStr.includes('os.setuid(0)')) {
+          this.isRoot = true;
+          this.eUID = 0;
+          this.updatePromptUI();
+          if (window.cyberAudio) window.cyberAudio.playSuccess();
+          return '[+] Privilege Escalation réussie ! cap_setuid exploité avec succès.\n[+] Nouvel UID effectif : 0 (root). Shell root interactif débloqué (#).\nTape "id" ou "cat /root/root.txt".';
+        }
+        if (args.includes('-V') || args.includes('--version')) {
+          return 'Python 3.8.10';
+        }
+        return 'Python 3.8.10 (default, Mar 15 2026, 10:00:00)\n[GCC 11.2.0] on linux\nType "help", "copyright", "credits" or "license" for more information.\n>>> Utilise -c pour executer une commande en ligne.';
+      }
+
+      case 'sudo': {
+        if (args.includes('-l')) {
+          return 'Matching Defaults entries for operator on cyberlab-target:\n    env_reset, mail_badpass\n\nUser operator may run the following commands on cyberlab-target:\n    (root) NOPASSWD: /usr/bin/find, /usr/bin/python3.8';
+        }
+        if (cmdStr.includes('find') || cmdStr.includes('python') || cmdStr.includes('bash') || cmdStr.includes('sh')) {
+          this.isRoot = true;
+          this.eUID = 0;
+          this.updatePromptUI();
+          if (window.cyberAudio) window.cyberAudio.playSuccess();
+          return '[+] SUID/Sudo privilege escalation successful! Shell root eUID=0 débloqué (#).';
+        }
+        return 'sudo: command executed.';
+      }
       case 'help':
         return `🛠️ COMMANDES LINUX & RÉSEAU DISPONIBLES :
 • Identité & Système : whoami, hostname, uname, id, pwd
