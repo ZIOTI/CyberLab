@@ -224,8 +224,12 @@ class TrainingSystem {
             </p>
           </div>
 
-          <!-- Statistiques Épurées -->
+          <!-- Statistiques Épurées & Accès Rapide Arbre de Compétences -->
           <div class="flex items-center gap-3 font-mono">
+            <button onclick="if (window.cyberApp) window.cyberApp.switchView('skill-tree');" class="px-4 py-2.5 rounded-xl bg-purple-950/60 border border-purple-500/50 hover:bg-purple-900/60 text-purple-300 font-bold text-xs flex items-center gap-2 transition-all shadow-sm">
+              <span>🌳</span>
+              <span class="hidden sm:inline">Arbre de Compétences</span>
+            </button>
             <div class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-center min-w-[95px]">
               <div class="text-[10px] text-slate-400 font-bold uppercase">Résolus</div>
               <div class="text-base font-black text-emerald-400 mt-0.5">${solvedCount}/${totalChallenges}</div>
@@ -1122,6 +1126,9 @@ class TrainingSystem {
     
     this.activeChallenge = null;
     this.loadCatalog().then(() => this.renderHub());
+    if (window.cyberSkillTree?.fetchSkillTreeData) {
+      window.cyberSkillTree.fetchSkillTreeData();
+    }
   }
 
   renderRoom() {
@@ -2426,6 +2433,9 @@ class TrainingSystem {
 
         this.renderRoom();
         this.loadCampaignData();
+        if (window.cyberSkillTree?.fetchSkillTreeData) {
+          window.cyberSkillTree.fetchSkillTreeData();
+        }
       } else {
         if (window.cyberAudio) window.cyberAudio.playError();
         if (errBox) {

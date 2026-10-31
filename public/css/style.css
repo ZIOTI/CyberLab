@@ -1802,6 +1802,62 @@ code, pre, .font-mono {
 }
 
 /* ==========================================================================
+   PHASE 3 : SKILL TREE, ARBORESCENCE DE COMPÉTENCES, PLACEMENT & DOJO
+   ========================================================================== */
+
+.skill-tree-node-card {
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  will-change: transform;
+}
+
+.skill-tree-node-card:hover {
+  transform: translateY(-2px);
+}
+
+.skill-node-glow-cyan {
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.skill-node-glow-gold {
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: rgba(245, 158, 11, 0.8) !important;
+}
+
+.skill-node-glow-emerald {
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.skill-tier-separator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.skill-tier-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.9) 0%, rgba(30, 41, 59, 0.1) 100%);
+}
+
+.dojo-drill-card {
+  background: radial-gradient(circle at 10% 20%, rgba(244, 63, 94, 0.08) 0%, rgba(15, 23, 42, 0.9) 90%);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dojo-drill-card:hover {
+  border-color: rgba(244, 63, 94, 0.6);
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.15);
+}
+
+.placement-radar-bar {
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
    PREFERS-REDUCED-MOTION (UI/UX PRO MAX ACCESSIBILITY REQUIREMENT)
    ========================================================================== */
 

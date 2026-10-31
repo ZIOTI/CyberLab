@@ -47,6 +47,10 @@
           <span id="nav-icon-curriculum" class="w-5 h-5 flex items-center justify-center text-cyan-400"></span>
           <span>Curriculum (15 Mod.)</span>
         </a>
+        <a class="duo-nav-item" id="nav-skill-tree" role="button" tabindex="0">
+          <span id="nav-icon-skill-tree" class="w-5 h-5 flex items-center justify-center text-purple-400"></span>
+          <span>Arbre de Compétences</span>
+        </a>
         <a class="duo-nav-item" id="nav-training" role="button" tabindex="0">
           <span id="nav-icon-training" class="w-5 h-5 flex items-center justify-center text-emerald-400"></span>
           <span>Entraînement (100 Labs)</span>
@@ -129,6 +133,11 @@
         </div>
       </div>
 
+      <!-- CONTENEUR DE L'ARBRE DE COMPÉTENCES (SKILL TREE INTERACTIF) -->
+      <div id="view-skill-tree" class="hidden space-y-6">
+        <!-- Rendu dynamique par skill_tree.js -->
+      </div>
+
       <!-- CONTENEUR DE LA ZONE ENTRAÎNEMENT & 100+ LABS (MODE TRYHACKME) -->
       <div id="view-training-hub" class="hidden space-y-6">
         <!-- Rendu dynamique par training.js -->
@@ -207,6 +216,10 @@
     <button class="mobile-dock-btn active" id="mob-nav-learn">
       <span id="mob-dock-icon-learn" class="w-5 h-5 flex items-center justify-center"></span>
       <span>Parcours</span>
+    </button>
+    <button class="mobile-dock-btn" id="mob-nav-skill-tree">
+      <span id="mob-dock-icon-skill-tree" class="w-5 h-5 flex items-center justify-center"></span>
+      <span>Arbre</span>
     </button>
     <button class="mobile-dock-btn" id="mob-nav-training">
       <span id="mob-dock-icon-training" class="w-5 h-5 flex items-center justify-center"></span>
@@ -414,6 +427,27 @@
     </div>
   </div>
 
+  <!-- ==================================================================== -->
+  <!-- MODAL DÉTAILS D'UN NŒUD DE COMPÉTENCE (SKILL TREE) -->
+  <!-- ==================================================================== -->
+  <div id="modal-skill-node" class="modal-overlay hidden z-[160]" role="dialog" aria-modal="true">
+    <!-- Injecté dynamiquement par skill_tree.js -->
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL DU TEST DE POSITIONNEMENT INITIAL (DIAGNOSTIC) -->
+  <!-- ==================================================================== -->
+  <div id="modal-placement-test" class="modal-overlay hidden z-[170]" role="dialog" aria-modal="true">
+    <!-- Injecté dynamiquement par skill_tree.js -->
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL DU MODE DOJO (RÉVISION ESPACÉE DES ERREURS) -->
+  <!-- ==================================================================== -->
+  <div id="modal-dojo" class="modal-overlay hidden z-[170]" role="dialog" aria-modal="true">
+    <!-- Injecté dynamiquement par skill_tree.js -->
+  </div>
+
   <!-- Vendor xterm.js (Local & Autonome) -->
   <script src="/vendor/xterm/xterm.js"></script>
   <script src="/vendor/xterm/addon-fit.js"></script>
@@ -425,6 +459,7 @@
   <script src="/js/sandbox.js"></script>
   <script src="/js/challenges.js"></script>
   <script src="/js/training.js"></script>
+  <script src="/js/skill_tree.js"></script>
   <script src="/js/app.js"></script>
 </body>
 </html>

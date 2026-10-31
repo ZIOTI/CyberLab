@@ -63,6 +63,11 @@ class CyberAppPro {
       window.trainingSystem.init();
     }
 
+    // Initialisation du Skill Tree (Arborescence 4 Rôles & Dojo)
+    if (window.cyberSkillTree) {
+      window.cyberSkillTree.init();
+    }
+
     // Vérification de mise à jour au démarrage
     this.checkForUpdates();
   }
@@ -80,6 +85,7 @@ class CyberAppPro {
 
     // Navigation desktop
     setIcon('nav-icon-curriculum', 'curriculum', 'w-5 h-5');
+    setIcon('nav-icon-skill-tree', 'skillTree', 'w-5 h-5');
     setIcon('nav-icon-training', 'training', 'w-5 h-5');
     setIcon('nav-icon-badges', 'trophy', 'w-5 h-5');
     setIcon('nav-icon-profile', 'profile', 'w-5 h-5');
@@ -102,6 +108,7 @@ class CyberAppPro {
 
     // Navigation mobile dock
     setIcon('mob-dock-icon-learn', 'curriculum', 'w-5 h-5');
+    setIcon('mob-dock-icon-skill-tree', 'skillTree', 'w-5 h-5');
     setIcon('mob-dock-icon-training', 'training', 'w-5 h-5');
     setIcon('mob-dock-icon-badges', 'trophy', 'w-5 h-5');
     setIcon('mob-dock-icon-profile', 'profile', 'w-5 h-5');
@@ -191,27 +198,58 @@ class CyberAppPro {
     document.getElementById('mob-nav-profile')?.addEventListener('click', () => this.openProfileModal());
     document.getElementById('btn-close-profile')?.addEventListener('click', () => document.getElementById('modal-profile')?.classList.add('hidden'));
 
-    // Basculement entre Vues Principales (Curriculum vs Zone Entraînement)
+    // Basculement entre Vues Principales (Curriculum vs Arbre de Compétences vs Zone Entraînement)
     const switchToCurriculum = () => {
       this.closeAllModals();
       document.getElementById('view-curriculum-container')?.classList.remove('hidden');
+      document.getElementById('view-skill-tree')?.classList.add('hidden');
       document.getElementById('view-training-hub')?.classList.add('hidden');
+
       document.getElementById('nav-learn')?.classList.add('active');
+      document.getElementById('nav-skill-tree')?.classList.remove('active');
       document.getElementById('nav-training')?.classList.remove('active');
+
       document.getElementById('mob-nav-learn')?.classList.add('active');
+      document.getElementById('mob-nav-skill-tree')?.classList.remove('active');
       document.getElementById('mob-nav-training')?.classList.remove('active');
+
       if (window.cyberAudio) window.cyberAudio.playTactileClick();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const switchToSkillTree = () => {
+      this.closeAllModals();
+      document.getElementById('view-curriculum-container')?.classList.add('hidden');
+      document.getElementById('view-skill-tree')?.classList.remove('hidden');
+      document.getElementById('view-training-hub')?.classList.add('hidden');
+
+      document.getElementById('nav-learn')?.classList.remove('active');
+      document.getElementById('nav-skill-tree')?.classList.add('active');
+      document.getElementById('nav-training')?.classList.remove('active');
+
+      document.getElementById('mob-nav-learn')?.classList.remove('active');
+      document.getElementById('mob-nav-skill-tree')?.classList.add('active');
+      document.getElementById('mob-nav-training')?.classList.remove('active');
+
+      if (window.cyberAudio) window.cyberAudio.playTactileClick();
+      if (window.cyberSkillTree) window.cyberSkillTree.renderHub();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const switchToTraining = () => {
       this.closeAllModals();
       document.getElementById('view-curriculum-container')?.classList.add('hidden');
+      document.getElementById('view-skill-tree')?.classList.add('hidden');
       document.getElementById('view-training-hub')?.classList.remove('hidden');
+
       document.getElementById('nav-learn')?.classList.remove('active');
+      document.getElementById('nav-skill-tree')?.classList.remove('active');
       document.getElementById('nav-training')?.classList.add('active');
+
       document.getElementById('mob-nav-learn')?.classList.remove('active');
+      document.getElementById('mob-nav-skill-tree')?.classList.remove('active');
       document.getElementById('mob-nav-training')?.classList.add('active');
+
       if (window.cyberAudio) window.cyberAudio.playTactileClick();
       if (window.trainingSystem) window.trainingSystem.renderHub();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -219,6 +257,8 @@ class CyberAppPro {
 
     document.getElementById('nav-learn')?.addEventListener('click', switchToCurriculum);
     document.getElementById('mob-nav-learn')?.addEventListener('click', switchToCurriculum);
+    document.getElementById('nav-skill-tree')?.addEventListener('click', switchToSkillTree);
+    document.getElementById('mob-nav-skill-tree')?.addEventListener('click', switchToSkillTree);
     document.getElementById('nav-training')?.addEventListener('click', switchToTraining);
     document.getElementById('mob-nav-training')?.addEventListener('click', switchToTraining);
 
@@ -683,6 +723,10 @@ class CyberAppPro {
   // ==========================================================================
   // DÉMARRAGE ET STEPPER DE SESSION
   // ==========================================================================
+  startSession(levelId) {
+    return this.startLevelSession(levelId);
+  }
+
   startLevelSession(levelId) {
     const level = this.levels.find(l => l.id === levelId);
     if (!level) return;
@@ -1431,6 +1475,11 @@ class CyberAppPro {
 
   closeAllModals() {
     document.getElementById('modal-session')?.classList.add('hidden');
+    document.getElementById('modal-badges')?.classList.add('hidden');
+    document.getElementById('modal-profile')?.classList.add('hidden');
+    document.getElementById('modal-skill-node')?.classList.add('hidden');
+    document.getElementById('modal-placement-test')?.classList.add('hidden');
+    document.getElementById('modal-dojo')?.classList.add('hidden');
     document.getElementById('session-validation-footer')?.classList.remove('visible');
   }
 

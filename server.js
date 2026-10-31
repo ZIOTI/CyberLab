@@ -9,6 +9,7 @@ const path = require('node:path');
 const { DatabaseSync } = require('node:sqlite');
 const updater = require('./updater');
 const TrainingManager = require('./platform/training_manager');
+const SkillTreeManager = require('./platform/skill_tree_manager');
 
 const PORT = process.env.PORT || 3333;
 const HOST = process.env.HOST || '127.0.0.1';
@@ -22,6 +23,7 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 let db;
 let targetsDb;
 let trainingManager;
+let skillTreeManager;
 try {
   db = new DatabaseSync(DB_PATH);
   
@@ -148,6 +150,7 @@ try {
 
   console.log('[DATABASE] SQLite initialisée avec succès (Mode Offensif Pro : cyberrange.db & targets.db isolés).');
   trainingManager = new TrainingManager(db);
+  skillTreeManager = new SkillTreeManager(db, targetsDb, trainingManager);
 } catch (err) {
   console.warn('[DATABASE] Erreur SQLite :', err.message);
 }
@@ -408,6 +411,18 @@ const server = http.createServer(async (req, res) => {
         req.socket.remoteAddress,
         body.player_id || null
       );
+      if (result && !result.correct && !result.is_correct && skillTreeManager) {
+        skillTreeManager.recordError(
+          body.player_id || 'current_player',
+          'challenge',
+          `${body.challenge_id}:${body.task_id || 't1'}`,
+          `Challenge ${body.challenge_id} Tâche ${body.task_id || 't1'}`,
+          body.flag,
+          null,
+          body.challenge_id,
+          null
+        );
+      }
       return sendJSON(res, 200, result);
     } catch (e) {
       return sendJSON(res, 500, { success: false, error: e.message });
@@ -487,6 +502,387 @@ const server = http.createServer(async (req, res) => {
       if (!trainingManager) throw new Error('Moteur non initialisé.');
       const vfsFiles = trainingManager.getChallengeVfsSnapshot(challengeId, 'current_player');
       return sendJSON(res, 200, { success: true, files: vfsFiles });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // ==========================================================================
+  // API SKILL TREE, ONTOLOGIE DE COMPÉTENCES, PLACEMENT & DOJO (PHASE 3)
+  // ==========================================================================
+
+  if (pathname === '/api/skill-tree' && method === 'GET') {
+    try {
+      const pid = parsedUrl.searchParams.get('player_id') || 'current_player';
+      if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
+      const tree = skillTreeManager.getSkillTree(pid);
+      return sendJSON(res, 200, tree);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/skill-tree/diagnostic-questions' && method === 'GET') {
+    try {
+      if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
+      const questions = skillTreeManager.getDiagnosticQuestions();
+      return sendJSON(res, 200, { success: true, questions });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/skill-tree/placement-test' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
+      const result = skillTreeManager.evaluatePlacement(body.answers || {}, pid);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/skill-tree/dojo-session' && method === 'GET') {
+    try {
+      const pid = parsedUrl.searchParams.get('player_id') || 'current_player';
+      if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
+      const session = skillTreeManager.getDojoSession(pid);
+      return sendJSON(res, 200, { success: true, ...session });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/skill-tree/dojo-submit' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
+      const result = skillTreeManager.submitDojoAnswer(pid, body.drill_id, body.answer);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/skill-tree/unlock-node' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const pid = body.player_id || 'current_player';
+      if (!skillTreeManager) throw new Error('Moteur SkillTree non initialisé.');
+      const result = skillTreeManager.unlockSkillNode(body.node_id, pid);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // ==========================================================================
+  // MODULES SPÉCIALISÉS OFFENSE & DÉFENSE (AVEC VRAIES CIBLES & ARTEFACTS)
+  // ==========================================================================
+
+  // --- 1. Cryptanalyse ---
+  if (pathname === '/api/modules/crypto/cesar' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCryptoCesar(body.text, body.shift, body.decrypt);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/crypto/vigenere' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCryptoVigenere(body.text, body.key, body.decrypt);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/crypto/xor' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCryptoXorMultiByte(body.hex, body.key);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/crypto/rsa' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCryptoRsaSmallE(body.ciphertext_hex, body.e);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/crypto/rsa-factor' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCryptoRsaFactorization(body.n_hex, body.e, body.c_hex);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/crypto/hash-crack' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const targetHash = body.hash || body.target_hash;
+      const hashType = body.type || body.hash_type;
+      const wordlist = body.wordlist || body.custom_wordlist;
+      const result = skillTreeManager.handleCryptoHashCrack(targetHash, hashType, wordlist);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/crypto/padding-oracle' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCryptoPaddingOracle(body.ciphertext_hex, body.iv_hex);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/crypto/remediation' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyCryptoRemediation(body.remediation_type, body.params);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 2. Forensics & DFIR ---
+  if (pathname === '/api/modules/forensics/pcap' && method === 'GET') {
+    try {
+      const streamId = parsedUrl.searchParams.get('stream_id');
+      const result = skillTreeManager.handleForensicsPcapAnalyze(streamId);
+      return sendJSON(res, 200, { success: true, data: result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/forensics/memory' && method === 'GET') {
+    try {
+      const result = skillTreeManager.handleForensicsMemoryDump();
+      return sendJSON(res, 200, { success: true, data: result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/forensics/stego' && method === 'GET') {
+    try {
+      const sampleId = parsedUrl.searchParams.get('sample_id') || 'image-badge.bmp';
+      const result = skillTreeManager.handleForensicsStegoLsb(sampleId);
+      return sendJSON(res, 200, { success: true, data: result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/forensics/sigma' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyForensicsSigmaRule(body.rule_yaml);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 3. Rétro-Ingénierie & Binaire ---
+  if (pathname === '/api/modules/reverse/elf' && method === 'GET') {
+    try {
+      const result = skillTreeManager.handleReverseElfInspect();
+      return sendJSON(res, 200, { success: true, data: result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/reverse/pe' && method === 'GET') {
+    try {
+      const result = skillTreeManager.handleReversePeInspect();
+      return sendJSON(res, 200, { success: true, data: result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/reverse/deobfuscate' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleReverseDeobfuscate(body.script || body.payload);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/reverse/crackme' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleReverseCrackmeVerify(body.serial_key);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/reverse/bof' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleReverseBufferOverflow(body.padding_size, body.target_address);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/reverse/checksec' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyReverseChecksec(body.flags);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 4. Active Directory & Windows ---
+  if (pathname === '/api/modules/activedirectory/ldap' && method === 'GET') {
+    try {
+      const result = skillTreeManager.handleAdLdapQuery();
+      return sendJSON(res, 200, { success: true, data: result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/activedirectory/asreproast' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleAdAsRepRoast(body.target_user);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/activedirectory/kerberoast' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleAdKerberoast(body.spn_name);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/activedirectory/privilege-abuse' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleAdPrivilegeAbuse(body.technique, body.target_user);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/activedirectory/hardening' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyAdHardening(body.settings);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 5. Cloud, Conteneurs & API ---
+  if (pathname === '/api/modules/cloud/s3/list' && method === 'GET') {
+    try {
+      const result = skillTreeManager.handleCloudS3List();
+      return sendJSON(res, 200, { success: true, data: result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/cloud/s3/object' && method === 'GET') {
+    try {
+      const key = parsedUrl.searchParams.get('key');
+      const result = skillTreeManager.handleCloudS3ReadObject(key);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/cloud/docker-escape' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCloudDockerEscape(body.command);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/cloud/api-audit' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleCloudApiAudit(body.vulnerability_type, body.params);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  if (pathname === '/api/modules/cloud/remediation' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.verifyCloudRemediation(body.remediation_type, body.params);
+      return sendJSON(res, 200, result);
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 6. Sécurité de l'IA & LLM ---
+  if (pathname === '/api/modules/aillm/chat' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleAiLlmChat(body.prompt, body.guardrail);
+      return sendJSON(res, 200, { success: true, ...result });
+    } catch (e) {
+      return sendJSON(res, 500, { success: false, error: e.message });
+    }
+  }
+
+  // --- 7. Éthique & Cadre Légal (France/UE) ---
+  if (pathname === '/api/modules/ethics/case' && method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const result = skillTreeManager.handleEthicsCase(body.case_id, body.action);
+      return sendJSON(res, 200, { success: true, ...result });
     } catch (e) {
       return sendJSON(res, 500, { success: false, error: e.message });
     }
@@ -1331,6 +1727,19 @@ const server = http.createServer(async (req, res) => {
           .run(levelId, submitted, isCorrect ? 1 : 0, new Date().toISOString());
       }
 
+      if (!isCorrect && skillTreeManager) {
+        skillTreeManager.recordError(
+          'current_player',
+          'curriculum',
+          levelId,
+          `Curriculum Niveau ${levelId}`,
+          submitted,
+          expected,
+          `Piste ${levelId.split('-')[0]}`,
+          null
+        );
+      }
+
       return sendJSON(res, 200, {
         is_correct: !!isCorrect,
         level_id: levelId
@@ -1345,6 +1754,11 @@ const server = http.createServer(async (req, res) => {
       if (db) {
         db.prepare('DELETE FROM user_state WHERE id = ?').run('current_player');
         db.prepare('DELETE FROM level_logs').run();
+        try {
+          db.prepare('DELETE FROM user_skill_progress WHERE player_id = ?').run('current_player');
+          db.prepare('DELETE FROM user_placement_results WHERE player_id = ?').run('current_player');
+          db.prepare('DELETE FROM user_error_reviews WHERE player_id = ?').run('current_player');
+        } catch {}
       }
       return sendJSON(res, 200, { success: true, message: 'Profil réinitialisé.' });
     } catch (err) {
