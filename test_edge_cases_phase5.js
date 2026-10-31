@@ -104,6 +104,23 @@ async function runEdgeCases() {
   });
   assert(resSqliToken.status === 403, 'SQLi attempt as token rejected with 403');
 
+  // Cross-origin attempt with Origin header from an untrusted origin
+  const resCrossOriginToken = await fetch(`${BASE_URL}/api/csrf-token`, {
+    headers: { 'Origin': 'https://evil-hacker.com' }
+  });
+  assert(resCrossOriginToken.status === 403, 'Foreign Origin on /api/csrf-token rejected with 403 Forbidden');
+
+  // Cross-origin state modification attempt
+  const validCsrfForTest = (await fetch(`${BASE_URL}/api/csrf-token`).then(r => r.json())).csrfToken;
+  const resCrossOriginReset = await fetch(`${BASE_URL}/api/reset-profile`, {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': validCsrfForTest,
+      'Origin': 'https://evil-hacker.com'
+    }
+  });
+  assert(resCrossOriginReset.status === 403, 'Cross-origin state alteration rejected with 403 Forbidden');
+
   // Génération de jeton valide
   const csrf1 = (await fetch(`${BASE_URL}/api/csrf-token`).then(r => r.json())).csrfToken;
   assert(typeof csrf1 === 'string' && csrf1.length === 64, 'Token is 64-char hex');
@@ -121,6 +138,9 @@ async function runEdgeCases() {
     '/targets/training/download/network/net-01-wireshark-ftp/..%2f..%2fserver.js',
     '/targets/training/download/network/net-01-wireshark-ftp/%2e%2e%2f..%2fcyberrange.db',
     '/targets/training/download/network/net-01-wireshark-ftp/..\\..\\server.js',
+    '/targets/training/download/network/net-01-wireshark-ftp/%252e%252e/%252e%252e/server.js',
+    '/targets/training/download/network/net-01-wireshark-ftp/%2e%2e%5cserver.js',
+    '/targets/training/download/network/net-01-wireshark-ftp/ftp_session_capture.pcap%00.txt',
     '/targets/training/download/network/../server.js',
     '/targets/training/download/..%2f..%2f..%2fetc%2fpasswd'
   ];
@@ -129,7 +149,7 @@ async function runEdgeCases() {
     const res = await fetch(`${BASE_URL}${vec}`);
     assert(res.status === 404 || res.status === 400 || res.status === 403, `Attack vector ${vec} rejected (got ${res.status})`);
   }
-  console.log('✔ 8 vecteurs d\'attaque Path Traversal bloqués sans concession.');
+  console.log('✔ 11 vecteurs d\'attaque Path Traversal bloqués sans concession.');
 
   // --------------------------------------------------------------------------
   // 4. Tests Cas Limites Intégrité SHA-256 dans updater.js
@@ -158,12 +178,19 @@ async function runEdgeCases() {
   console.log('5. Tests conformité syntaxique des scripts Bash...');
   const startSh = fs.readFileSync('start.sh', 'utf8');
   assert(startSh.startsWith('#!/usr/bin/env bash'), 'start.sh has portable bash shebang');
+  assert(startSh.includes('cd "$(dirname "${BASH_SOURCE[0]}")"'), 'start.sh safely locks project directory');
   assert(startSh.includes('node -v'), 'start.sh checks node version');
   assert(startSh.includes('xdg-open') && startSh.includes('open '), 'start.sh handles Linux and macOS');
 
   const updateSh = fs.readFileSync('update.sh', 'utf8');
   assert(updateSh.startsWith('#!/usr/bin/env bash'), 'update.sh has portable bash shebang');
+  assert(updateSh.includes('cd "$(dirname "${BASH_SOURCE[0]}")"'), 'update.sh safely locks project directory');
   assert(updateSh.includes('updater.js apply'), 'update.sh calls updater.js apply');
+
+  // Vérification des droits exécutables dans le catalogue Git
+  const { execSync } = require('child_process');
+  const gitFiles = execSync('git ls-files --stage start.sh update.sh').toString();
+  assert(gitFiles.includes('100755'), 'Scripts possess Unix executable mode (100755)');
   console.log('✔ Scripts de démarrage et mise à jour multiplateforme validés.');
 
   console.log('========================================================================');

@@ -1779,7 +1779,6 @@ async function testAll() {
   }
 
   // Vérification du statut exécutable (100755) des scripts sous Git
-  const { execSync } = require('child_process');
   const gitFiles = execSync('git ls-files --stage start.sh update.sh').toString();
   assert(gitFiles.includes('100755'), 'start.sh and update.sh are executable (100755) in git index');
 
