@@ -1,28 +1,38 @@
 {
   "id": "crypto-05-rsa-small-e",
-  "title": "Low Exponent Disaster",
-  "category": "Crypto",
+  "title": "RSA Low Public Exponent Attack (e=3)",
+  "organization": "QuantumSec Research Facility",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "rsa-hastad-e3",
     "crypto",
-    "intermediate"
+    "rsa",
+    "small-e",
+    "coppersmith",
+    "cube-root"
   ],
+  "cve": "CWE-326",
+  "rating": 4.9,
+  "solves": 1450,
+  "monogram": "RSA",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour Low Exponent Disaster : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (rsa-hastad-e3) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un cryptosystème RSA utilise un exposant public e=3 sans bourrage cryptographique standard (pas d'OAEP). Le message en clair m est court, de sorte que m^3 < N (le produit n'a pas dépassé le module RSA N). Effectue une simple extraction de racine cubique sur le texte chiffré pour récupérer le message en clair sans avoir à factoriser N.",
   "target_port": 3333,
-  "virtual_ip": "10.10.18.177"
+  "virtual_ip": "10.10.36.46"
 }

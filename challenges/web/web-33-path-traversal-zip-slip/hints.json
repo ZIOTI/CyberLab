@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Script Python ZipFile",
+    "cost": 20,
+    "content": "Utilise zipfile.ZipFile avec zip.writestr('../../../etc/cron.d/pwn', '* * * * * root ...')"
+  }
+]

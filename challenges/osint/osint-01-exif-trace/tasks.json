@@ -1,26 +1,18 @@
 [
   {
-    "id": "task-1",
-    "title": "Tâche 1 : Identification du Matériel Aérien",
-    "description": "Quel est le modèle exact du drone identifié dans les métadonnées EXIF (champ Camera Model Name) ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "DJI-Mavic3-Enterprise"
-  },
-  {
-    "id": "task-2",
-    "title": "Tâche 2 : Date & Heure du Cliché",
-    "description": "Quelle est la date de la prise de vue enregistrée dans les métadonnées (format: YYYY:MM:DD) ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "2026:10:24"
-  },
-  {
-    "id": "task-3",
-    "title": "Tâche 3 : Extraction des Coordonnées & Flag de Mission",
-    "description": "Extrais le commentaire opérateur dissimulé dans le champ 'UserComment' des métadonnées pour valider l'investigation.",
+    "id": "t1",
+    "title": "Modèle de l'appareil photographique",
+    "description": "Quel appareil photo a été utilisé pour capturer le cliché ?",
     "points": 40,
     "task_type": "flag",
-    "canonical_flag": "CYBERLAB{EXIF_GPS_AERIAL_RECON_GEOLOCATED}"
+    "canonical_flag": "Sony Alpha 7 IV"
+  },
+  {
+    "id": "t2",
+    "title": "Coordonnées GPS et Flag",
+    "description": "Extrais la latitude et la longitude et saisis le drapeau de localisation.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{EXIF_GPS_METADATA_EXTRACTED_LOC_48_8584}"
   }
 ]

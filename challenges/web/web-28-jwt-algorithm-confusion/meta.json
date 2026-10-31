@@ -1,0 +1,38 @@
+{
+  "id": "web-28-jwt-algorithm-confusion",
+  "title": "AuthKey RS256 to HS256 Key Confusion",
+  "organization": "AuthKey Federated SSO Services",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 350,
+  "duration_min": 55,
+  "learning_path": "web-beginner",
+  "author": "Aegis Cryptanalysis",
+  "tags": [
+    "jwt",
+    "key-confusion",
+    "rs256-hs256",
+    "cryptography",
+    "sso"
+  ],
+  "cve": "CWE-347",
+  "rating": 4.9,
+  "solves": 690,
+  "monogram": "CONF",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "La solution d'authentification AuthKey vérifie les jetons JWT à l'aide d'une clé publique RSA (RS256). Cependant, la bibliothèque de validation accepte également l'algorithme symétrique HS256 sans vérifier le type de clé attendu. Récupère la clé publique RSA du serveur (disponible publiquement) et utilise-la comme secret HMAC symétrique pour signer un jeton d'administrateur forgé.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.33.33"
+}

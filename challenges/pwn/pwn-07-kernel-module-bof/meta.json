@@ -1,0 +1,38 @@
+{
+  "id": "pwn-07-kernel-module-bof",
+  "title": "Custom Linux Kernel Driver IOCTL Buffer Overflow",
+  "organization": "Industrial Hardware Interface Driver",
+  "category": "Pwn & Exploitation Mémoire",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 85,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Kernel Research",
+  "tags": [
+    "kernel-pwn",
+    "ioctl",
+    "ring0",
+    "commit_creds",
+    "privesc"
+  ],
+  "cve": "CWE-121",
+  "rating": 5,
+  "solves": 380,
+  "monogram": "KPWN",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "GDB-Peda",
+    "pwntools",
+    "checksec",
+    "ROPgadget",
+    "one_gadget"
+  ],
+  "narrative_story": "Un pilote de périphérique noyau (/dev/vulndrv) implémente un gestionnaire de requêtes ioctl() qui copie les données de l'espace utilisateur (copy_from_user) dans un tampon de pile noyau de taille fixe sans contrôle de longueur. Exploite ce débordement de tampon dans l'espace Ring 0 pour écraser l'adresse de retour du noyau et exécuter commit_creds(prepare_kernel_cred(0)) afin de basculer en root.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.35.184"
+}

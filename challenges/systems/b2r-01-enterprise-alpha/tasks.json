@@ -1,17 +1,33 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Full Kill Chain Compromise Alpha)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à boot2root-killchain.",
-    "points": 150,
+    "title": "Phase 1 : Reconnaissance & Surface d'attaque exposée",
+    "description": "Cartographie les ports et identifie le service d'administration vulnérable.",
+    "points": 80,
     "task_type": "flag",
-    "canonical_flag": "VULN_B2R_01_ENTERPRISE_ALPHA_CONFIRMED"
+    "canonical_flag": "RECON_DMZ_ALPHA_COMPLETE"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 350,
+    "title": "Phase 2 : Exploitation & Accès Initial (User Flag)",
+    "description": "Obtiens un premier shell avec les privilèges de l'utilisateur www-data.",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_alpha_dmz_foothold_shell_granted}"
+  },
+  {
+    "id": "t3",
+    "title": "Phase 3 : Énumération locale interne",
+    "description": "Exécute LinPEAS et découvre le binaire interne mal configuré.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "INTERNAL_PRIVILEGE_VECTOR_FOUND"
+  },
+  {
+    "id": "t4",
+    "title": "Phase 4 : Élévation de privilèges & Root Flag",
+    "description": "Deviens root sur le serveur de contrôle et saisis le drapeau ultime.",
+    "points": 200,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BOOT2ROOT_ALPHA_DMZ_PIVOT_ROOT_COMPROMISE_FLAG}"
   }

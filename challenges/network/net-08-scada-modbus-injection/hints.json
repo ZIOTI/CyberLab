@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Bibliothèque Python",
+    "cost": 25,
+    "content": "Utilise la bibliothèque pymodbus pour écrire directement dans les registres du PLC."
+  }
+]

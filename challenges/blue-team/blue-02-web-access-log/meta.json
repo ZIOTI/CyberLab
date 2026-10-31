@@ -1,28 +1,38 @@
 {
   "id": "blue-02-web-access-log",
-  "title": "Web Attack Profiling",
+  "title": "Nginx Access Log SQLi Attack Profiling",
+  "organization": "E-Commerce Platform SOC Monitoring",
   "category": "Blue Team & SOC",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "soc-forensics",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis SOC Team",
   "tags": [
-    "nginx-log-analysis",
     "blue-team",
-    "easy"
+    "nginx",
+    "access-log",
+    "sqli-detection",
+    "threat-hunting"
   ],
+  "cve": "CWE-89",
+  "rating": 4.8,
+  "solves": 2190,
+  "monogram": "SOC-2",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Splunk",
     "ELK Stack",
     "Sigma",
-    "Suricata"
+    "Suricata",
+    "Sysmon"
   ],
-  "narrative_story": "Scénario opérationnel pour Web Attack Profiling : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (nginx-log-analysis) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Une alerte de l'équipe de supervision signale un volume inhabituel de requêtes HTTP 500 sur le frontal Nginx. En analysant le fichier access.log avec awk, sort et uniq, isole les motifs d'injection SQL envoyés par l'attaquant, détermine le paramètre ciblé, et découvre la table de données qui a fait l'objet d'une exfiltration.",
   "target_port": 3333,
-  "virtual_ip": "10.10.11.26"
+  "virtual_ip": "10.10.25.171"
 }

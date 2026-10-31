@@ -1,10 +1,13 @@
 {
   "id": "forensics-02-pcap-http",
-  "title": "Exfiltrated Credentials",
-  "category": "Forensics",
+  "title": "Wireshark Unencrypted Credential Stream",
+  "organization": "Enterprise SOC Network Surveillance",
+  "category": "Forensics & Mémoire",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 40,
+  "duration_min": 35,
   "learning_path": "soc-forensics",
   "author": "Aegis Forensics Lab",
   "tags": [
@@ -14,16 +17,22 @@
     "http-post",
     "credentials"
   ],
+  "cve": "CWE-319",
+  "rating": 4.9,
+  "solves": 2410,
+  "monogram": "PCAP",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Wireshark",
-    "tshark",
-    "strings"
+    "Volatility 3",
+    "Autopsy",
+    "FTK Imager",
+    "tshark"
   ],
-  "narrative_story": "Un flux réseau suspect a été intercepté lors d'un incident de sécurité. Un attaquant a exfiltré un fichier d'archives confidentiel via une requête HTTP POST non chiffrée. Ouvre la capture dans Wireshark, filtre sur les flux HTTP, recompose le fichier transféré dans le flux TCP et analyse son contenu.",
+  "narrative_story": "Lors d'un incident de sécurité, la sonde réseau a enregistré un fichier de capture de paquets (.pcap). Un attaquant a exfiltré un fichier d'archives confidentiel via une requête HTTP POST non chiffrée. Ouvre la capture dans Wireshark, applique des filtres d'affichage sur les requêtes HTTP, suis le flux TCP (Follow TCP Stream) et recompose le fichier transféré.",
   "target_port": 3333,
-  "virtual_ip": "10.10.50.198"
+  "virtual_ip": "10.10.28.24"
 }

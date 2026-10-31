@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Small Subgroup Prime Attack)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à diffie-hellman-mitm.",
-    "points": 105,
+    "title": "Analyse de la friabilité de p-1",
+    "description": "Combien de facteurs premiers composent le sous-groupe friable de p-1 ?",
+    "points": 80,
     "task_type": "flag",
-    "canonical_flag": "VULN_CRYPTO_09_DIFFIE_HELLMAN_MITM_CONFIRMED"
+    "canonical_flag": "8"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 245,
+    "title": "Résolution du logarithme discret",
+    "description": "Quelle méthode d'algèbre modulaire résout le logarithme discret dans les petits sous-groupes ?",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "Pohlig-Hellman"
+  },
+  {
+    "id": "t3",
+    "title": "Reconstruction du secret partagé & Flag",
+    "description": "Calcule la clé secrète partagée g^(ab) mod p et déchiffre le message.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{DIFFIE_HELLMAN_WEAK_PRIME_DISCRETE_LOG_SOLVED}"
   }

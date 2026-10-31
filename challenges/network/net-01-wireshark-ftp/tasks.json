@@ -1,26 +1,26 @@
 [
   {
-    "id": "task-1",
-    "title": "Tâche 1 : Identifiants FTP en Clair",
-    "description": "Quels sont le nom d'utilisateur et le mot de passe envoyés lors de l'authentification FTP (format: username:password) ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "operator:FalconSecure#2026"
-  },
-  {
-    "id": "task-2",
-    "title": "Tâche 2 : Nom du Fichier Exfiltré",
-    "description": "Quel est le nom exact du document téléchargé via la commande FTP RETR ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "secret_operations_directive.txt"
-  },
-  {
-    "id": "task-3",
-    "title": "Tâche 3 : Extraction de la Charge Utile & Flag",
-    "description": "Inspecte le flux de données passif (FTP-DATA) pour lire le contenu du fichier et capturer le drapeau.",
+    "id": "t1",
+    "title": "Nom d'utilisateur transmis en clair",
+    "description": "Quel utilisateur s'est connecté via la commande USER ?",
     "points": 40,
     "task_type": "flag",
-    "canonical_flag": "CYBERLAB{FTP_CLEARTEXT_CREDENTIALS_AND_PAYLOAD_CAPTURED}"
+    "canonical_flag": "ftp_admin"
+  },
+  {
+    "id": "t2",
+    "title": "Mot de passe et Flag de contrôle",
+    "description": "Identifie le mot de passe envoyé avec PASS et capture le drapeau.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{WIRESHARK_FTP_CLEARTEXT_PASSWORD_DISCOVERED}"
+  },
+  {
+    "id": "t3",
+    "title": "Fichier confidentiel téléchargé",
+    "description": "Quel fichier a été téléchargé via la commande RETR ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "confidential_backup.sql"
   }
 ]

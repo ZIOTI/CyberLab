@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Threat Hunting Rulebook)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à sigma-rules-sysmon.",
-    "points": 90,
+    "title": "Numéro d'événement Sysmon de création de processus",
+    "description": "Quel Event ID Windows Sysmon enregistre le lancement de processus ?",
+    "points": 70,
     "task_type": "flag",
-    "canonical_flag": "VULN_BLUE_04_SIGMA_DETECTION_CONFIRMED"
+    "canonical_flag": "1"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Champ de sélection de la ligne de commande en Sigma",
+    "description": "Quel nom de champ Sigma correspond aux arguments passés en console ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "CommandLine|contains"
+  },
+  {
+    "id": "t3",
+    "title": "Conversion en requête SIEM & Flag",
+    "description": "Convertis la règle Sigma en requête Splunk / ELK et valide le drapeau de chasse.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SIGMA_RULE_SYSMON_EVENT1_MIMIKATZ_TRIGGERED}"
   }

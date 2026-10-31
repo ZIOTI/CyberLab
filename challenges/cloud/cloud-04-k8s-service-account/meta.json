@@ -1,28 +1,38 @@
 {
   "id": "cloud-04-k8s-service-account",
   "title": "Kubernetes Cluster Role Escalation",
+  "organization": "FinTech Kubernetes Platform",
   "category": "Cloud & Conteneurs",
+  "target_os": "Cloud",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 450,
-  "duration_min": 60,
+  "duration_min": 70,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cloudsec",
   "tags": [
-    "k8s-rbac-impersonate",
-    "cloud",
-    "insane"
+    "k8s",
+    "kubernetes",
+    "rbac",
+    "service-account",
+    "cloud-privesc"
   ],
+  "cve": "CWE-284",
+  "rating": 5,
+  "solves": 530,
+  "monogram": "K8S",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "AWS CLI",
     "ScoutSuite",
     "Pacu",
-    "Trivy"
+    "kubectl",
+    "trivy"
   ],
-  "narrative_story": "Scénario opérationnel pour Kubernetes Cluster Role Escalation : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (k8s-rbac-impersonate) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Après avoir obtenu un shell dans un pod Kubernetes, découvre le jeton du compte de service injecté dans /var/run/secrets/kubernetes.io/serviceaccount/token. Ce compte de service dispose de permissions RBAC excessives permettant d'énumérer les Secrets de tous les namespaces ou de créer de nouveaux pods privilégiés. Utilise kubectl pour devenir Cluster-Admin.",
   "target_port": 3333,
-  "virtual_ip": "10.10.49.81"
+  "virtual_ip": "10.10.13.94"
 }

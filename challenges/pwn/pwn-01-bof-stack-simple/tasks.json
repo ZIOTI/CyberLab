@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Classic 32-bit Stack Smash)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à buffer-overflow-eip.",
-    "points": 60,
+    "title": "Calcul de l'offset du registre d'instruction",
+    "description": "Combien d'octets de padding séparent le début du buffer de l'adresse de retour ?",
+    "points": 50,
     "task_type": "flag",
-    "canonical_flag": "VULN_PWN_01_BOF_STACK_SIMPLE_CONFIRMED"
+    "canonical_flag": "72"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Localisation de la fonction cible",
+    "description": "Quelle est l'adresse hexadécimale de la fonction print_flag() ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "0x08048536"
+  },
+  {
+    "id": "t3",
+    "title": "Construction du payload & Flag",
+    "description": "Envoie la charge utile forgée avec pwntools et capture le drapeau.",
+    "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BUFFER_OVERFLOW_EIP_OVERWRITE_WIN_FUNC_CALLED}"
   }

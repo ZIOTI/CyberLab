@@ -1,26 +1,26 @@
 [
   {
-    "id": "task-1",
-    "title": "Tâche 1 : Identification du Champ Vulnérable",
-    "description": "Quel caractère spécial en SQL permet de briser la délimitation de chaîne de caractères lors d'un test d'injection ?",
+    "id": "t1",
+    "title": "Détection de l'injection SQL",
+    "description": "Injecte un guillemet simple (') dans le champ utilisateur pour provoquer une erreur d'interpréteur.",
     "points": 30,
     "task_type": "flag",
-    "canonical_flag": "'"
+    "canonical_flag": "SQLI_ERROR_CONFIRMED"
   },
   {
-    "id": "task-2",
-    "title": "Tâche 2 : Charge Utile d'Évaluation Tautologique",
-    "description": "Donne un exemple de payload d'authentification classique exploitant l'opérateur OR pour forcer une condition toujours vraie.",
+    "id": "t2",
+    "title": "Contournement de la validation du mot de passe",
+    "description": "Quel payload classique permet de neutraliser le reste de la clause WHERE ?",
     "points": 30,
     "task_type": "flag",
     "canonical_flag": "' OR '1'='1"
   },
   {
-    "id": "task-3",
-    "title": "Tâche 3 : Connexion Admin & Flag de Session",
-    "description": "Injecte la charge utile dans la mire d'authentification IronGate pour te connecter sous le compte super-administrateur et récupérer le secret de session.",
+    "id": "t3",
+    "title": "Accès Console IAM & Flag Master",
+    "description": "Connecte-toi en tant qu'administrateur et extrais le drapeau de la session SSO.",
     "points": 40,
     "task_type": "flag",
-    "canonical_flag": "CYBERLAB{SQLI_AUTH_BYPASS_IRON_GATE_CLEARED}"
+    "canonical_flag": "CYBERLAB{SQLI_AUTH_BYPASS_IRONGATE_ADMIN_LOGGED_992}"
   }
 ]

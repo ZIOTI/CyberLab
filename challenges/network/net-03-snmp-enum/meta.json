@@ -1,28 +1,38 @@
 {
   "id": "net-03-snmp-enum",
-  "title": "Public Community String",
-  "category": "Réseau",
+  "title": "SNMP Public Community String Reconnaissance",
+  "organization": "Enterprise Core Switch Fabric",
+  "category": "Réseau & Infrastructure",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "soc-forensics",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Network Squad",
   "tags": [
-    "snmpwalk",
     "network",
-    "easy"
+    "snmp",
+    "snmpwalk",
+    "mib",
+    "reconnaissance"
   ],
+  "cve": "CWE-200",
+  "rating": 4.8,
+  "solves": 2190,
+  "monogram": "SNMP",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "nmap",
     "tcpdump",
     "Wireshark",
-    "netcat"
+    "netcat",
+    "chisel"
   ],
-  "narrative_story": "Scénario opérationnel pour Public Community String : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (snmpwalk) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le routeur de cœur de réseau exécute un agent SNMPv2c configuré avec la chaîne de communauté par défaut 'public' accessible en lecture seule. Utilise snmpwalk pour parcourir l'arbre MIB (Management Information Base), lister les interfaces réseau, les tables de routage, les comptes d'utilisateurs et extraire le mot de passe d'administration stocké dans le champ sysContact.",
   "target_port": 3333,
-  "virtual_ip": "10.10.23.14"
+  "virtual_ip": "10.10.14.28"
 }

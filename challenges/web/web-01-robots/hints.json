@@ -1,12 +1,12 @@
 [
   {
-    "title": "Indice 1 : Protocole Robots Exclusion",
-    "cost": 10,
-    "content": "Le fichier standard se trouve généralement à la racine du serveur web : http://<TARGET_IP>/robots.txt. Il utilise la directive 'Disallow:'."
+    "title": "Recherche de base",
+    "cost": 5,
+    "content": "Les fichiers robots.txt sont situés à la racine du domaine web : examine http://localhost:3333/targets/training/web-01/robots.txt."
   },
   {
-    "title": "Indice 2 : Fichiers de Sauvegarde Résiduels",
-    "cost": 20,
-    "content": "Une fois dans le répertoire secret, liste son contenu ou teste les extensions classiques de backup comme .bak, .old, .save ou .tmp."
+    "title": "Extraction du backup",
+    "cost": 10,
+    "content": "Une fois le chemin extrait du robots.txt, effectue une requête directe sur l'archive .bak indiquée."
   }
 ]

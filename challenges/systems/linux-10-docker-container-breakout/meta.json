@@ -1,0 +1,38 @@
+{
+  "id": "linux-10-docker-container-breakout",
+  "title": "Container Core Pattern Breakout Exploit",
+  "organization": "Cloud MicroVM Container Node",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Docker",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 70,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Cloudsec",
+  "tags": [
+    "docker",
+    "container-breakout",
+    "core-pattern",
+    "kernel",
+    "root"
+  ],
+  "cve": "CWE-250",
+  "rating": 5,
+  "solves": 510,
+  "monogram": "CORE",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "Le conteneur applicatif tourne avec des capacités étendues (CAP_SYS_ADMIN). Le fichier système /proc/sys/kernel/core_pattern de l'hôte est accessible en écriture depuis le conteneur. En enregistrant un script malveillant comme gestionnaire de crash core dumps (|/path/script.sh), provoque un crash mémoire (SIGSEGV) pour forcer le noyau de l'hôte à exécuter le script en root sur la machine physique.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.36.117"
+}

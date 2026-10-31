@@ -1,28 +1,38 @@
 {
   "id": "web-13-ssti-jinja",
-  "title": "Template Escape",
-  "category": "Web",
+  "title": "Jinja2 Sandbox Escape & RCE",
+  "organization": "PyPortal Analytics Engine",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
-  "duration_min": 45,
+  "duration_min": 50,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
-    "ssti-jinja2",
-    "web",
-    "intermediate"
+    "ssti",
+    "jinja2",
+    "python",
+    "sandbox-escape",
+    "rce"
   ],
+  "cve": "CWE-1336",
+  "rating": 4.9,
+  "solves": 1680,
+  "monogram": "SSTI",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Template Escape : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (ssti-jinja2) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'outil de génération de rapports analytiques PyPortal utilise le moteur de templates Jinja2 en injectant des variables utilisateurs directement dans render_template_string(). En utilisant la hiérarchie des objets Python (MRO, __subclasses__), échappe du bac à sable pour instancier subprocess.Popen ou os.popen et exécuter des commandes système.",
   "target_port": 3333,
-  "virtual_ip": "10.10.18.62"
+  "virtual_ip": "10.10.17.67"
 }

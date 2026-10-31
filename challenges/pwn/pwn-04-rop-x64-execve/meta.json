@@ -1,28 +1,38 @@
 {
   "id": "pwn-04-rop-x64-execve",
-  "title": "ROP Chain Syscall Construction",
-  "category": "Pwn & Binaire",
+  "title": "64-bit Return-Oriented Programming (ROP) Chain",
+  "organization": "SecOps Native Security Guard",
+  "category": "Pwn & Exploitation Mémoire",
+  "target_os": "Linux",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 450,
-  "duration_min": 60,
+  "duration_min": 75,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Pwn Team",
   "tags": [
-    "rop-gadgets-x64",
     "pwn",
-    "insane"
+    "rop",
+    "x64",
+    "syscall",
+    "gadgets"
   ],
+  "cve": "CWE-121",
+  "rating": 5,
+  "solves": 520,
+  "monogram": "ROP",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "GDB-Peda",
     "pwntools",
     "checksec",
-    "ROPgadget"
+    "ROPgadget",
+    "one_gadget"
   ],
-  "narrative_story": "Scénario opérationnel pour ROP Chain Syscall Construction : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (rop-gadgets-x64) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Sur une architecture x86_64, les arguments de fonction sont transmis via des registres (RDI, RSI, RDX...) et non plus sur la pile. En inspectant le binaire statique à l'aide de ROPgadget, sélectionne des séquences d'instructions se terminant par ret (gadgets) pour charger l'adresse de '/bin/sh' dans RDI, mettre RAX à 59 (numéro de syscall execve), mettre RSI et RDX à 0, et déclencher l'appel système syscall.",
   "target_port": 3333,
-  "virtual_ip": "10.10.32.179"
+  "virtual_ip": "10.10.26.152"
 }

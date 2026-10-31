@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Test d'évaluation arithmétique",
+    "description": "Injecte {{7*7}} et confirme le calcul de la valeur 49.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "49"
+  },
+  {
+    "id": "t2",
+    "title": "Exécution de commande & Flag",
+    "description": "Invoque id et lis le drapeau dans /flag.txt.",
+    "points": 250,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{TWIG_SSTI_FILTER_CALLBACK_RCE_UNLOCKED}"
+  }
+]

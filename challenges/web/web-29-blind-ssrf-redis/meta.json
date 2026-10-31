@@ -1,0 +1,38 @@
+{
+  "id": "web-29-blind-ssrf-redis",
+  "title": "Webhook Relay to Redis RCE Pivot",
+  "organization": "CacheStream Micro-Routing Architecture",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 70,
+  "learning_path": "web-beginner",
+  "author": "Aegis RedOps",
+  "tags": [
+    "ssrf",
+    "redis",
+    "gopher",
+    "crlf-injection",
+    "rce"
+  ],
+  "cve": "CWE-918",
+  "rating": 5,
+  "solves": 510,
+  "monogram": "REDIS",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "Le service Webhook de CacheStream communique avec un cache Redis interne non authentifié sur le port 6379 du réseau local 10.10.x.x. En utilisant le schéma d'URL gopher:// ou des injections CRLF sur le protocole HTTP, forge des commandes Redis textuelles (CONFIG SET dir, CONFIG SET dbfilename, SET shell) pour déposer une clé publique SSH ou une tâche cron et obtenir un shell racine.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.43.21"
+}

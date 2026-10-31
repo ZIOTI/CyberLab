@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter dual-pivot-lateral."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
+    "title": "Pivoting",
     "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Utilise chisel client / server ou ssh -D 1080 pour faire transiter tes outils (Proxychains)."
   }
 ]

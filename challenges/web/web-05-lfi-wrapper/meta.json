@@ -1,7 +1,10 @@
 {
   "id": "web-05-lfi-wrapper",
-  "title": "PHP Wrapper Portal",
-  "category": "Web",
+  "title": "Sorbonne Historical Archives Portal",
+  "organization": "Institut des Archives Historiques",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
   "duration_min": 40,
@@ -11,18 +14,25 @@
     "lfi",
     "php-wrappers",
     "base64",
-    "path-traversal"
+    "source-disclosure",
+    "academic"
   ],
+  "cve": "CWE-98",
+  "rating": 4.9,
+  "solves": 2310,
+  "monogram": "SOR",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
-    "curl",
     "Burp Suite",
-    "CyberChef"
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Un portail documentaire interne charge ses pages dynamiquement via include($_GET['page']). Les fichiers PHP sensibles s'exécutent côté serveur sans afficher leur code source brut. Utilise les filtres de flux PHP (php://filter) pour encoder le code source de config.php en Base64 et révéler les identifiants codés en dur.",
+  "narrative_story": "Le portail universitaire de consultation des manuscrits anciens utilise un paramètre dynamique include($_GET['page']) pour charger ses fiches documentaires. Les fichiers PHP sensibles s'exécutent côté serveur et masquent leur code source. Exploite les filtres de flux PHP (php://filter) pour encoder le fichier de configuration config.php en Base64 et lire les mots de passe de production codés en dur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.44.59"
+  "virtual_ip": "10.10.22.54"
 }

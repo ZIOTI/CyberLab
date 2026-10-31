@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Parser Cobalt Strike",
+    "cost": 25,
+    "content": "Utilise le script Python cobaltstrikescan ou 1768.py pour analyser les configurations C2 en mémoire."
+  }
+]

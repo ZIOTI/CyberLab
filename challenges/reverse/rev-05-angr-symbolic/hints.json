@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Script Angr",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter angr-symbolic-exec."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "simgr = proj.factory.simulation_manager(); simgr.explore(find=0x401280, avoid=0x4012a4)"
   }
 ]

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (CBC Bit Flipping Cipher)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à padding-oracle-cbc.",
-    "points": 90,
+    "title": "Détection de l'oracle de bourrage PKCS#7",
+    "description": "Quel statut HTTP signale une erreur de déchiffrement liée au padding ?",
+    "points": 70,
     "task_type": "flag",
-    "canonical_flag": "VULN_CRYPTO_07_PADDING_ORACLE_CONFIRMED"
+    "canonical_flag": "500"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Déchiffrement du premier octet intermédiaire",
+    "description": "Quelle valeur hexadécimale de padding cible-t-on au premier tour de boucle ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "0x01"
+  },
+  {
+    "id": "t3",
+    "title": "Déchiffrement complet & Flag",
+    "description": "Exécute padbuster ou un script Python dédié et récupère le jeton maître.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PADDING_ORACLE_DECRYPTOR_BLOCK_BY_BLOCK_DECIPHER}"
   }

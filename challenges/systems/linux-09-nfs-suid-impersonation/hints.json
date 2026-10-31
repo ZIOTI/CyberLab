@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Bash préservation de privilèges",
+    "cost": 10,
+    "content": "Utilise bash -p pour ne pas réinitialiser l'euid vers le uid réel."
+  }
+]

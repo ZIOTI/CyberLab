@@ -1,0 +1,38 @@
+{
+  "id": "web-35-oauth-token-theft",
+  "title": "OAuth 2.0 Implicit Grant Token Hijack",
+  "organization": "Unified SSO Enterprise Connector",
+  "category": "Web & APIs",
+  "target_os": "Cloud",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 55,
+  "learning_path": "web-beginner",
+  "author": "Aegis Websec",
+  "tags": [
+    "oauth",
+    "token-theft",
+    "implicit-grant",
+    "open-redirect",
+    "account-takeover"
+  ],
+  "cve": "CWE-601",
+  "rating": 4.8,
+  "solves": 890,
+  "monogram": "OAUTH2",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "L'application utilise le flux déprécié OAuth Implicit Grant (response_type=token) qui renvoie le jeton d'accès dans le fragment d'URL (#access_token=...). En exploitant une redirection ouverte sur un sous-domaine de confiance, vole le jeton du directeur des opérations.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.30.7"
+}

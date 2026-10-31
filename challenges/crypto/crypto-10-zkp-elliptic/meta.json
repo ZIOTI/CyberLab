@@ -1,28 +1,38 @@
 {
   "id": "crypto-10-zkp-elliptic",
-  "title": "Elliptic Curve Nonce Leakage",
-  "category": "Crypto",
+  "title": "ECDSA Reused Nonce Private Key Recovery",
+  "organization": "Blockchain Core Validator Gateway",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "insane",
   "points": 500,
-  "duration_min": 60,
+  "duration_min": 75,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "ecdsa-nonce-reuse",
     "crypto",
-    "insane"
+    "ecdsa",
+    "secp256k1",
+    "nonce-reuse",
+    "elliptic-curve"
   ],
+  "cve": "CWE-326",
+  "rating": 5,
+  "solves": 490,
+  "monogram": "ECDSA",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour Elliptic Curve Nonce Leakage : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (ecdsa-nonce-reuse) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un validateur de transactions blockchain signe deux messages distincts (m1 et m2) avec le même nonce aléatoire k en utilisant l'algorithme ECDSA sur la courbe secp256k1 (la faille historique qui a compromis le système de signature PlayStation 3). En soustrayant les deux équations de signature (s1 - s2), calcule la valeur de k, puis déduis la clé privée maîtresse du validateur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.24.138"
+  "virtual_ip": "10.10.52.147"
 }

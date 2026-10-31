@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Public Community String)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à snmpwalk.",
-    "points": 45,
+    "title": "Chaîne de communauté par défaut",
+    "description": "Quelle chaîne de communauté SNMP classique autorise la lecture sans mot de passe ?",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_NET_03_SNMP_ENUM_CONFIRMED"
+    "canonical_flag": "public"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Extraction du contact système (sysContact)",
+    "description": "Quelle information confidentielle est consignée dans l'OID 1.3.6.1.2.1.1.4.0 ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "admin@aegis.lab"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction de la MIB complète & Flag",
+    "description": "Parcours l'ensemble de l'arbre MIB et soumets le drapeau dissimulé.",
+    "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SNMP_PUBLIC_COMMUNITY_MIB_EXFILTRATED}"
   }

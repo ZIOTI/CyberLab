@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Détection du polymorphisme Jackson",
+    "description": "Identifie la présence du champ de typage de classe dans le corps JSON.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "POLYMORPHIC_TYPING_ENABLED"
+  },
+  {
+    "id": "t2",
+    "title": "Dépôt du script SQL d'exécution (User Flag)",
+    "description": "Déclenche la connexion H2 et obtiens le premier accès utilisateur.",
+    "points": 160,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_jackson_h2_rce_shell_acquired}"
+  },
+  {
+    "id": "t3",
+    "title": "Exploitation du conteneur & Root Flag",
+    "description": "Élève tes privilèges vers le compte root et capture le drapeau final.",
+    "points": 200,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{JACKSON_DESERIALIZE_H2_LOGBACK_RCE_ROOT_CLEARED}"
+  }
+]

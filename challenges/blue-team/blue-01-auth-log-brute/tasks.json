@@ -2,7 +2,7 @@
   {
     "id": "t1",
     "title": "Adresse IP source de l'attaquant",
-    "description": "Quelle adresse IP externe a émis des centaines de tentatives Failed password ?",
+    "description": "Quelle adresse IP externe a émis les tentatives Failed password ?",
     "points": 30,
     "task_type": "flag",
     "canonical_flag": "203.0.113.195"
@@ -10,15 +10,15 @@
   {
     "id": "t2",
     "title": "Compte utilisateur compromis",
-    "description": "Pour quel compte d'utilisateur local l'attaquant a-t-il réussi à obtenir une session Accepted password ?",
+    "description": "Pour quel compte d'utilisateur local l'attaquant a-t-il obtenu une session Accepted password ?",
     "points": 30,
     "task_type": "flag",
     "canonical_flag": "deploy_service"
   },
   {
     "id": "t3",
-    "title": "Flag de clôture d'incident",
-    "description": "Identifie la ligne exacte de la session ouverte et saisis le flag d'incident.",
+    "title": "Clôture de l'incident & Flag",
+    "description": "Identifie la ligne exacte de la session ouverte et saisis le drapeau d'incident.",
     "points": 40,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BLUE_TEAM_SSH_AUTH_LOG_BRUTE_FORCE_DETECTED_302}"

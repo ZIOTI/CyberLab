@@ -1,0 +1,38 @@
+{
+  "id": "net-08-scada-modbus-injection",
+  "title": "SCADA Modbus Industrial Protocol Injection",
+  "organization": "National Water Treatment Facility",
+  "category": "Réseau & Infrastructure",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 75,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Network Squad",
+  "tags": [
+    "network",
+    "scada",
+    "modbus",
+    "ics",
+    "ot-security"
+  ],
+  "cve": "CWE-284",
+  "rating": 5,
+  "solves": 460,
+  "monogram": "MODBUS",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "nmap",
+    "tcpdump",
+    "Wireshark",
+    "netcat",
+    "chisel"
+  ],
+  "narrative_story": "Le contrôleur logique programmable (PLC) de la station de pompage utilise le protocole industriel Modbus TCP (port 502) sans authentification ni chiffrement. En forgeant des trames Modbus directes (Function Code 0x05 : Write Single Coil ou Function Code 0x06 : Write Single Register), manipule les registres des vannes d'urgence pour provoquer un arrêt d'urgence et extraire le flag de supervision.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.52.99"
+}

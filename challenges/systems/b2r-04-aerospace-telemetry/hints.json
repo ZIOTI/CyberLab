@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Recherche initiale",
+    "cost": 20,
+    "content": "Inspecte les fichiers .js chargés par le portail web de la station terrienne."
+  },
+  {
+    "title": "Phase noyau",
+    "cost": 25,
+    "content": "Un binaire dans /usr/local/bin interagit avec /dev/aerodrv sans vérification des bornes de mémoire."
+  }
+]

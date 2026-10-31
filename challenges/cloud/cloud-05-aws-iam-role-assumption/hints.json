@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter iam-sts-assume-role."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
+    "title": "Commande AssumeRole",
     "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "aws sts assume-role --role-arn arn:aws:iam::123456789012:role/OrgAdmin --role-session-name test"
   }
 ]

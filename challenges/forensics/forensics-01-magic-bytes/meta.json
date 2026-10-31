@@ -1,16 +1,38 @@
 {
   "id": "forensics-01-magic-bytes",
-  "title": "Resurrected Document",
-  "category": "Forensics",
+  "title": "Corrupted File Header & Magic Bytes Repair",
+  "organization": "Digital Evidence Forensic Archive",
+  "category": "Forensics & Mémoire",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
-  "duration_min": 35,
+  "duration_min": 30,
   "learning_path": "soc-forensics",
-  "author": "Aegis Forensic Lab",
-  "tags": ["forensics", "magic-bytes", "file-carving", "hex-editor", "png"],
-  "prerequisites": ["Compréhension des signatures de fichiers (Magic Bytes)", "Utilisation d'un éditeur hexadécimal (xxd, hexedit)"],
-  "recommended_tools": ["xxd", "hexedit", "Bless", "CyberChef"],
-  "narrative_story": "Lors de la saisie d'un poste informatique impliqué dans un incident de sécurité, un malware wiper a tenté de détruire les fichiers de preuves. Le fichier 'corrupted_evidence.bin' ne s'ouvre plus : ses premiers octets d'identification ont été écrasés par des zéros. Répare l'en-tête officiel du fichier avec un éditeur hexadécimal pour ressusciter l'image et lire la preuve.",
-  "target_port": null,
-  "virtual_ip": null
+  "author": "Aegis Forensics Lab",
+  "tags": [
+    "forensics",
+    "magic-bytes",
+    "hex-editor",
+    "png-repair",
+    "file-signature"
+  ],
+  "cve": "CWE-434",
+  "rating": 4.8,
+  "solves": 2820,
+  "monogram": "HEX",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Wireshark",
+    "Volatility 3",
+    "Autopsy",
+    "FTK Imager",
+    "tshark"
+  ],
+  "narrative_story": "Un cybercriminel a tenté de détruire une preuve en écrasant les premiers octets (Magic Bytes) d'une image confidentielle avec des octets nuls (00 00 00 00). Utilise un éditeur hexadécimal (HxD, bless ou hexedit) pour restaurer la signature officielle du format PNG (89 50 4E 47 0D 0A 1A 0A) et visualiser la preuve.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.35.158"
 }

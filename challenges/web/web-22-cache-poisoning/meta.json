@@ -1,28 +1,38 @@
 {
   "id": "web-22-cache-poisoning",
-  "title": "Unkeyed Header Poison",
-  "category": "Web",
+  "title": "Varnish Unkeyed Header Cache Poison",
+  "organization": "Global CDN Delivery Edge",
+  "category": "Web & APIs",
+  "target_os": "Cloud",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 300,
-  "duration_min": 60,
+  "duration_min": 55,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
-    "http-cache-poison",
-    "web",
-    "hard"
+    "cache-poisoning",
+    "varnish",
+    "unkeyed-headers",
+    "x-forwarded-host",
+    "cdn"
   ],
+  "cve": "CWE-444",
+  "rating": 4.8,
+  "solves": 870,
+  "monogram": "CACHE",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Unkeyed Header Poison : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (http-cache-poison) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le serveur mandataire inverse de mise en cache Varnish s'appuie sur l'en-tête hôte X-Forwarded-Host pour générer dynamiquement l'URL de chargement des scripts JavaScript statiques, sans intégrer cet en-tête dans la clé de cache (Unkeyed Header). Empoisonne le cache pour forcer des milliers d'utilisateurs à exécuter ton script externe sur leur navigateur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.24.65"
+  "virtual_ip": "10.10.19.93"
 }

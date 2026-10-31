@@ -1,16 +1,16 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Low Exponent Disaster)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à rsa-hastad-e3.",
+    "title": "Confirmation de la condition m^e < N",
+    "description": "Quel exposant public ultra-faible permet l'attaque par racine directe ?",
     "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_CRYPTO_05_RSA_SMALL_E_CONFIRMED"
+    "canonical_flag": "3"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "title": "Extraction de la racine cubique & Flag",
+    "description": "Calcule la racine cubique entière du texte chiffré et décode la chaîne ASCII.",
     "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{RSA_SMALL_PUBLIC_EXPONENT_CBRT_DECIPHERED}"

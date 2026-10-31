@@ -1,28 +1,38 @@
 {
   "id": "crypto-04-aes-ecb-leak",
-  "title": "The ECB Penguin Secret",
-  "category": "Crypto",
+  "title": "The ECB Penguin Pattern Oracle",
+  "organization": "SecureImage Defense Storage",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "aes-ecb-pattern",
     "crypto",
-    "intermediate"
+    "aes-ecb",
+    "block-cipher",
+    "pattern-leak",
+    "cryptanalysis"
   ],
+  "cve": "CWE-327",
+  "rating": 4.8,
+  "solves": 1640,
+  "monogram": "ECB",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour The ECB Penguin Secret : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (aes-ecb-pattern) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un service de chiffrement d'images satellites stocke des fichiers bitmap chiffrés avec AES en mode Electronic Codebook (ECB). En raison de l'absence de vecteur d'initialisation et de diffusion entre les blocs, les motifs répétitifs identiques produisent des blocs de texte chiffré identiques (l'effet du fameux manchot Linux Tux ECB). Révèle la structure cachée du plan militaire.",
   "target_port": 3333,
-  "virtual_ip": "10.10.18.132"
+  "virtual_ip": "10.10.21.182"
 }

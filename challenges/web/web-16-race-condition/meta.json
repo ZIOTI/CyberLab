@@ -1,28 +1,38 @@
 {
   "id": "web-16-race-condition",
-  "title": "Double Spending Glitch",
-  "category": "Web",
+  "title": "CryptoZenith Voucher Double Spend",
+  "organization": "CryptoZenith Digital Exchange",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Fintech Lab",
   "tags": [
     "race-condition",
-    "web",
-    "intermediate"
+    "toctou",
+    "concurrency",
+    "turbo-intruder",
+    "fintech"
   ],
+  "cve": "CWE-362",
+  "rating": 4.9,
+  "solves": 1250,
+  "monogram": "RACE",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Double Spending Glitch : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (race-condition) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'application de courtage en devises numériques CryptoZenith offre des bons d'achat de bienvenue de 50 €. La validation du bon et la mise à jour du solde ne s'exécutent pas au sein d'une transaction atomique (Time-of-Check to Time-of-Use). Utilise l'extension Burp Turbo Intruder ou un script multithreadé pour soumettre simultanément 20 requêtes d'échange de coupon et démultiplier ton solde.",
   "target_port": 3333,
-  "virtual_ip": "10.10.16.126"
+  "virtual_ip": "10.10.18.61"
 }

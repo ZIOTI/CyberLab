@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Outil GraphQL",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter graphql-introspection."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Utilise GraphQL Voyager ou Altair GraphQL Client pour explorer le schéma complet."
   }
 ]

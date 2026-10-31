@@ -1,24 +1,24 @@
 [
   {
-    "id": "task-1",
-    "title": "Tâche 1 : Énumération des Directives d'Indexation",
-    "description": "Quel fichier standard à la racine d'un site web indique aux moteurs de recherche les répertoires interdits d'exploration ?",
+    "id": "t1",
+    "title": "Reconnaissance de surface & Analyse du serveur",
+    "description": "Identifie la version du serveur HTTP et le fichier de politique d'indexation des robots.",
     "points": 30,
     "task_type": "flag",
-    "canonical_flag": "robots.txt"
+    "canonical_flag": "ROBOTS_ENUM_SUCCESS"
   },
   {
-    "id": "task-2",
-    "title": "Tâche 2 : Découverte du Répertoire Dissimulé",
-    "description": "Inspecte le fichier robots.txt sur la cible. Quel est le chemin d'accès au répertoire d'administration exclu du référencement ?",
+    "id": "t2",
+    "title": "Découverte du répertoire sensible désindexé",
+    "description": "Quel répertoire confidentiel est interdit aux robots par la directive Disallow ?",
     "points": 30,
     "task_type": "flag",
-    "canonical_flag": "/hidden_admin_vault_9041/"
+    "canonical_flag": "backup_cargo_sys_2026"
   },
   {
-    "id": "task-3",
-    "title": "Tâche 3 : Exfiltration de la Sauvegarde & Flag Final",
-    "description": "Explore le dossier caché et ouvre le fichier de sauvegarde temporaire backup_config.bak pour capturer le drapeau de confirmation.",
+    "id": "t3",
+    "title": "Extraction de la sauvegarde & Flag de contrôle",
+    "description": "Télécharge le fichier backup de configuration et récupère la clé API secrète.",
     "points": 40,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{ROBOTS_TXT_HIDDEN_BACKUP_DISCOVERED}"

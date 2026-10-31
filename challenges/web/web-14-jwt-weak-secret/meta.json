@@ -1,28 +1,38 @@
 {
   "id": "web-14-jwt-weak-secret",
-  "title": "HMAC Key Recovery",
-  "category": "Web",
+  "title": "AuthGate JWT HMAC Secret Recovery",
+  "organization": "AuthGate Enterprise Federation",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cryptanalysis",
   "tags": [
-    "jwt-crack-secret",
-    "web",
-    "intermediate"
+    "jwt",
+    "json-web-token",
+    "hashcat",
+    "hs256",
+    "privilege-escalation"
   ],
+  "cve": "CWE-345",
+  "rating": 4.8,
+  "solves": 1820,
+  "monogram": "JWT",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour HMAC Key Recovery : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (jwt-crack-secret) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "La passerelle AuthGate signe ses jetons de session JSON Web Tokens (JWT) avec l'algorithme HS256 en utilisant un mot de passe faible issu d'un dictionnaire d'entreprise. Capture le jeton de ton compte invité, utilise Hashcat ou John the Ripper avec rockyou.txt pour casser la clé secrète, puis forge un nouveau jeton avec le rôle admin.",
   "target_port": 3333,
-  "virtual_ip": "10.10.42.174"
+  "virtual_ip": "10.10.44.78"
 }

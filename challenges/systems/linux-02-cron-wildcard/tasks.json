@@ -1,24 +1,24 @@
 [
   {
     "id": "t1",
-    "title": "Analyse du fichier cron",
-    "description": "Quel utilisateur exécute la tâche planifiée nightly_backup ?",
+    "title": "Analyse du fichier crontab",
+    "description": "Quel utilisateur système exécute la commande de sauvegarde ?",
     "points": 30,
     "task_type": "flag",
     "canonical_flag": "root"
   },
   {
     "id": "t2",
-    "title": "Argument tar d'injection de checkpoint",
-    "description": "Quel paramètre de tar permet de spécifier un script à exécuter lors d'un point de contrôle ?",
+    "title": "Argument tar d'injection de point de contrôle",
+    "description": "Quel paramètre de tar permet de spécifier un script à exécuter ?",
     "points": 50,
     "task_type": "flag",
     "canonical_flag": "--checkpoint-action"
   },
   {
     "id": "t3",
-    "title": "Obtention du shell root & Flag",
-    "description": "Crée les fichiers spéciaux dans le répertoire surveillé et lis le drapeau dans /root/flag.txt.",
+    "title": "Shell root & Flag",
+    "description": "Crée les fichiers spéciaux dans le répertoire surveillé et capture le drapeau root.",
     "points": 70,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{CRON_WILDCARD_TAR_CHECKPOINT_ROOT_PWNED}"

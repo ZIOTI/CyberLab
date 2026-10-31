@@ -1,28 +1,38 @@
 {
   "id": "rev-04-radare-simple",
-  "title": "Disassembly 101",
+  "title": "Ghidra / Radare2 Disassembly & Branch Patching",
+  "organization": "SecureSoftware Validation Suite",
   "category": "Reverse Engineering",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Malware Unit",
   "tags": [
-    "radare2-ghidra",
     "reverse",
-    "easy"
+    "ghidra",
+    "radare2",
+    "assembly",
+    "patching"
   ],
+  "cve": "CWE-287",
+  "rating": 4.9,
+  "solves": 1780,
+  "monogram": "R2",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Ghidra",
     "radare2",
     "IDA Free",
-    "x64dbg"
+    "x64dbg",
+    "pycdc"
   ],
-  "narrative_story": "Scénario opérationnel pour Disassembly 101 : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (radare2-ghidra) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un binaire de protection logicielle effectue une comparaison complexe entre l'entrée utilisateur et une valeur calculée, suivie d'un saut conditionnel jne (Jump if Not Equal) vers un échec. Utilise Ghidra ou Radare2 pour désassembler la fonction principale (main), repérer l'instruction de saut conditionnel et la patcher en nop (0x90) ou jmp inconditionnel.",
   "target_port": 3333,
-  "virtual_ip": "10.10.27.171"
+  "virtual_ip": "10.10.28.116"
 }

@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Mots-clés Suricata TLS",
+    "cost": 25,
+    "content": "ja3.hash; content:\"e7d7...\"; flow:established,to_server;"
+  }
+]

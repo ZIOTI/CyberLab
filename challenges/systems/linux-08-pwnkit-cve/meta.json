@@ -1,0 +1,38 @@
+{
+  "id": "linux-08-pwnkit-cve",
+  "title": "Polkit pkexec Local Privilege Escalation (PwnKit)",
+  "organization": "Standard Enterprise Linux Workstation",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 50,
+  "learning_path": "systems-reversing",
+  "author": "Aegis SysOps",
+  "tags": [
+    "linux",
+    "pwnkit",
+    "cve-2021-4034",
+    "polkit",
+    "memory-corruption"
+  ],
+  "cve": "CVE-2021-4034",
+  "rating": 4.9,
+  "solves": 940,
+  "monogram": "PWNKIT",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "L'exécutable SUID pkexec du framework Polkit est vulnérable à un dépassement d'indice mémoire hors-limites (Out-of-Bounds) lorsqu'il est invoqué avec argc=0. En injectant des variables d'environnement non assainies (GCONV_PATH), charge une bibliothèque partagée malveillante pour devenir root instantanément.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.38.135"
+}

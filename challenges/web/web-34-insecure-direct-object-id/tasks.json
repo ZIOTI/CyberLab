@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Énumération des identifiants séquentiels",
+    "description": "Identifie la structure prédictible des clés de consultation.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "MEDICLOUD_UUID_PREDICTED"
+  },
+  {
+    "id": "t2",
+    "title": "Extraction du dossier secret & Flag",
+    "description": "Télécharge le compte-rendu médical VIP et valide le drapeau.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{MEDICLOUD_BOLA_ENUMERABLE_RECORDS_EXPOSED}"
+  }
+]

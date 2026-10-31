@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Code de fonction Modbus pour forcer un registre",
+    "description": "Quel code de fonction hexadécimal Modbus écrit dans un registre de maintien ?",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "0x06"
+  },
+  {
+    "id": "t2",
+    "title": "Modification de la vanne de pression (User Flag)",
+    "description": "Passe la valeur du registre 0x0020 à 1 et obtiens l'état d'alerte.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_modbus_plc_coil_override_success}"
+  },
+  {
+    "id": "t3",
+    "title": "Contrôle de la console SCADA & Root Flag",
+    "description": "Prends le contrôle du serveur maître et valide le drapeau de sécurité.",
+    "points": 250,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SCADA_MODBUS_TCP_UNAUTH_COIL_OVERRIDE_ROOT}"
+  }
+]

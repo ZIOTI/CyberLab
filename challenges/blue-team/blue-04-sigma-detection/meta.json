@@ -1,28 +1,38 @@
 {
   "id": "blue-04-sigma-detection",
-  "title": "Threat Hunting Rulebook",
+  "title": "Sigma Threat Hunting Rulebook for Sysmon",
+  "organization": "Cyber Security Operations Center",
   "category": "Blue Team & SOC",
+  "target_os": "Windows",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 300,
-  "duration_min": 60,
+  "duration_min": 55,
   "learning_path": "soc-forensics",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis SOC Team",
   "tags": [
-    "sigma-rules-sysmon",
     "blue-team",
-    "hard"
+    "sigma",
+    "sysmon",
+    "event-id-1",
+    "process-creation"
   ],
+  "cve": "CWE-284",
+  "rating": 4.9,
+  "solves": 980,
+  "monogram": "SIGMA",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Splunk",
     "ELK Stack",
     "Sigma",
-    "Suricata"
+    "Suricata",
+    "Sysmon"
   ],
-  "narrative_story": "Scénario opérationnel pour Threat Hunting Rulebook : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (sigma-rules-sysmon) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Pour détecter les attaques par vol d'identifiants (Credential Dumping) via Mimikatz ou comsvcs.dll, rédige une règle de détection générique au format Sigma (YAML). La règle doit cibler l'Event ID 1 de Sysmon (Process Creation) pour intercepter toute ligne de commande invoquant MiniDump() ou lsass.exe avec des arguments obfusqués.",
   "target_port": 3333,
-  "virtual_ip": "10.10.27.37"
+  "virtual_ip": "10.10.21.91"
 }

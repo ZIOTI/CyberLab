@@ -1,28 +1,38 @@
 {
   "id": "crypto-09-diffie-hellman-mitm",
-  "title": "Small Subgroup Prime Attack",
-  "category": "Crypto",
+  "title": "Diffie-Hellman Small Subgroup Prime MITM",
+  "organization": "Telecom Nexus Core Switch",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 350,
   "duration_min": 60,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "diffie-hellman-mitm",
     "crypto",
-    "hard"
+    "diffie-hellman",
+    "mitm",
+    "discrete-log",
+    "pohlig-hellman"
   ],
+  "cve": "CWE-326",
+  "rating": 4.8,
+  "solves": 680,
+  "monogram": "DH",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour Small Subgroup Prime Attack : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (diffie-hellman-mitm) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Deux serveurs de télécommunication négocient une clé de session via le protocole Diffie-Hellman en utilisant un nombre premier p non sécurisé : l'ordre du groupe p-1 se décompose en une multitude de petits facteurs premiers friables. En interceptant l'échange de clés, applique l'algorithme de Pohlig-Hellman pour résoudre le problème du logarithme discret en quelques secondes.",
   "target_port": 3333,
-  "virtual_ip": "10.10.21.31"
+  "virtual_ip": "10.10.13.41"
 }

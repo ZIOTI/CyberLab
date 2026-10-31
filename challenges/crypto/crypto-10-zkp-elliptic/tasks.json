@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Elliptic Curve Nonce Leakage)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à ecdsa-nonce-reuse.",
-    "points": 150,
+    "title": "Détection de la réutilisation de k (r1 == r2)",
+    "description": "Quel composant de la paire de signature (r, s) est identique sur les deux signatures ?",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_CRYPTO_10_ZKP_ELLIPTIC_CONFIRMED"
+    "canonical_flag": "r"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 350,
+    "title": "Calcul du nonce éphémère k",
+    "description": "Quelle formule modulaire permet de retrouver k à partir de (z1 - z2) / (s1 - s2) ?",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "k = (z1 - z2) / (s1 - s2) mod n"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction de la clé privée secrète & Root Flag",
+    "description": "Calcule la clé privée d = (s*k - z) * r^(-1) mod n et valide le drapeau.",
+    "points": 250,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{ECDSA_REUSED_K_PRIVATE_KEY_LATTICE_RECOVERED}"
   }

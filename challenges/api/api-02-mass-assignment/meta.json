@@ -1,28 +1,38 @@
 {
   "id": "api-02-mass-assignment",
-  "title": "Role Escalation API",
-  "category": "Mobile & API",
+  "title": "Rest API Role Escalation via Mass Assignment",
+  "organization": "SaaS Multi-Tenant Billing Gateway",
+  "category": "APIs & Microservices",
+  "target_os": "API",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis API Security",
   "tags": [
-    "mass-assignment",
     "api",
-    "easy"
+    "mass-assignment",
+    "json-injection",
+    "role-escalation",
+    "rest"
   ],
+  "cve": "CWE-915",
+  "rating": 4.8,
+  "solves": 2150,
+  "monogram": "MASS",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Postman",
     "Insomnia",
     "Kiterunner",
-    "Burp Suite"
+    "Burp Suite",
+    "GraphQL Voyager"
   ],
-  "narrative_story": "Scénario opérationnel pour Role Escalation API : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (mass-assignment) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'endpoint de mise à jour de profil utilisateur PUT /api/v1/user/profile prend directement l'ensemble du payload JSON entrant et l'applique aveuglément au modèle de données ORM sans filtrer les attributs protégés (Mass Assignment). Injecte les propriétés non documentées \"is_admin\": true et \"verified\": true pour élever tes privilèges.",
   "target_port": 3333,
-  "virtual_ip": "10.10.48.190"
+  "virtual_ip": "10.10.13.140"
 }

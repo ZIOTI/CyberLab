@@ -1,7 +1,10 @@
 {
   "id": "web-03-sqli-union",
-  "title": "Union of Secrets",
-  "category": "Web",
+  "title": "KicksVault Streetwear Database",
+  "organization": "KicksVault Rare Sneakers Ltd",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
   "duration_min": 40,
@@ -11,18 +14,25 @@
     "sqli",
     "union-select",
     "database-enumeration",
-    "sqlite"
+    "sqlite",
+    "e-commerce"
   ],
+  "cve": "CWE-89",
+  "rating": 4.8,
+  "solves": 2120,
+  "monogram": "KV",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
-    "sqlmap"
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Le portail e-commerce de fournitures industrielles Aegis Store utilise un filtre de recherche vulnérable aux injections SQL de type UNION. Ton objectif est de déterminer le nombre de colonnes de la requête originale, d'extraire les tables du schéma SQLite et de récupérer les mots de passe de la table secrète admin_credentials.",
+  "narrative_story": "Le site de revente de sneakers en édition limitée KicksVault filtre les stocks via un endpoint de catalogue vulnérable. Grâce à la technique de l'injection SQL par UNION SELECT, détermine le nombre exact de colonnes renvoyées par la requête d'origine, explore le schéma de la base SQLite et extrais les tables secrètes d'approvisionnement et les identifiants administrateur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.59.130"
+  "virtual_ip": "10.10.32.39"
 }

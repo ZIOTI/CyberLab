@@ -1,0 +1,38 @@
+{
+  "id": "web-33-path-traversal-zip-slip",
+  "title": "Zip Slip File Overwrite & Cron Hijack",
+  "organization": "CloudArchiver Ingestion Pipeline",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "hard",
+  "points": 350,
+  "duration_min": 60,
+  "learning_path": "web-beginner",
+  "author": "Aegis Websec",
+  "tags": [
+    "zip-slip",
+    "path-traversal",
+    "archive-extraction",
+    "cron-hijack",
+    "rce"
+  ],
+  "cve": "CWE-22",
+  "rating": 4.9,
+  "solves": 780,
+  "monogram": "SLIP",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "L'outil de décompression d'archives ZIP ne valide pas les chemins relatifs des entrées du fichier (Zip Slip). Conçois une archive contenant un fichier ../../../etc/cron.d/malicious pour écraser les tâches planifiées et exécuter un shell root.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.46.74"
+}

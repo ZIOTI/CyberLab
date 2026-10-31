@@ -1,28 +1,38 @@
 {
   "id": "net-04-telnet-creds",
-  "title": "Cleartext Remote Shell",
-  "category": "Réseau",
+  "title": "Cleartext Telnet Remote Shell Capture",
+  "organization": "Legacy SCADA RTU Gateway",
+  "category": "Réseau & Infrastructure",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
-  "duration_min": 45,
+  "duration_min": 30,
   "learning_path": "soc-forensics",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Network Squad",
   "tags": [
-    "telnet-sniffing",
     "network",
-    "beginner"
+    "telnet",
+    "cleartext",
+    "wireshark",
+    "credentials"
   ],
+  "cve": "CWE-319",
+  "rating": 4.8,
+  "solves": 2640,
+  "monogram": "TEL",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "nmap",
     "tcpdump",
     "Wireshark",
-    "netcat"
+    "netcat",
+    "chisel"
   ],
-  "narrative_story": "Scénario opérationnel pour Cleartext Remote Shell : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (telnet-sniffing) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un équipement de contrôle industriel (RTU) est administré via une session Telnet non chiffrée sur le port 23. Dans la capture réseau fournie, analyse le flux TCP interactif caractère par caractère pour reconstituer les identifiants de session et le mot de passe de commande de la turbine.",
   "target_port": 3333,
-  "virtual_ip": "10.10.56.64"
+  "virtual_ip": "10.10.13.180"
 }

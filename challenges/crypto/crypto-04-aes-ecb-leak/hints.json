@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Transformation bitmap",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter aes-ecb-pattern."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Préserve l'en-tête BMP original (les 54 premiers octets) et remplace le corps par les données chiffrées."
   }
 ]

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Out-of-Band Exfiltration DTD)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à blind-xxe-oob.",
-    "points": 105,
+    "title": "Confirmation de la communication sortante",
+    "description": "Provoque un appel DNS ou HTTP sortant depuis le serveur cible.",
+    "points": 80,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_24_BLIND_XXE_OOB_CONFIRMED"
+    "canonical_flag": "OUTBOUND_HTTP_RECEIVED"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 245,
+    "title": "Hébergement de la DTD externe d'exfiltration",
+    "description": "Rédige la DTD contenant l'entité de paramètre lisant le fichier cible.",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "EXTERNAL_DTD_SERVED"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction des données & Flag",
+    "description": "Capture la requête HTTP entrante contenant le contenu de /etc/hostname encodé et soumets le drapeau.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BLIND_XXE_EXTERNAL_PARAM_DTD_EXFILTRATION_WIN}"
   }

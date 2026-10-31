@@ -1,0 +1,38 @@
+{
+  "id": "pwn-06-rop-ret2csu",
+  "title": "Return-to-CSU Universal 64-bit Gadget Call",
+  "organization": "SecOps Native Security Daemon",
+  "category": "Pwn & Exploitation Mémoire",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 75,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Pwn Team",
+  "tags": [
+    "pwn",
+    "ret2csu",
+    "rop",
+    "x64",
+    "universal-gadgets"
+  ],
+  "cve": "CWE-121",
+  "rating": 5,
+  "solves": 430,
+  "monogram": "CSU",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "GDB-Peda",
+    "pwntools",
+    "checksec",
+    "ROPgadget",
+    "one_gadget"
+  ],
+  "narrative_story": "Dans un binaire x86_64 compilé dynamiquement, aucun gadget simple pour contrôler le registre RDX (troisième argument) n'est présent. Exploite la fonction standard __libc_csu_init présente dans tous les binaires compilés avec glibc pour chaîner deux gadgets universels permettant de contrôler simultanément RDI, RSI et RDX et invoquer un appel de fonction arbitraire.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.32.169"
+}

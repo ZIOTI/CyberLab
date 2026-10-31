@@ -1,28 +1,38 @@
 {
   "id": "win-04-unquoted-service-path",
-  "title": "Space Injection Privilege",
-  "category": "Linux & Windows",
+  "title": "Windows Unquoted Service Path Hijack",
+  "organization": "Enterprise Workstation Fleet",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Windows",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 300,
-  "duration_min": 60,
+  "duration_min": 55,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Windows Team",
   "tags": [
+    "windows",
     "unquoted-service",
-    "systems",
-    "hard"
+    "service-hijack",
+    "privesc",
+    "system"
   ],
+  "cve": "CWE-428",
+  "rating": 4.8,
+  "solves": 940,
+  "monogram": "UNQUOTE",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour Space Injection Privilege : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (unquoted-service) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un service Windows démarre automatiquement au boot en exécutant le chemin C:\\Program Files\\Aegis Security\\Agent Service\\launcher.exe sans guillemets entourant le chemin (Unquoted Service Path). En raison des espaces dans le nom des répertoires, Windows tente d'exécuter successivement C:\\Program.exe puis C:\\Program Files\\Aegis.exe. Dépose un binaire compilé à l'un de ces emplacements inscriptibles pour exécuter du code avec les privilèges NT AUTHORITY\\SYSTEM.",
   "target_port": 3333,
-  "virtual_ip": "10.10.13.3"
+  "virtual_ip": "10.10.14.150"
 }

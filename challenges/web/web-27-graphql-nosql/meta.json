@@ -1,0 +1,38 @@
+{
+  "id": "web-27-graphql-nosql",
+  "title": "NovaCore GraphQL Batching & NoSQL Injection",
+  "organization": "NovaCore NextGen Cloud Analytics",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 350,
+  "duration_min": 60,
+  "learning_path": "web-beginner",
+  "author": "Aegis Websec",
+  "tags": [
+    "graphql",
+    "nosql",
+    "mongodb",
+    "batching-attack",
+    "introspection"
+  ],
+  "cve": "CWE-943",
+  "rating": 4.9,
+  "solves": 720,
+  "monogram": "GQL",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "L'API GraphQL de NovaCore permet d'exécuter des requêtes groupées sans limitation de débit et stocke ses données dans une base NoSQL MongoDB. Exploite l'introspection GraphQL pour cartographier les mutations cachées, puis injecte des opérateurs NoSQL ($ne, $regex, $where) dans le champ de recherche pour extraire les profils restreints des auditeurs.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.34.79"
+}

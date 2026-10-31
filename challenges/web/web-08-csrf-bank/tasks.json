@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Phantom Wire Transfer)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à csrf.",
-    "points": 45,
+    "title": "Vérification de l'absence de jeton anti-CSRF",
+    "description": "Confirme qu'aucun champ csrf_token n'est validé lors de la requête de virement.",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_08_CSRF_BANK_CONFIRMED"
+    "canonical_flag": "NO_CSRF_TOKEN"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Construction du formulaire auto-soumis",
+    "description": "Rédige une page exploit avec un formulaire auto-soumis via document.forms[0].submit().",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "EXPLOIT_PAGE_CRAFTED"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution du virement & Flag",
+    "description": "Déclenche le virement simulé et capture le drapeau de validation bancaire.",
+    "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{CSRF_SAME_SITE_NONE_TRANSFER_PWNED}"
   }

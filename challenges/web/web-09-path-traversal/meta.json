@@ -1,28 +1,38 @@
 {
   "id": "web-09-path-traversal",
-  "title": "Directory Escape",
-  "category": "Web",
+  "title": "AeroCloud Ops Flight Dispatch",
+  "organization": "AeroCloud Logistics & Cargo Systems",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
+    "path-traversal",
+    "directory-traversal",
     "dot-dot-slash",
-    "web",
-    "easy"
+    "etc-passwd",
+    "aviation"
   ],
+  "cve": "CWE-22",
+  "rating": 4.9,
+  "solves": 2420,
+  "monogram": "AERO",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Directory Escape : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (dot-dot-slash) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "La console de régulation des vols cargo AeroCloud permet de télécharger les manifestes de chargement des avions via un paramètre de fichier GET. Aucun contrôle de canonicalisation de chemin n'est appliqué. Utilise la séquence de traversée de répertoire (../../..) pour sortir du dossier des manifestes et lire le fichier sensible /etc/passwd du serveur Linux.",
   "target_port": 3333,
-  "virtual_ip": "10.10.15.114"
+  "virtual_ip": "10.10.19.100"
 }

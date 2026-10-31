@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Énumération du port Redis interne",
+    "description": "Sonde le réseau interne via SSRF et identifie le port du service Redis.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "6379"
+  },
+  {
+    "id": "t2",
+    "title": "Injection de commandes Redis via Gopher (User Flag)",
+    "description": "Écris un fichier d'accès dans le répertoire de l'application et obtiens un shell.",
+    "points": 160,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_ssrf_gopher_redis_unauth_foothold}"
+  },
+  {
+    "id": "t3",
+    "title": "Élévation de privilèges & Root Flag",
+    "description": "Dérobe les droits administratifs et soumets le drapeau de contrôle.",
+    "points": 200,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SSRF_REDIS_GOPHER_PAYLOAD_CRON_ROOT_COMPROMISED}"
+  }
+]

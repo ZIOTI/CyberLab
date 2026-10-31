@@ -1,26 +1,26 @@
 [
   {
-    "id": "task-1",
-    "title": "Tâche 1 : Adresse IP d'Origine Réelle",
-    "description": "Quelle est l'adresse IP d'origine du serveur relais non autorisé ayant émis le courriel (champ X-Originating-IP ou premier saut Received) ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "198.51.100.77"
-  },
-  {
-    "id": "task-2",
-    "title": "Tâche 2 : Résultat de l'Authentification SPF",
-    "description": "Quel est le verdict officiel de conformité SPF enregistré dans l'en-tête Authentication-Results (pass, fail, neutral, softfail) ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "fail"
-  },
-  {
-    "id": "task-3",
-    "title": "Tâche 3 : Décodage du Jeton Malveillant & Flag",
-    "description": "Décode le paramètre Base64 'token' contenu dans l'URL d'hameçonnage et capture le drapeau de neutralisation.",
+    "id": "t1",
+    "title": "Adresse IP du serveur d'émission réel",
+    "description": "Quelle adresse IP a réellement transmis le courriel au serveur relais ?",
     "points": 40,
     "task_type": "flag",
-    "canonical_flag": "CYBERLAB{PHISHING_EMAIL_HEADER_ANALYSIS_FRAUD_PREVENTED}"
+    "canonical_flag": "198.51.100.88"
+  },
+  {
+    "id": "t2",
+    "title": "Résultat du contrôle SPF",
+    "description": "Quel statut SPF (Pass, Softfail, Fail) a été consigné dans l'en-tête Authentication-Results ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "Fail"
+  },
+  {
+    "id": "t3",
+    "title": "Validation de l'enquête & Flag",
+    "description": "Identifie l'adresse de retour Reply-To de l'escroc et soumets le drapeau.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{CEO_FRAUD_EMAIL_HEADER_ANALYSIS_UNMASKED_551}"
   }
 ]

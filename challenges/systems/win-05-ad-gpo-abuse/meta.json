@@ -1,28 +1,38 @@
 {
   "id": "win-05-ad-gpo-abuse",
-  "title": "Domain Controller Policy Hijack",
-  "category": "Linux & Windows",
+  "title": "Active Directory Group Policy Object (GPO) Abuse",
+  "organization": "NorthCorp Active Directory Domain",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Windows",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 450,
-  "duration_min": 60,
+  "duration_min": 75,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Windows Team",
   "tags": [
-    "gpo-permissions-abuse",
-    "systems",
-    "insane"
+    "active-directory",
+    "gpo",
+    "group-policy",
+    "sharp-gpoabuse",
+    "domain-admin"
   ],
+  "cve": "CWE-272",
+  "rating": 5,
+  "solves": 510,
+  "monogram": "GPO",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour Domain Controller Policy Hijack : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (gpo-permissions-abuse) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'analyse BloodHound révèle que ton compte utilisateur compromis possède le droit de modification WriteDacl ou GenericAll sur l'objet de stratégie de groupe (GPO) 'Workstation Hardening Policy'. Utilise l'outil SharpGPOAbuse pour modifier cette GPO en lui ajoutant une tâche planifiée immédiate qui ajoute ton utilisateur au groupe privilégié 'Domain Admins'.",
   "target_port": 3333,
-  "virtual_ip": "10.10.12.141"
+  "virtual_ip": "10.10.53.102"
 }

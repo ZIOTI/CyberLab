@@ -1,0 +1,39 @@
+{
+  "id": "b2r-05-fintech-vault-compromise",
+  "title": "Zurich Capital Banking Core Compromise",
+  "organization": "Zurich Capital Private Banking AG",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Multi-Host",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 100,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "boot2root",
+    "banking",
+    "heapdump",
+    "actuator",
+    "active-directory",
+    "esc1"
+  ],
+  "cve": "MULTI-CVE",
+  "rating": 5,
+  "solves": 340,
+  "monogram": "ZURICH",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "L'opération offensive ultime de la banque privée zurichoise : L'API Spring Boot expose l'endpoint de débogage /actuator/heapdump. Télécharge le dump de mémoire vive de la JVM, extrait les identifiants en mémoire avec Eclipse MAT / strings, obtiens une connexion SSH sur le serveur d'application, pivote vers l'Active Directory, exploite un modèle de certificat AD CS vulnérable (ESC1) avec Certipy et deviens Domain Admin pour ouvrir la chambre forte.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.43.97"
+}

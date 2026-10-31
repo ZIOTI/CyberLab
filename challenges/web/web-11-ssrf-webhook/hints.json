@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Chemin AWS IMDS",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter ssrf-metadata."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "L'URI classique est : http://169.254.169.254/latest/meta-data/iam/security-credentials/"
   }
 ]

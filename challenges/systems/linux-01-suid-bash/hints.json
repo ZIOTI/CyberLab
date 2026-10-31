@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Recherche de SUID",
-    "cost": 10,
-    "content": "La syntaxe 'find / -perm -4000 -type f 2>/dev/null' ou 'find / -perm -u=s' filtre les binaires dont le bit SetUID est armé."
-  },
-  {
-    "title": "Indice 2 : Option d'exécution de shell",
-    "cost": 20,
-    "content": "Exécute 'sysbackup_tool --help' ou analyse ses chaînes avec 'strings'. L'argument '--exec-shell' ou un paramètre GTFOBins permet d'ouvrir un shell avec l'EUID hérité."
+    "title": "Commande de recherche",
+    "cost": 5,
+    "content": "Exécute : find / -perm -u=s -type f 2>/dev/null pour lister les fichiers SUID."
   }
 ]

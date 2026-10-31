@@ -1,47 +1,64 @@
-# Solution & Writeup Officiel // Multi-Account Lateral Pivot
-
-## 1. Vue d'Ensemble du Challenge
-- **Identifiant** : `cloud-05-aws-iam-role-assumption`
-- **Catégorie** : Cloud & Conteneurs
-- **Difficulté** : INSANE (500 Points)
-- **Objectif Principal** : Comprendre et exploiter le vecteur `iam-sts-assume-role` pour extraire le drapeau de contrôle.
+# Rapport d'Exploitation & Débriefing Technique // AWS STS Cross-Account Role Escalation
+**Organisation cible** : Multi-Tenant Cloud Operations  
+**Système d'exploitation** : Cloud | **Catégorie** : Cloud & Conteneurs  
+**Difficulté** : INSANE | **Vecteur de vulnérabilité** : CWE-284  
+**Classification** : DOCUMENT OFFICIEL DU LABORATOIRE CYBERLAB REDTEAM  
 
 ---
 
-## 2. Analyse Préliminaire & Reconnaissance
-Avant toute interaction, une énumération méthodique de la cible est nécessaire. 
-Nous identifions les services exposés et les points d'entrée applicatifs ou systèmes :
-```bash
-# Vérification de l'état de la cible
-curl -I http://127.0.0.1:3333/targets/training/cloud-05-aws-iam-role-assumption/
-```
+## 1. Contexte Opérationnel & Règles d'Engagement
+Un ensemble d'identifiants AWS compromis (AccessKeyId, SecretAccessKey) appartient à un compte de développement restreint. L'analyse des politiques IAM montre que ce compte est autorisé à invoquer sts:AssumeRole sur un rôle arn:aws:iam::123456789012:role/OrganizationAdmin d'un compte de production. Assume ce rôle pour pivoter entre comptes et débloquer les secrets d'infrastructure.
+
+L'évaluation a été menée dans un environnement strictement isolé. Aucun service de production réel n'a été impacté. L'objectif était d'auditer la sécurité du composant **aws** et d'extraire les drapeaux de contrôle prouvant la faisabilité de l'attaque.
 
 ---
 
-## 3. Vecteur de Vulnérabilité & Exploitation Pas-à-Pas
-La vulnérabilité réside dans la gestion imprudente des entrées ou des droits d'exécution.
-L'analyse du comportement montre que le système ne valide pas strictement les paramètres :
-
-1. **Identification du composant vulnérable** : Observation de la réponse applicative.
-2. **Construction du payload** : Élaboration de la chaîne spécifique adaptée à l'environnement.
-3. **Exécution du payload** : Soumission du vecteur et capture du résultat.
+## 2. Phase 1 : Reconnaissance & Cartographie de la Surface d'Attaque
+Une phase de reconnaissance passive et active permet d'identifier l'empreinte logicielle et les services en écoute :
 
 ```bash
-# Commande d'exploitation type
-curl -s http://127.0.0.1:3333/targets/training/cloud-05-aws-iam-role-assumption/
+# 1. Énumération des ports et bannières de service
+nmap -sV -sC -p- 10.10.36.69 -oN nmap_initial_scan.txt
+
+# 2. Découverte applicative locale
+curl -i http://localhost:3333/targets/training/cloud-05-aws-iam-role-assumption/
+```
+
+L'analyse des réponses HTTP et des bannières confirme la présence du composant vulnérable lié à **aws, iam, sts, assume-role, cloud-lateral-movement**.
+
+---
+
+## 3. Phase 2 : Exploitation Technique Pas-à-Pas
+
+### A. Analyse de la Vulnérabilité
+La faille provient d'une insuffisance de validation des contrôles d'accès et des données d'entrée au niveau de **CWE-284**. Le système interprète les paramètres non assainis sans barrière d'isolation.
+
+### B. Élaboration du Vecteur d'Attaque
+En appliquant la méthodologie offensive standard :
+1. **Étape 1** : Injection du marqueur de diagnostic pour vérifier l'absence d'échappement.
+2. **Étape 2** : Construction du payload weaponisé adapté à l'architecture cible.
+3. **Étape 3** : Déclenchement de l'exécution et capture des privilèges.
+
+```bash
+# Exemple de commande d'exploitation standard
+curl -s -X POST http://localhost:3333/targets/training/cloud-05-aws-iam-role-assumption/ \
+  -H "Content-Type: application/json" \
+  -d '{"exploit_vector": "aws"}'
 ```
 
 ---
 
-## 4. Extraction du Drapeau & Validation
-Une fois le contrôle obtenu ou le flux déchiffré, le drapeau apparaît sous sa forme certifiée :
-```text
-CYBERLAB{AWS_STS_ASSUME_ROLE_CROSS_ACCOUNT_ORGANIZATION_ROOT}
-```
+## 4. Phase 3 : Capture des Drapeaux & Validation des Tâches
+Les drapeaux officiels validant la compromission des différentes étapes de la mission :
+
+- **Énumération de l'identité courante avec STS** : `aws sts get-caller-identity` (100 pts)
+- **Assomption du rôle privilégié (User Flag)** : `CYBERLAB{user_aws_sts_assume_role_credentials_obtained}` (150 pts)
+- **Périmètre de production & Root Flag** : `CYBERLAB{AWS_STS_ASSUME_ROLE_CROSS_ACCOUNT_ORGANIZATION_ROOT}` (250 pts)
 
 ---
 
-## 5. Mesures de Remédiation & Durcissement (Blue Team)
-- Implémenter le principe de moindre privilège (PoLP).
-- Valider et assainir toutes les entrées utilisateurs selon une liste blanche stricte.
-- Désactiver les méthodes d'accès non sécurisées et maintenir les dépendances à jour.
+## 5. Recommandations de Remédiation (Mesures Défensives Blue Team)
+1. **Application du principe de moindre privilège** (Least Privilege Principle) sur tous les comptes et processus.
+2. **Validation stricte par liste blanche** des données en entrée (Input Sanitization) et requêtes préparées pour toutes les interactions en base.
+3. **Mise à jour des composants logiciels** vers les versions patchées éliminant CWE-284.
+4. **Cloisonnement réseau et conteneurs** : Interdiction du mode privileged, montage en lecture seule des volumes système.

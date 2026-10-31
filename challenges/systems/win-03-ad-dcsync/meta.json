@@ -1,28 +1,38 @@
 {
   "id": "win-03-ad-dcsync",
-  "title": "Replication Rights Abused",
-  "category": "Linux & Windows",
+  "title": "DCSync Replication Rights Domain Takeover",
+  "organization": "CyberDyne Defense Systems Domain",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Windows",
+  "machine_type": "machine",
   "difficulty": "hard",
   "points": 300,
   "duration_min": 60,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Windows Team",
   "tags": [
-    "ad-dcsync-mimikatz",
-    "systems",
-    "hard"
+    "active-directory",
+    "dcsync",
+    "mimikatz",
+    "dsgetncchanges",
+    "krbtgt"
   ],
+  "cve": "CWE-272",
+  "rating": 5,
+  "solves": 920,
+  "monogram": "DCSYNC",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour Replication Rights Abused : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (ad-dcsync-mimikatz) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'utilisateur d'administration déléguée svc_dirsync s'est vu attribuer les droits étendus DS-Replication-Get-Changes et DS-Replication-Get-Changes-All sur la racine du domaine Active Directory. En utilisant le module lsadump::dcsync de Mimikatz, simule le comportement d'un contrôleur de domaine pour répliquer les hachages NTLM de tous les comptes, y compris KRBTGT et Administrator.",
   "target_port": 3333,
-  "virtual_ip": "10.10.27.200"
+  "virtual_ip": "10.10.56.61"
 }

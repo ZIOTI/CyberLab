@@ -1,47 +1,64 @@
-# Solution & Writeup Officiel // Kerberos Without Preauth
-
-## 1. Vue d'Ensemble du Challenge
-- **Identifiant** : `win-01-ad-asrep`
-- **Catégorie** : Linux & Windows
-- **Difficulté** : INTERMEDIATE (200 Points)
-- **Objectif Principal** : Comprendre et exploiter le vecteur `asreproast` pour extraire le drapeau de contrôle.
+# Rapport d'Exploitation & Débriefing Technique // Kerberos AS-REP Roasting Without Preauth
+**Organisation cible** : NorthCorp Active Directory Forest  
+**Système d'exploitation** : Windows | **Catégorie** : Systèmes & Active Directory  
+**Difficulté** : INTERMEDIATE | **Vecteur de vulnérabilité** : CWE-287  
+**Classification** : DOCUMENT OFFICIEL DU LABORATOIRE CYBERLAB REDTEAM  
 
 ---
 
-## 2. Analyse Préliminaire & Reconnaissance
-Avant toute interaction, une énumération méthodique de la cible est nécessaire. 
-Nous identifions les services exposés et les points d'entrée applicatifs ou systèmes :
-```bash
-# Vérification de l'état de la cible
-curl -I http://127.0.0.1:3333/targets/training/win-01-ad-asrep/
-```
+## 1. Contexte Opérationnel & Règles d'Engagement
+Dans le domaine Active Directory de NorthCorp, le compte de service svc_sql_backup a été configuré avec l'attribut DONT_REQ_PREAUTH (pré-authentification Kerberos désactivée). Utilise GetNPUsers.py d'Impacket pour demander un ticket AS-REP sans connaître le mot de passe, puis casse le hachage krb5asrep hors-ligne avec Hashcat.
+
+L'évaluation a été menée dans un environnement strictement isolé. Aucun service de production réel n'a été impacté. L'objectif était d'auditer la sécurité du composant **active-directory** et d'extraire les drapeaux de contrôle prouvant la faisabilité de l'attaque.
 
 ---
 
-## 3. Vecteur de Vulnérabilité & Exploitation Pas-à-Pas
-La vulnérabilité réside dans la gestion imprudente des entrées ou des droits d'exécution.
-L'analyse du comportement montre que le système ne valide pas strictement les paramètres :
-
-1. **Identification du composant vulnérable** : Observation de la réponse applicative.
-2. **Construction du payload** : Élaboration de la chaîne spécifique adaptée à l'environnement.
-3. **Exécution du payload** : Soumission du vecteur et capture du résultat.
+## 2. Phase 1 : Reconnaissance & Cartographie de la Surface d'Attaque
+Une phase de reconnaissance passive et active permet d'identifier l'empreinte logicielle et les services en écoute :
 
 ```bash
-# Commande d'exploitation type
-curl -s http://127.0.0.1:3333/targets/training/win-01-ad-asrep/
+# 1. Énumération des ports et bannières de service
+nmap -sV -sC -p- 10.10.37.8 -oN nmap_initial_scan.txt
+
+# 2. Découverte applicative locale
+curl -i http://localhost:3333/targets/training/win-01-ad-asrep/
+```
+
+L'analyse des réponses HTTP et des bannières confirme la présence du composant vulnérable lié à **active-directory, kerberos, asreproast, impacket, hashcat**.
+
+---
+
+## 3. Phase 2 : Exploitation Technique Pas-à-Pas
+
+### A. Analyse de la Vulnérabilité
+La faille provient d'une insuffisance de validation des contrôles d'accès et des données d'entrée au niveau de **CWE-287**. Le système interprète les paramètres non assainis sans barrière d'isolation.
+
+### B. Élaboration du Vecteur d'Attaque
+En appliquant la méthodologie offensive standard :
+1. **Étape 1** : Injection du marqueur de diagnostic pour vérifier l'absence d'échappement.
+2. **Étape 2** : Construction du payload weaponisé adapté à l'architecture cible.
+3. **Étape 3** : Déclenchement de l'exécution et capture des privilèges.
+
+```bash
+# Exemple de commande d'exploitation standard
+curl -s -X POST http://localhost:3333/targets/training/win-01-ad-asrep/ \
+  -H "Content-Type: application/json" \
+  -d '{"exploit_vector": "active-directory"}'
 ```
 
 ---
 
-## 4. Extraction du Drapeau & Validation
-Une fois le contrôle obtenu ou le flux déchiffré, le drapeau apparaît sous sa forme certifiée :
-```text
-CYBERLAB{ASREP_ROAST_TGT_OFFLINE_HASHCAT_CRACKED}
-```
+## 4. Phase 3 : Capture des Drapeaux & Validation des Tâches
+Les drapeaux officiels validant la compromission des différentes étapes de la mission :
+
+- **Identification du compte vulnérable** : `svc_sql_backup` (40 pts)
+- **Extraction du hash AS-REP** : `18200` (60 pts)
+- **Déchiffrement du ticket & Flag** : `CYBERLAB{ASREP_ROAST_TGT_OFFLINE_HASHCAT_CRACKED}` (100 pts)
 
 ---
 
-## 5. Mesures de Remédiation & Durcissement (Blue Team)
-- Implémenter le principe de moindre privilège (PoLP).
-- Valider et assainir toutes les entrées utilisateurs selon une liste blanche stricte.
-- Désactiver les méthodes d'accès non sécurisées et maintenir les dépendances à jour.
+## 5. Recommandations de Remédiation (Mesures Défensives Blue Team)
+1. **Application du principe de moindre privilège** (Least Privilege Principle) sur tous les comptes et processus.
+2. **Validation stricte par liste blanche** des données en entrée (Input Sanitization) et requêtes préparées pour toutes les interactions en base.
+3. **Mise à jour des composants logiciels** vers les versions patchées éliminant CWE-287.
+4. **Cloisonnement réseau et conteneurs** : Interdiction du mode privileged, montage en lecture seule des volumes système.

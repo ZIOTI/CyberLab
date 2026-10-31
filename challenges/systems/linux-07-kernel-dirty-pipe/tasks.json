@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Dirty Pipe CVE-2022-0847 Analysis)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à dirtypipe-cve.",
-    "points": 150,
+    "title": "Vérification de la version du noyau vulnérable",
+    "description": "Quel appel système est détourné pour fusionner les tampons de tuyaux dans le cache de page ?",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_LINUX_07_KERNEL_DIRTY_PIPE_CONFIRMED"
+    "canonical_flag": "splice"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 350,
+    "title": "Écriture arbitraire dans /etc/passwd (User Foothold)",
+    "description": "Compile l'exploit dirtypipe.c et modifie la ligne du compte root.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_dirty_pipe_passwd_page_cache_injected}"
+  },
+  {
+    "id": "t3",
+    "title": "Élévation de privilèges & Root Flag",
+    "description": "Connecte-toi en root avec le mot de passe injecté et valide le drapeau.",
+    "points": 250,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{DIRTY_PIPE_PAGE_CACHE_PAGE_FLAG_OVERWRITTEN_ROOT}"
   }

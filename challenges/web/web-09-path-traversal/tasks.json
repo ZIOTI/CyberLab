@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Directory Escape)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à dot-dot-slash.",
-    "points": 45,
+    "title": "Identification du paramètre de fichier",
+    "description": "Quel paramètre GET contrôle le nom du document à télécharger ?",
+    "points": 30,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_09_PATH_TRAVERSAL_CONFIRMED"
+    "canonical_flag": "file"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Échappement du répertoire de travail",
+    "description": "Combien de séquences ../ sont nécessaires pour atteindre la racine / ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "4"
+  },
+  {
+    "id": "t3",
+    "title": "Lecture de /etc/passwd & Flag",
+    "description": "Télécharge le fichier des utilisateurs Linux et soumets le drapeau dissimulé dans le compte root.",
+    "points": 80,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PATH_TRAVERSAL_PASSWD_DOWNLOAD_CONFIRMED}"
   }

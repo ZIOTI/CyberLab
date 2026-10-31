@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter telnet-sniffing."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Reconstitution TCP",
+    "cost": 5,
+    "content": "Dans Wireshark, filtre sur telnet et fais 'Follow TCP Stream' pour voir les commandes tapées."
   }
 ]

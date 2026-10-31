@@ -1,28 +1,38 @@
 {
   "id": "web-26-websocket-hijack",
-  "title": "Cross-Site WebSocket Hijacking",
-  "category": "Web",
+  "title": "Cross-Site WebSocket Hijacking (CSWSH)",
+  "organization": "TradingView Real-Time Stream Engine",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 350,
-  "duration_min": 60,
+  "duration_min": 55,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
-    "cswsh-origin",
-    "web",
-    "hard"
+    "cswsh",
+    "websocket",
+    "origin-bypass",
+    "real-time",
+    "trading"
   ],
+  "cve": "CWE-346",
+  "rating": 4.8,
+  "solves": 760,
+  "monogram": "WS",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Cross-Site WebSocket Hijacking : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (cswsh-origin) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le terminal financier en temps réel de TradingView établit une connexion WebSocket persistante (wss://) pour streamer les transactions confidentielles des clients. Le handshake HTTP initial n'effectue aucune validation de l'en-tête Origin. Monte une page web malveillante qui ouvre une connexion WebSocket cross-origin au nom de la victime connectée pour intercepter le flux de transactions en direct.",
   "target_port": 3333,
-  "virtual_ip": "10.10.58.199"
+  "virtual_ip": "10.10.12.164"
 }

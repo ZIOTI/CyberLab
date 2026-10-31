@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Payload Ring 0",
+    "cost": 30,
+    "content": "Utilise commit_creds(prepare_kernel_cred(0)) puis effectue un swapgs et iretq pour revenir en espace utilisateur."
+  }
+]

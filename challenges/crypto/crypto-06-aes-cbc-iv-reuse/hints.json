@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Annulation de masque",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter aes-cbc-iv-reuse."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "P1_second = C1_first XOR P1_first XOR ... applique les propriétés de commutativité du XOR."
   }
 ]

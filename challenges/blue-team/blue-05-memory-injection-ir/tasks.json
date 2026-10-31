@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Process Hollow Triage)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à process-hollowing-triage.",
-    "points": 105,
+    "title": "Vecteur d'accès initial de l'infection",
+    "description": "Quel document malveillant (.docm, .lnk, .iso) a été ouvert par la victime ?",
+    "points": 80,
     "task_type": "flag",
-    "canonical_flag": "VULN_BLUE_05_MEMORY_INJECTION_IR_CONFIRMED"
+    "canonical_flag": "invoice_october.iso"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 245,
+    "title": "Processus hôte détourné",
+    "description": "Dans quel binaire système Windows le shellcode a-t-il été déversé ?",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "explorer.exe"
+  },
+  {
+    "id": "t3",
+    "title": "Rapport de clôture IR & Flag",
+    "description": "Identifie la clé de registre de persistance et saisis le drapeau d'incident.",
+    "points": 170,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PROCESS_HOLLOWING_MEMORY_UNMAPPING_DETECTED}"
   }

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Utilisation d'Exiftool",
-    "cost": 10,
-    "content": "Sous Linux, lance la commande 'exiftool recon_relay_alpha.jpg' ou utilise la visionneuse de métadonnées en ligne Jeffrey's Image Metadata Viewer."
-  },
-  {
-    "title": "Indice 2 : Champ UserComment",
-    "cost": 20,
-    "content": "Certains constructeurs ou attaquants inscrivent des métadonnées personnalisées dans les champs 'ImageDescription' ou 'UserComment'."
+    "title": "Commande exiftool",
+    "cost": 5,
+    "content": "exiftool image.jpg | grep -i 'GPS\\|Model'"
   }
 ]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Numéro de commande IOCTL vulnérable",
+    "description": "Quel code de commande hexadécimal IOCTL déclenche la copie de données ?",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "0x1337"
+  },
+  {
+    "id": "t2",
+    "title": "Adresse de la fonction noyau commit_creds (User Flag)",
+    "description": "Résous l'adresse de commit_creds dans /proc/kallsyms.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_kallsyms_kernel_credentials_resolved}"
+  },
+  {
+    "id": "t3",
+    "title": "Élévation Ring 0 vers Root & Root Flag",
+    "description": "Exécute le payload d'élévation dans le noyau et capture le drapeau.",
+    "points": 250,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{KERNEL_MODULE_IOCTL_RING0_COMMIT_CREDS_ROOT}"
+  }
+]

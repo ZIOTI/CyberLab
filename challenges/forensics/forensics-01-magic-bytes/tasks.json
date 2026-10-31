@@ -1,26 +1,18 @@
 [
   {
-    "id": "task-1",
-    "title": "Tâche 1 : Signature Magique Officielle",
-    "description": "Quelle est la séquence hexadécimale exacte de 8 octets constituant la signature officielle (Magic Bytes) d'un fichier image PNG (format: 89 50 4E ...) ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "89 50 4E 47 0D 0A 1A 0A"
-  },
-  {
-    "id": "task-2",
-    "title": "Tâche 2 : Type du Chunk IHDR",
-    "description": "Quel est le nom du premier chunk obligatoire définissant les dimensions et la profondeur de couleur d'une image PNG ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "IHDR"
-  },
-  {
-    "id": "task-3",
-    "title": "Tâche 3 : Restauration & Extraction du Flag",
-    "description": "Répare les 8 premiers octets du fichier, inspecte son contenu restauré et saisis le drapeau officiel.",
+    "id": "t1",
+    "title": "Identification des octets magiques PNG",
+    "description": "Quelle est la séquence hexadécimale officielle des 8 premiers octets d'un fichier PNG ?",
     "points": 40,
     "task_type": "flag",
-    "canonical_flag": "CYBERLAB{MAGIC_BYTES_PNG_HEADER_RESTORED_SUCCESSFULLY}"
+    "canonical_flag": "89504E470D0A1A0A"
+  },
+  {
+    "id": "t2",
+    "title": "Réparation du fichier & Flag",
+    "description": "Répare l'en-tête, ouvre l'image réparée et saisis le drapeau écrit dessus.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{MAGIC_BYTES_PNG_HEADER_RESTORED_SUCCESS_918}"
   }
 ]

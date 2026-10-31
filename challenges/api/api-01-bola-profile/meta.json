@@ -1,16 +1,38 @@
 {
   "id": "api-01-bola-profile",
-  "title": "Medical Leak API",
-  "category": "Mobile/API",
+  "title": "DocuHealth Telehealth BOLA / IDOR Vulnerability",
+  "organization": "DocuHealth Telemedicine Platform",
+  "category": "APIs & Microservices",
+  "target_os": "API",
+  "machine_type": "room",
   "difficulty": "beginner",
   "points": 100,
   "duration_min": 35,
-  "learning_path": "systems-reversing",
-  "author": "Aegis Healthcare Audit",
-  "tags": ["api", "bola", "idor", "rest", "owasp-api-top-10"],
-  "prerequisites": ["Compréhension des API REST JSON", "Utilisation de curl ou Postman"],
-  "recommended_tools": ["curl", "Postman", "Burp Suite", "Insomnia"],
-  "narrative_story": "L'API mobile d'une clinique privée permet aux praticiens de consulter les fiches médicales via le point d'entrée REST '/targets/training/api-01/patients/{id}'. Bien que l'utilisateur doive fournir un jeton de session basique, le backend ne vérifie pas si l'utilisateur demandeur a le droit légitime d'accéder à l'objet ciblé par l'ID (faille BOLA / IDOR). Fais pivoter l'identifiant pour inspecter la fiche confidentielle du Directeur Médical (id: 1).",
+  "learning_path": "web-beginner",
+  "author": "Aegis API Security",
+  "tags": [
+    "api",
+    "bola",
+    "idor",
+    "telehealth",
+    "broken-object-level-auth"
+  ],
+  "cve": "CWE-639",
+  "rating": 4.8,
+  "solves": 2890,
+  "monogram": "BOLA",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Postman",
+    "Insomnia",
+    "Kiterunner",
+    "Burp Suite",
+    "GraphQL Voyager"
+  ],
+  "narrative_story": "L'application de télémédecine DocuHealth expose un endpoint REST /api/patients/:id/medical-records. L'API vérifie que l'utilisateur est authentifié, mais omet de vérifier s'il est autorisé à consulter le dossier médical du patient ciblé (Broken Object Level Authorization - BOLA / IDOR). En incrémentant l'ID séquentiel vers l'ID 01, consulte le dossier médical du président du conseil d'administration.",
   "target_port": 3333,
-  "virtual_ip": "10.10.19.42"
+  "virtual_ip": "10.10.35.92"
 }

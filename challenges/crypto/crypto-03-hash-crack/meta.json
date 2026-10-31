@@ -1,28 +1,38 @@
 {
   "id": "crypto-03-hash-crack",
-  "title": "Dictionary Warfare",
-  "category": "Crypto",
+  "title": "Salted MD5 Employee Hash Cracking",
+  "organization": "Apex Security Workforce DB",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
-  "duration_min": 45,
+  "duration_min": 30,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "hashcat-md5",
     "crypto",
-    "beginner"
+    "hashcat",
+    "md5",
+    "dictionary-attack",
+    "rockyou"
   ],
+  "cve": "CWE-328",
+  "rating": 4.9,
+  "solves": 2790,
+  "monogram": "HASH",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour Dictionary Warfare : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (hashcat-md5) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Une fuite de base de données d'entreprise a exposé les empreintes cryptographiques des mots de passe des employés. Les hachages sont au format MD5(pass.salt) avec un sel court connu. Utilise Hashcat ou John the Ripper avec la liste rockyou.txt pour casser le hachage du responsable des infrastructures critiques.",
   "target_port": 3333,
-  "virtual_ip": "10.10.31.159"
+  "virtual_ip": "10.10.40.139"
 }

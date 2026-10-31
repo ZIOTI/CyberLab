@@ -1,12 +1,12 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Phase 1",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter boot2root-killchain."
+    "content": "Explore l'API interne sur le port alternatif identifié lors de l'énumération."
   },
   {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Phase 3",
+    "cost": 20,
+    "content": "Inspecte /var/log et les processus tournant sous un autre UID dans ps aux."
   }
 ]

@@ -1,7 +1,10 @@
 {
   "id": "linux-02-cron-wildcard",
-  "title": "The Midnight Backup",
-  "category": "Linux",
+  "title": "The Midnight Backup Wildcard Injection",
+  "organization": "Apex Datacenter Archival Services",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
   "duration_min": 45,
@@ -14,16 +17,22 @@
     "tar",
     "privesc"
   ],
+  "cve": "CWE-78",
+  "rating": 4.8,
+  "solves": 2150,
+  "monogram": "CRON",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
-    "Bash",
-    "crontab",
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
     "GTFOBins"
   ],
-  "narrative_story": "Une tâche planifiée dans /etc/cron.d/nightly_backup exécute chaque minute la commande tar -czf /backup/archive.tar.gz * dans le répertoire /opt/app/data avec les privilèges ROOT. L'utilisation du métacaractère wildcard (*) te permet d'injecter des paramètres dans la ligne de commande de tar (checkpoint-action) pour déclencher l'exécution d'un script arbitraire.",
+  "narrative_story": "Une tâche planifiée dans /etc/cron.d/nightly_backup exécute chaque minute la commande tar -czf /backup/archive.tar.gz * dans /opt/app/data avec les privilèges ROOT. L'utilisation du joker (*) permet d'injecter des arguments arbitraires dans tar (--checkpoint-action) pour déclencher l'exécution d'un script lors de la création de l'archive.",
   "target_port": 3333,
-  "virtual_ip": "10.10.51.32"
+  "virtual_ip": "10.10.21.16"
 }

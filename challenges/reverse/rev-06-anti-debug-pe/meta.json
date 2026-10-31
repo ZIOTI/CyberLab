@@ -1,28 +1,38 @@
 {
   "id": "rev-06-anti-debug-pe",
-  "title": "Bypassing PE IsDebuggerPresent",
+  "title": "Bypassing PE IsDebuggerPresent & PEB Detection",
+  "organization": "FinTech Desktop Security Core",
   "category": "Reverse Engineering",
+  "target_os": "Windows",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 300,
   "duration_min": 60,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Malware Unit",
   "tags": [
-    "anti-debugging-peb",
     "reverse",
-    "hard"
+    "anti-debugging",
+    "peb",
+    "isdebuggerpresent",
+    "x64dbg"
   ],
+  "cve": "CWE-20",
+  "rating": 4.9,
+  "solves": 870,
+  "monogram": "PEB",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Ghidra",
     "radare2",
     "IDA Free",
-    "x64dbg"
+    "x64dbg",
+    "pycdc"
   ],
-  "narrative_story": "Scénario opérationnel pour Bypassing PE IsDebuggerPresent : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (anti-debugging-peb) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un agent Windows PE intègre des techniques sophistiquées d'anti-débogage : appel à l'API IsDebuggerPresent(), inspection manuelle du champ BeingDebugged dans le Process Environment Block (PEB) à fs:[0x30], et mesure du temps avec rdtsc pour détecter les points d'arrêt. Utilise x64dbg avec le plugin ScyllaHide pour contourner ces défenses et déchiffrer la charge utile.",
   "target_port": 3333,
-  "virtual_ip": "10.10.14.151"
+  "virtual_ip": "10.10.33.12"
 }

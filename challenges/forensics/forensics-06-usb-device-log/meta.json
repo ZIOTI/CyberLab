@@ -1,28 +1,38 @@
 {
   "id": "forensics-06-usb-device-log",
-  "title": "Rogue Peripheral Forensic",
-  "category": "Forensics",
+  "title": "Rogue Peripheral Windows Event Log Forensics",
+  "organization": "Internal Affairs Security Division",
+  "category": "Forensics & Mémoire",
+  "target_os": "Windows",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "soc-forensics",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Forensics Lab",
   "tags": [
-    "usb-event-logs",
     "forensics",
-    "intermediate"
+    "event-logs",
+    "evtx",
+    "usb-forensics",
+    "registry"
   ],
+  "cve": "CWE-284",
+  "rating": 4.8,
+  "solves": 1470,
+  "monogram": "EVTX",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Wireshark",
     "Volatility 3",
     "Autopsy",
-    "FTK Imager"
+    "FTK Imager",
+    "tshark"
   ],
-  "narrative_story": "Scénario opérationnel pour Rogue Peripheral Forensic : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (usb-event-logs) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Une fuite de données par support physique a eu lieu dans une salle sécurisée. Analyse le journal d'événements Windows Microsoft-Windows-Storage-ClassPnp/Operational.evtx ainsi que les ruches de registre SYSTEM pour retrouver le fabricant, le numéro de série unique et l'heure exacte de connexion de la clé USB pirate.",
   "target_port": 3333,
-  "virtual_ip": "10.10.15.171"
+  "virtual_ip": "10.10.18.199"
 }

@@ -370,6 +370,35 @@ class CyberAppPro {
         if (progFill) progFill.style.width = '25%';
 
         try {
+          if (updateData.isTest) {
+            // Mode test / démonstration de la rétention et de l'interface
+            if (progStatus) progStatus.innerText = '1/3 : Simulation du téléchargement depuis GitHub...';
+            if (progPct) progPct.innerText = '45%';
+            if (progFill) progFill.style.width = '45%';
+
+            await new Promise(r => setTimeout(r, 800));
+            if (progStatus) progStatus.innerText = '2/3 : Vérification intégrité & sécurisation SQLite (cyberrange.db)...';
+            if (progPct) progPct.innerText = '80%';
+            if (progFill) progFill.style.width = '80%';
+
+            await new Promise(r => setTimeout(r, 900));
+            if (window.cyberAudio) window.cyberAudio.playSuccess();
+            if (progStatus) {
+              progStatus.className = 'text-xs text-emerald-400 font-bold';
+              progStatus.innerText = '✅ Simulation Réussie : cyberrange.db et ta progression sont 100% sécurisés !';
+            }
+            if (progPct) progPct.innerText = '100%';
+            if (progFill) progFill.style.width = '100%';
+
+            setTimeout(() => {
+              modal.classList.add('hidden');
+              if (progContainer) progContainer.classList.add('hidden');
+              updateBtn.disabled = false;
+              updateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }, 2500);
+            return;
+          }
+
           if (progStatus) progStatus.innerText = '1/3 : Téléchargement du pack depuis GitHub...';
           if (progPct) progPct.innerText = '30%';
           if (progFill) progFill.style.width = '30%';

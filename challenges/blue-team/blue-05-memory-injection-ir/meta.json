@@ -1,28 +1,38 @@
 {
   "id": "blue-05-memory-injection-ir",
-  "title": "Process Hollow Triage",
+  "title": "Incident Response: Process Hollow Triage",
+  "organization": "Rapid Incident Response Force",
   "category": "Blue Team & SOC",
+  "target_os": "Windows",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 350,
   "duration_min": 60,
   "learning_path": "soc-forensics",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis SOC Team",
   "tags": [
-    "process-hollowing-triage",
     "blue-team",
-    "hard"
+    "incident-response",
+    "memory-triage",
+    "unmapping",
+    "dll-injection"
   ],
+  "cve": "CWE-200",
+  "rating": 4.9,
+  "solves": 790,
+  "monogram": "IR",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Splunk",
     "ELK Stack",
     "Sigma",
-    "Suricata"
+    "Suricata",
+    "Sysmon"
   ],
-  "narrative_story": "Scénario opérationnel pour Process Hollow Triage : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (process-hollowing-triage) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Dans le cadre d'une réponse à incident de niveau 3, un terminal utilisateur a été isolé suite au déclenchement d'une alerte EDR. Analyse les artefacts de tri préliminaire (rapport de triage KAPE, journaux MFT, et dump de processus procdump) pour reconstituer la kill chain de l'attaquant et déterminer l'étendue de la compromission.",
   "target_port": 3333,
-  "virtual_ip": "10.10.24.168"
+  "virtual_ip": "10.10.51.141"
 }

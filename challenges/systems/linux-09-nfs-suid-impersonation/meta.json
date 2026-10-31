@@ -1,0 +1,38 @@
+{
+  "id": "linux-09-nfs-suid-impersonation",
+  "title": "Linux Shared Home SUID Bash Implant",
+  "organization": "University HPC Compute Cluster",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "systems-reversing",
+  "author": "Aegis SysOps",
+  "tags": [
+    "linux",
+    "suid",
+    "shared-home",
+    "hpc",
+    "privesc"
+  ],
+  "cve": "CWE-272",
+  "rating": 4.8,
+  "solves": 1410,
+  "monogram": "HPC",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "Le cluster de calcul intensif monte les répertoires utilisateurs via un système de fichiers distribué sans l'option de montage nosuid. En exploitant un accès physique ou un nœud de calcul moins sécurisé, implémente un wrapper SUID bash pour usurper l'identité de l'administrateur du cluster.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.57.90"
+}

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Modification de l'URI REST",
-    "cost": 10,
-    "content": "Dans la requête GET vers /targets/training/api-01/patients/42, remplace simplement '42' par '1' tout en conservant le même en-tête d'authentification."
-  },
-  {
-    "title": "Indice 2 : En-tête de session",
-    "cost": 20,
-    "content": "Assure-toi d'inclure l'en-tête 'X-User-Token: operator_token_99' pour passer le contrôle d'accès de premier niveau de la passerelle."
+    "title": "Test d'ID séquentiel",
+    "cost": 5,
+    "content": "Envoie une requête GET /api/v1/patients/01/medical-records avec ton jeton de session actuel."
   }
 ]

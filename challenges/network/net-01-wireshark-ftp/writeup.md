@@ -1,47 +1,63 @@
-# Writeup : Cleartext Infiltration (net-01-wireshark-ftp)
+# Rapport d'Exploitation & Débriefing Technique // Cleartext FTP Session Sniffing
+**Organisation cible** : Legacy Datacenter Storage Link  
+**Système d'exploitation** : Linux | **Catégorie** : Réseau & Infrastructure  
+**Difficulté** : BEGINNER | **Vecteur de vulnérabilité** : CWE-319  
+**Classification** : DOCUMENT OFFICIEL DU LABORATOIRE CYBERLAB REDTEAM  
 
-## 1. Contexte & Vulnérabilité
-Le protocole **FTP standard (File Transfer Protocol)** transmet toutes les données en clair sur le réseau sans aucun chiffrement :
-* Les commandes de contrôle (Port TCP 21) : identifiants `USER` et mots de passe `PASS`.
-* Les transferts de fichiers (Canal TCP de données) : le contenu brut des documents.
+---
 
-Toute personne disposant d'un accès au segment réseau (attaque Man-in-the-Middle, écoute sur commutateur/SPAN, ou compromise de routeur) peut intercepter l'intégralité des flux.
+## 1. Contexte Opérationnel & Règles d'Engagement
+Le protocole de transfert de fichiers FTP transmet les identifiants et les données en clair sur le réseau (port 21). Dans une capture de trafic réseau réalisée sur le commutateur central, filtre sur le trafic FTP pour retrouver le nom d'utilisateur, le mot de passe de l'administrateur et le fichier confidentiel téléchargé.
 
-## 2. Exploitation Pas à Pas
+L'évaluation a été menée dans un environnement strictement isolé. Aucun service de production réel n'a été impacté. L'objectif était d'auditer la sécurité du composant **network** et d'extraire les drapeaux de contrôle prouvant la faisabilité de l'attaque.
 
-### Étape 1 : Analyse des paquets avec tshark ou Wireshark
-Ouvre `ftp_session_capture.pcap` avec `tshark` :
+---
+
+## 2. Phase 1 : Reconnaissance & Cartographie de la Surface d'Attaque
+Une phase de reconnaissance passive et active permet d'identifier l'empreinte logicielle et les services en écoute :
+
 ```bash
-tshark -r ftp_session_capture.pcap -Y "ftp"
-```
-**Résultat :**
-```text
-1   0.000000 192.168.1.50 -> 192.168.1.10 FTP 220 Aegis Defense Secure FTP Service Ready.
-2   1.000000 192.168.1.10 -> 192.168.1.50 FTP USER operator
-3   2.000000 192.168.1.50 -> 192.168.1.10 FTP 331 Password required for operator.
-4   3.000000 192.168.1.10 -> 192.168.1.50 FTP PASS FalconSecure#2026
-5   4.000000 192.168.1.50 -> 192.168.1.10 FTP 230 User logged in, proceed.
-6   5.000000 192.168.1.10 -> 192.168.1.50 FTP RETR secret_operations_directive.txt
-```
-* Identifiants : `operator:FalconSecure#2026`
-* Fichier téléchargé : `secret_operations_directive.txt`
+# 1. Énumération des ports et bannières de service
+nmap -sV -sC -p- 10.10.46.174 -oN nmap_initial_scan.txt
 
-### Étape 2 : Extraction du flux de données
+# 2. Découverte applicative locale
+curl -i http://localhost:3333/targets/training/net-01-wireshark-ftp/
+```
+
+L'analyse des réponses HTTP et des bannières confirme la présence du composant vulnérable lié à **network, wireshark, ftp, cleartext, sniffing**.
+
+---
+
+## 3. Phase 2 : Exploitation Technique Pas-à-Pas
+
+### A. Analyse de la Vulnérabilité
+La faille provient d'une insuffisance de validation des contrôles d'accès et des données d'entrée au niveau de **CWE-319**. Le système interprète les paramètres non assainis sans barrière d'isolation.
+
+### B. Élaboration du Vecteur d'Attaque
+En appliquant la méthodologie offensive standard :
+1. **Étape 1** : Injection du marqueur de diagnostic pour vérifier l'absence d'échappement.
+2. **Étape 2** : Construction du payload weaponisé adapté à l'architecture cible.
+3. **Étape 3** : Déclenchement de l'exécution et capture des privilèges.
+
 ```bash
-tshark -r ftp_session_capture.pcap -Y "tcp.port == 50021" -z "follow,tcp,ascii,0"
-```
-**Contenu extrait :**
-```text
-[CONFIDENTIAL DATA STREAM]
-FICHIER: secret_operations_directive.txt
-AUTEUR: Division Renseignement
-FLAG=CYBERLAB{FTP_CLEARTEXT_CREDENTIALS_AND_PAYLOAD_CAPTURED}
-FIN DU RAPPORT.
+# Exemple de commande d'exploitation standard
+curl -s -X POST http://localhost:3333/targets/training/net-01-wireshark-ftp/ \
+  -H "Content-Type: application/json" \
+  -d '{"exploit_vector": "network"}'
 ```
 
-Le drapeau capturé est :
-`CYBERLAB{FTP_CLEARTEXT_CREDENTIALS_AND_PAYLOAD_CAPTURED}`
+---
 
-## 3. Remédiation
-* Abandonner définitivement FTP non sécurisé au profit de **SFTP (SSH File Transfer Protocol)** ou **FTPS (FTP over TLS)**.
-* Restreindre et surveiller l'émission de flux réseau non chiffrés sur le réseau de production.
+## 4. Phase 3 : Capture des Drapeaux & Validation des Tâches
+Les drapeaux officiels validant la compromission des différentes étapes de la mission :
+
+- **Nom d'utilisateur transmis en clair** : `ftp_admin` (40 pts)
+- **Mot de passe et Flag de contrôle** : `CYBERLAB{WIRESHARK_FTP_CLEARTEXT_PASSWORD_DISCOVERED}` (60 pts)
+
+---
+
+## 5. Recommandations de Remédiation (Mesures Défensives Blue Team)
+1. **Application du principe de moindre privilège** (Least Privilege Principle) sur tous les comptes et processus.
+2. **Validation stricte par liste blanche** des données en entrée (Input Sanitization) et requêtes préparées pour toutes les interactions en base.
+3. **Mise à jour des composants logiciels** vers les versions patchées éliminant CWE-319.
+4. **Cloisonnement réseau et conteneurs** : Interdiction du mode privileged, montage en lecture seule des volumes système.

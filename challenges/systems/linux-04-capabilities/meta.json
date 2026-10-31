@@ -1,28 +1,38 @@
 {
   "id": "linux-04-capabilities",
-  "title": "Cap Setuid Escape",
-  "category": "Linux & Windows",
+  "title": "Linux Capabilities Cap Setuid Python Escape",
+  "organization": "Container Node Linux Kernel",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis SysOps",
   "tags": [
-    "getcap-setuid",
-    "systems",
-    "easy"
+    "linux",
+    "capabilities",
+    "cap_setuid",
+    "python",
+    "privesc"
   ],
+  "cve": "CWE-250",
+  "rating": 4.8,
+  "solves": 2120,
+  "monogram": "CAP",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour Cap Setuid Escape : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (getcap-setuid) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Pour éviter l'usage du bit SUID classique, l'administrateur a attribué la capacité spéciale cap_setuid+ep sur le binaire /usr/bin/python3.8 à l'aide de setcap. Utilise getcap -r / 2>/dev/null pour découvrir les capacités étendues, puis invoque le module os de Python avec os.setuid(0) pour faire basculer le processus dans l'espace super-utilisateur root.",
   "target_port": 3333,
-  "virtual_ip": "10.10.28.140"
+  "virtual_ip": "10.10.57.85"
 }

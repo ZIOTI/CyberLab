@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (NodeJS Object Overwrite)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à proto-pollution.",
-    "points": 90,
+    "title": "Identification de la fusion récursive",
+    "description": "Quelle propriété JavaScript permet de modifier le prototype de tous les objets du processus ?",
+    "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_21_PROTOTYPE_POLLUTION_CONFIRMED"
+    "canonical_flag": "__proto__"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Pollution de la propriété isAdmin",
+    "description": "Injecte {\"__proto__\": {\"isAdmin\": true}} et confirme la modification globale.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "PROTOTYPE_POLLUTED_TRUE"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution administrative & Flag",
+    "description": "Accède à la console d'administration déverrouillée et extrais le drapeau.",
+    "points": 160,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PROTO_POLLUTION_OBJECT_PROTOTYPE_ADMIN_TRUE}"
   }

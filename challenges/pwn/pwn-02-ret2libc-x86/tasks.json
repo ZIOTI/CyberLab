@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Bypassing Non-Executable Stack)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à ret2libc-system-binsh.",
-    "points": 90,
+    "title": "Identification des protections mémoires (checksec)",
+    "description": "Quelle protection empêche l'exécution directe d'instructions sur la pile ?",
+    "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_PWN_02_RET2LIBC_X86_CONFIRMED"
+    "canonical_flag": "NX"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Calcul des adresses system() et /bin/sh",
+    "description": "Quelle fonction de libc permet de lancer un sous-shell ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "system"
+  },
+  {
+    "id": "t3",
+    "title": "Obtention du shell & Flag",
+    "description": "Aligne la pile et déclenche l'exécution de /bin/sh pour lire le drapeau.",
+    "points": 160,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{RET2LIBC_SYSTEM_ADDR_BIN_SH_STRING_EXEC_ROOT}"
   }

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Confirmation du typage polymorphique",
+    "description": "Injecte le payload de typage et observe la connexion sortante.",
+    "points": 70,
+    "task_type": "flag",
+    "canonical_flag": "JACKSON_SSRF_CONFIRMED"
+  },
+  {
+    "id": "t2",
+    "title": "Extraction des secrets & Flag",
+    "description": "Reçois la requête sur ton écouteur et capture le drapeau.",
+    "points": 230,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{JACKSON_POLYMORPHIC_DESERIALIZE_SSRF_CAPTURED}"
+  }
+]

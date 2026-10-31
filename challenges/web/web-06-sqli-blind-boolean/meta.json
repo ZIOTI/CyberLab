@@ -1,28 +1,38 @@
 {
   "id": "web-06-sqli-blind-boolean",
-  "title": "True or False Blind",
-  "category": "Web",
+  "title": "Aura Privatbank AG FINMA Portal",
+  "organization": "Aura Privatbank AG (Zürich)",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
   "duration_min": 45,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
-    "sqli-blind",
-    "web",
-    "easy"
+    "sqli",
+    "blind-sqli",
+    "boolean-based",
+    "banking",
+    "fintech"
   ],
+  "cve": "CWE-89",
+  "rating": 4.8,
+  "solves": 1780,
+  "monogram": "AUR",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour True or False Blind : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (sqli-blind) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "La banque privée suisse Aura dispose d'un vérificateur de mandats de gestion financière. L'application ne renvoie aucune donnée issue de la base, mais uniquement un statut booléen (Mandat Actif / Mandat Introuvable). Conçois un script d'inférence booléenne caractère par caractère (SUBSTR + ASCII) pour extraire le numéro de compte fiduciaire de l'administrateur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.40.160"
+  "virtual_ip": "10.10.34.14"
 }

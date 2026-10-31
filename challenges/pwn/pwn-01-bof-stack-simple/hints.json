@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Pattern cyclique",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter buffer-overflow-eip."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Utilise pattern create 100 et pattern offset 0x... dans GDB-Peda pour trouver l'offset exact."
   }
 ]

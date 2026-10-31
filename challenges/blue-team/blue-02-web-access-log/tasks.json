@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Web Attack Profiling)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à nginx-log-analysis.",
-    "points": 45,
+    "title": "Paramètre ciblé par l'injection",
+    "description": "Quel paramètre HTTP dans l'URL a reçu des charges utiles UNION SELECT ?",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_BLUE_02_WEB_ACCESS_LOG_CONFIRMED"
+    "canonical_flag": "product_id"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Code de statut HTTP lors de la réussite",
+    "description": "Quel code de statut HTTP indique que l'attaquant a extrait les données avec succès ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "200"
+  },
+  {
+    "id": "t3",
+    "title": "Rapport d'intrusion & Flag",
+    "description": "Extrais la table visée par l'attaquant et soumets le drapeau de détection.",
+    "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{NGINX_LOG_ATTACK_PATTERN_SQLI_MAPPED}"
   }

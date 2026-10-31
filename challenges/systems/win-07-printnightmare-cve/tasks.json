@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Service Windows vulnérable à PrintNightmare",
+    "description": "Quel démon Windows gère la file d'impression des postes ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "spoolsv.exe"
+  },
+  {
+    "id": "t2",
+    "title": "Chargement de la DLL malveillante (User Flag)",
+    "description": "Invoque RpcAddPrinterDriverEx et charge la charge utile SYSTEM.",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_print_spooler_rpc_driver_loaded}"
+  },
+  {
+    "id": "t3",
+    "title": "Élévation SYSTEM & Root Flag",
+    "description": "Obtiens le shell avec les privilèges NT AUTHORITY\\SYSTEM et capture le drapeau.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{PRINTNIGHTMARE_CVE_2021_34527_SYSTEM_ESCALATION}"
+  }
+]

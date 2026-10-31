@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Identification du chemin d'attaque le plus court",
+    "description": "Quel droit de contrôle total sur un objet utilisateur est mis en évidence ?",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "GenericAll"
+  },
+  {
+    "id": "t2",
+    "title": "Pose de Shadow Credentials avec Whisker (User Flag)",
+    "description": "Génère un certificat d'authentification pour Tier1_Admin.",
+    "points": 160,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_shadow_credentials_key_link_added}"
+  },
+  {
+    "id": "t3",
+    "title": "Compromission du contrôleur de domaine & Root Flag",
+    "description": "Prends le contrôle du compte Administrateur de domaine et valide le drapeau.",
+    "points": 200,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{BLOODHOUND_GENERICALL_DACL_SHADOW_CREDS_ADMIN}"
+  }
+]

@@ -1,28 +1,38 @@
 {
   "id": "web-15-php-deserialize",
-  "title": "Magic Method RCE",
-  "category": "Web",
+  "title": "Legacy Billing POP Chain RCE",
+  "organization": "Global Invoicing Systems",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
-  "duration_min": 45,
+  "duration_min": 50,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
-    "php-unserialize",
-    "web",
-    "intermediate"
+    "deserialization",
+    "php",
+    "pop-chain",
+    "unserialize",
+    "rce"
   ],
+  "cve": "CWE-502",
+  "rating": 4.8,
+  "solves": 1390,
+  "monogram": "DESER",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Magic Method RCE : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (php-unserialize) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Une application PHP historique restaure les sessions utilisateurs via la fonction dangereuse unserialize(). En inspectant le code source des classes Logger et CacheManager, identifie les méthodes magiques (__destruct, __toString) et construis une Property-Oriented Programming (POP) chain pour écrire un script PHP malveillant sur le serveur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.29.113"
+  "virtual_ip": "10.10.43.108"
 }

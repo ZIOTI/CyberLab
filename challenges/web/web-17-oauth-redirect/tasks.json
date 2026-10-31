@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Token Stealer Flow)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à oauth-redirect-uri.",
-    "points": 60,
+    "title": "Contournement de la liste blanche d'URI",
+    "description": "Injecte une URL de redirection externe via redirection ouverte ou traversal.",
+    "points": 50,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_17_OAUTH_REDIRECT_CONFIRMED"
+    "canonical_flag": "REDIRECT_URI_BYPASSED"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Interception du code d'autorisation",
+    "description": "Quel paramètre dans l'URL de retour contient le jeton d'échange à usage unique ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "code"
+  },
+  {
+    "id": "t3",
+    "title": "Échange du code & Flag",
+    "description": "Échange le code d'autorisation intercepté contre le jeton d'accès admin et valide le drapeau.",
+    "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{OAUTH2_STATE_MISSING_REDIRECT_TOKEN_THEFT}"
   }

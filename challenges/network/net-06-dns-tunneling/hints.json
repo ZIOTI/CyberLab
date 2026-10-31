@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter dns-tunneling-iodine."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Script tshark",
+    "cost": 20,
+    "content": "tshark -r dns.pcap -T fields -e dns.qry.name | cut -d'.' -f1 | base64 -d"
   }
 ]

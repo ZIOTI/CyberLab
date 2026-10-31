@@ -1,28 +1,38 @@
 {
   "id": "pwn-01-bof-stack-simple",
-  "title": "Classic 32-bit Stack Smash",
-  "category": "Pwn & Binaire",
+  "title": "Classic 32-bit Stack Smash & RIP Overwrite",
+  "organization": "Legacy C Firmware Systems",
+  "category": "Pwn & Exploitation Mémoire",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
-  "duration_min": 45,
+  "duration_min": 50,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Pwn Team",
   "tags": [
-    "buffer-overflow-eip",
     "pwn",
-    "intermediate"
+    "bof",
+    "buffer-overflow",
+    "x86",
+    "ghidra"
   ],
+  "cve": "CWE-121",
+  "rating": 4.8,
+  "solves": 1410,
+  "monogram": "BOF",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "GDB-Peda",
     "pwntools",
     "checksec",
-    "ROPgadget"
+    "ROPgadget",
+    "one_gadget"
   ],
-  "narrative_story": "Scénario opérationnel pour Classic 32-bit Stack Smash : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (buffer-overflow-eip) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un service réseau développé en C utilise la fonction non sécurisée gets() pour lire l'identifiant de session sans vérifier la taille du tampon alloué (64 octets). En calculant l'offset exact écrasant le pointeur d'instruction (EIP/RIP) avec un pattern cyclique GDB, redirige le flux d'exécution vers l'adresse de la fonction secrète print_flag() présente dans le binaire.",
   "target_port": 3333,
-  "virtual_ip": "10.10.59.107"
+  "virtual_ip": "10.10.32.143"
 }

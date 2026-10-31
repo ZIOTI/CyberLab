@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter file-upload."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Extensions courantes",
+    "cost": 10,
+    "content": "Teste les extensions .phtml, .php5, .phar, ou ajoute un octet nul .php%00.png."
   }
 ]

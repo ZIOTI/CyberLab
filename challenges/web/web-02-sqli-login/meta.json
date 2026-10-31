@@ -1,16 +1,38 @@
 {
   "id": "web-02-sqli-login",
-  "title": "IronGate Auth Bypass",
-  "category": "Web",
+  "title": "IronGate SecurID Enterprise IAM",
+  "organization": "IronGate Security Identity Corp",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "beginner",
   "points": 100,
   "duration_min": 35,
   "learning_path": "web-beginner",
-  "author": "Aegis RedOps",
-  "tags": ["sqli", "auth-bypass", "injection", "web"],
-  "prerequisites": ["Notions SQL SELECT", "Compréhension des opérateurs logiques OR / AND"],
-  "recommended_tools": ["Navigateur Web", "curl", "Burp Suite"],
-  "narrative_story": "La passerelle de sécurité 'IronGate' contrôle l'accès au réseau d'administration interne. Le formulaire de connexion concatène directement les saisies de l'utilisateur dans une chaîne de requête SQL sans utiliser de requêtes préparées. Exploite cette injection SQL classique pour tromper la logique d'authentification et t'identifier sous le compte administrateur.",
+  "author": "Aegis Websec",
+  "tags": [
+    "sqli",
+    "authentication-bypass",
+    "login-form",
+    "sqlite",
+    "waf-bypass"
+  ],
+  "cve": "CWE-89",
+  "rating": 4.9,
+  "solves": 2950,
+  "monogram": "IG",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "La console IronGate SecurID centralise l'authentification SSO de milliers de postes de travail. La mire de connexion utilise une concaténation directe de requêtes SQL sans requêtes préparées. Construis une charge utile d'injection SQL classique pour forcer l'évaluation booléenne à VRAI, contourner le mot de passe et obtenir une session d'administrateur système.",
   "target_port": 3333,
-  "virtual_ip": "10.10.14.77"
+  "virtual_ip": "10.10.34.29"
 }

@@ -1,28 +1,38 @@
 {
   "id": "linux-05-writable-passwd",
-  "title": "The World Writable Entry",
-  "category": "Linux & Windows",
+  "title": "The World Writable /etc/passwd Hash Injection",
+  "organization": "Legacy Linux Gateway Server",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 35,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis SysOps",
   "tags": [
-    "etc-passwd-writable",
-    "systems",
-    "easy"
+    "linux",
+    "passwd-writable",
+    "privesc",
+    "openssl",
+    "root"
   ],
+  "cve": "CWE-276",
+  "rating": 4.8,
+  "solves": 2450,
+  "monogram": "PASSWD",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour The World Writable Entry : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (etc-passwd-writable) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Des permissions trop permissives (0666) ont été attribuées au fichier /etc/passwd. N'importe quel utilisateur peut ajouter ou modifier les lignes du fichier. Génère un hachage de mot de passe avec openssl passwd -1 et injecte une nouvelle entrée root avec un UID de 0 pour obtenir les privilèges totaux.",
   "target_port": 3333,
-  "virtual_ip": "10.10.30.164"
+  "virtual_ip": "10.10.23.38"
 }

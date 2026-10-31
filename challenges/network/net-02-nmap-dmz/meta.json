@@ -1,7 +1,10 @@
 {
   "id": "net-02-nmap-dmz",
-  "title": "DMZ Perimeter Scan",
-  "category": "Réseau",
+  "title": "DMZ Perimeter Port Scanning & Banner Grabbing",
+  "organization": "Aegis Cyber Defense DMZ Gateway",
+  "category": "Réseau & Infrastructure",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "beginner",
   "points": 100,
   "duration_min": 35,
@@ -14,16 +17,22 @@
     "banner-grabbing",
     "ports"
   ],
+  "cve": "CWE-200",
+  "rating": 4.8,
+  "solves": 2710,
+  "monogram": "NMAP",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "nmap",
-    "nc",
-    "telnet"
+    "tcpdump",
+    "Wireshark",
+    "netcat",
+    "chisel"
   ],
-  "narrative_story": "Un serveur passerelle en zone démilitarisée (DMZ) expose plusieurs services suspects suite à une maintenance précipitée. Ta mission est d'effectuer un scan réseau méticuleux pour cartographier les ports TCP ouverts, capturer les bannières de version et identifier le service d'administration obsolète laissé accessible.",
+  "narrative_story": "Un serveur passerelle en zone démilitarisée (DMZ) expose plusieurs services suspects suite à une maintenance précipitée. Effectue un scan réseau méthodique avec Nmap pour cartographier les ports TCP ouverts, capturer les bannières de version (-sV) et identifier le service de débogage obsolète laissé ouvert.",
   "target_port": 3333,
-  "virtual_ip": "10.10.42.170"
+  "virtual_ip": "10.10.53.168"
 }

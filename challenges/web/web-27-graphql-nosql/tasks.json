@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Introspection du schéma GraphQL",
+    "description": "Quelle mutation cachée permet de requêter les profils confidentiels ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "exportAuditRecord"
+  },
+  {
+    "id": "t2",
+    "title": "Injection d'opérateur MongoDB NoSQL",
+    "description": "Quel opérateur d'inégalité NoSQL permet de retourner tous les documents sans connaître la valeur ?",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "$ne"
+  },
+  {
+    "id": "t3",
+    "title": "Exfiltration du token de contrôle & Flag",
+    "description": "Extrais le document de l'auditeur en chef et valide le drapeau.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{GRAPHQL_NOSQL_REGEX_INJECTION_AUDIT_EXFIL}"
+  }
+]

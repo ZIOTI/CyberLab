@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Analyse Actuator",
+    "cost": 20,
+    "content": "Recherche 'password' ou 'db.user' dans les chaînes du fichier heapdump."
+  },
+  {
+    "title": "Outil Certipy",
+    "cost": 30,
+    "content": "certipy find -vulnerable -dc-ip ... puis certipy req -ca ... -template ESC1_Template -upn Administrator@zurich.local"
+  }
+]

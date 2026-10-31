@@ -1,0 +1,38 @@
+{
+  "id": "web-31-deserialization-jackson-cve",
+  "title": "Jackson Polymorphic Deserialization SSRF",
+  "organization": "Global Supply Chain Integrations",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 55,
+  "learning_path": "web-beginner",
+  "author": "Aegis JavaSec",
+  "tags": [
+    "deserialization",
+    "jackson",
+    "java",
+    "ssrf",
+    "polymorphic"
+  ],
+  "cve": "CVE-2019-12384",
+  "rating": 4.9,
+  "solves": 870,
+  "monogram": "JCK2",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "Le service d'ingestion de bons de commande parse du JSON polymorphique avec Jackson. En exploitant la classe ch.qos.logback.core.db.DriverManagerConnectionSource, déclenche une requête SSRF JDBC vers une base interne pour exfiltrer les métadonnées de cloud.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.59.40"
+}

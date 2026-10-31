@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Script Ghidra Go",
+    "cost": 25,
+    "content": "Utilise le script Ghidra go_entry.py ou GoReSym pour restaurer l'intégralité des symboles automatiquement."
+  }
+]

@@ -1,28 +1,38 @@
 {
   "id": "b2r-03-the-master-vault",
   "title": "The Final Boss: Master Kill Chain",
-  "category": "Linux & Windows",
+  "organization": "CyberRange National Security Redoubt",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Multi-Host",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 500,
-  "duration_min": 60,
+  "duration_min": 120,
   "learning_path": "systems-reversing",
   "author": "Aegis Offensive Operations",
   "tags": [
-    "final-boss-master",
-    "systems",
+    "final-boss",
+    "master-killchain",
+    "multi-stage",
+    "zero-day",
     "insane"
   ],
+  "cve": "MULTI-CVE",
+  "rating": 5,
+  "solves": 310,
+  "monogram": "VAULT",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour The Final Boss: Master Kill Chain : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (final-boss-master) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le défi suprême de l'académie CyberLab : Une infrastructure complète multi-niveaux simulant un réseau bancaire souverain. Tu devras enchaîner une attaque Web complexe, une évasion de conteneur, un pivot vers un domaine Active Directory, et l'exploitation d'une faille de noyau pour atteindre la chambre forte centrale.",
   "target_port": 3333,
-  "virtual_ip": "10.10.21.184"
+  "virtual_ip": "10.10.12.36"
 }

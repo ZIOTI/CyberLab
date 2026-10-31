@@ -1,16 +1,16 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (The ECB Penguin Secret)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à aes-ecb-pattern.",
+    "title": "Identification du mode de bloc vulnérable",
+    "description": "Quel mode d'opération de chiffrement par bloc souffre de fuite de motifs ?",
     "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_CRYPTO_04_AES_ECB_LEAK_CONFIRMED"
+    "canonical_flag": "ECB"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "title": "Reconstruction du schéma visuel & Flag",
+    "description": "Convertis le flux de sortie en image bitmap et lis le mot de passe dissimulé.",
     "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{AES_ECB_MODE_REPETITIVE_BLOCK_LEAK}"

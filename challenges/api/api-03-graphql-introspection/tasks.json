@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Hidden Schema Discovery)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à graphql-introspection.",
+    "title": "Nom de la mutation d'urgence cachée",
+    "description": "Quelle mutation dans le schéma permet de réinitialiser les clés de sécurité ?",
     "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_API_03_GRAPHQL_INTROSPECTION_CONFIRMED"
+    "canonical_flag": "emergencyBypassAuth"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Exécution de la mutation privilégiée",
+    "description": "Exécute la mutation en passant le paramètre de force et observe le résultat.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "MUTATION_SUCCESS"
+  },
+  {
+    "id": "t3",
+    "title": "Capture de la clé de contrôle & Flag",
+    "description": "Valide le jeton d'accès maître généré et soumets le drapeau.",
+    "points": 80,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{GRAPHQL_INTROSPECTION_SYSTEM_MUTATION_LEAK}"
   }

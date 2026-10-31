@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Point d'arrêt dans les DevTools",
-    "cost": 10,
-    "content": "Ouvre la console F12, pose un breakpoint sur la ligne qui vérifie 'if (input === expectedKey)' et examine la valeur de 'expectedKey' dans le panneau Scope des variables."
-  },
-  {
-    "title": "Indice 2 : Remplacement de l'évaluateur",
-    "cost": 20,
-    "content": "Si le code utilise eval() ou document.write(), remplace l'appel par console.log() pour afficher le code source en clair sans l'exécuter."
+    "title": "Déobfuscateur en ligne",
+    "cost": 5,
+    "content": "Utilise deobfuscate.io ou un formateur de code (Beautifier) combiné avec console.log()."
   }
 ]

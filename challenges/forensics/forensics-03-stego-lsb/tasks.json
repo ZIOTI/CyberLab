@@ -1,17 +1,17 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Whispers in the Pixels)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à steganography-lsb.",
-    "points": 45,
+    "title": "Canal stéganographique utilisé",
+    "description": "Quel plan de couleur et ordre de bit contient la chaîne cachée (ex: b1,rgb,lsb) ?",
+    "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_FORENSICS_03_STEGO_LSB_CONFIRMED"
+    "canonical_flag": "b1,rgb,lsb,xy"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Extraction de la charge utile & Flag",
+    "description": "Extrais le texte secret et soumets le drapeau.",
+    "points": 90,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{STEGO_LSB_RGB_PLANE_SECRET_EXTRACTED}"
   }

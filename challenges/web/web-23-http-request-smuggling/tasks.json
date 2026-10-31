@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (CL.TE Dual Pipeline Desync)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à request-smuggling.",
-    "points": 135,
+    "title": "Reconnaissance de la divergence de parsing",
+    "description": "Identifie la divergence entre le proxy frontal et le serveur d'application.",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_23_HTTP_REQUEST_SMUGGLING_CONFIRMED"
+    "canonical_flag": "DESYNC_CL_TE_DETECTED"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 315,
+    "title": "Capture de session d'un tiers (User Foothold)",
+    "description": "Smuggle une requête préfixe et capture le jeton de session de la requête suivante.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_smuggled_session_token_caught}"
+  },
+  {
+    "id": "t3",
+    "title": "Contournement du WAF admin & Root Flag",
+    "description": "Réécris la requête d'administration interne et débloque le drapeau racine.",
+    "points": 200,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{HTTP_REQUEST_SMUGGLING_CL_TE_FRONTEND_BYPASS}"
   }

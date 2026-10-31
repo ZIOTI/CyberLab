@@ -1,7 +1,7 @@
 [
   {
-    "title": "Outil de décompilation",
+    "title": "Outil pycdc",
     "cost": 10,
-    "content": "Tu peux utiliser `pycdc bytecode_vault.pyc` ou le module standard `dis.dis()` pour désassembler les opcodes."
+    "content": "pycdc license_check.pyc ou uncompyle6 pour reconstituer le code Python propre."
   }
 ]

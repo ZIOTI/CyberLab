@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Exploit C",
+    "cost": 15,
+    "content": "Exécute un binaire appelant execve('/usr/bin/pkexec', NULL, envp)."
+  }
+]

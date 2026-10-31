@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Format du secret",
+    "cost": 20,
+    "content": "Assure-toi d'utiliser le contenu textuel exact du fichier public.pem (incluant les sauts de ligne) comme clé HMAC."
+  }
+]

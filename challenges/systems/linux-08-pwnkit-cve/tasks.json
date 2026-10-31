@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Binaire ciblé par PwnKit",
+    "description": "Quel exécutable SUID Polkit historique est au cœur de CVE-2021-4034 ?",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "pkexec"
+  },
+  {
+    "id": "t2",
+    "title": "Variable d'environnement de chargement de bibliothèque",
+    "description": "Quelle variable permet de détourner le convertisseur de caractères ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "GCONV_PATH"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution du PoC & Root Flag",
+    "description": "Compile et exécute pwnkit pour ouvrir un shell root.",
+    "points": 160,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{PWNKIT_POLKIT_PKEXEC_LOCAL_ROOT_CLEARED_2026}"
+  }
+]

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (The World Writable Entry)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à etc-passwd-writable.",
-    "points": 45,
+    "title": "Vérification des droits d'écriture",
+    "description": "Quelles permissions POSIX apparaissent sur /etc/passwd ?",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_LINUX_05_WRITABLE_PASSWD_CONFIRMED"
+    "canonical_flag": "-rw-rw-rw-"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Génération du hash avec openssl",
+    "description": "Quelle commande openssl génère un hachage MD5-Crypt pour /etc/passwd ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "openssl passwd -1"
+  },
+  {
+    "id": "t3",
+    "title": "Ajout de l'utilisateur root & Flag",
+    "description": "Connecte-toi avec su toor et lis le drapeau dans /root/flag.txt.",
+    "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{ETC_PASSWD_ROOT_HASH_OVERWRITTEN_SUCCESS}"
   }

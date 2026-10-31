@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Création de l'archive piégée",
+    "description": "Génère un ZIP contenant un nom de fichier avec traversée de répertoire.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "ZIP_SLIP_ARCHIVE_CRAFTED"
+  },
+  {
+    "id": "t2",
+    "title": "Exécution de la tâche cron (User Flag)",
+    "description": "Obtiens le premier shell utilisateur au déclenchement de la minute.",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_zip_slip_cron_overwrite_foothold}"
+  },
+  {
+    "id": "t3",
+    "title": "PrivEsc Root & Root Flag",
+    "description": "Récupère le drapeau super-utilisateur.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{ZIP_SLIP_PATH_TRAVERSAL_CRON_ROOT_PWNED}"
+  }
+]

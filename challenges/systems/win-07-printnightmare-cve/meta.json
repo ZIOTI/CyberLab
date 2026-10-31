@@ -1,0 +1,38 @@
+{
+  "id": "win-07-printnightmare-cve",
+  "title": "PrintNightmare CVE-2021-34527 Spooler LPE",
+  "organization": "Corporate Print Server DC01",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Windows",
+  "machine_type": "machine",
+  "difficulty": "hard",
+  "points": 350,
+  "duration_min": 60,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Windows Team",
+  "tags": [
+    "windows",
+    "printnightmare",
+    "cve-2021-34527",
+    "spooler",
+    "system"
+  ],
+  "cve": "CVE-2021-34527",
+  "rating": 4.9,
+  "solves": 760,
+  "monogram": "PRINT",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "Le service Spooler d'impression (spoolsv.exe) du contrôleur de domaine permet aux utilisateurs authentifiés d'enregistrer de nouveaux pilotes d'imprimante via l'API RPC RpcAddPrinterDriverEx(). En fournissant un pilote malveillant pointant vers une DLL locale, force le service Spooler à charger la DLL avec les privilèges NT AUTHORITY\\SYSTEM.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.52.183"
+}

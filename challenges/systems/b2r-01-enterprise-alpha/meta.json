@@ -1,28 +1,38 @@
 {
   "id": "b2r-01-enterprise-alpha",
-  "title": "Full Kill Chain Compromise Alpha",
-  "category": "Linux & Windows",
+  "title": "Full Kill Chain Enterprise Alpha",
+  "organization": "Aegis Industrial Systems DMZ",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Linux",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 500,
-  "duration_min": 60,
+  "duration_min": 90,
   "learning_path": "systems-reversing",
   "author": "Aegis Offensive Operations",
   "tags": [
-    "boot2root-killchain",
-    "systems",
-    "insane"
+    "boot2root",
+    "full-killchain",
+    "dmz-pivot",
+    "linpeas",
+    "privesc"
   ],
+  "cve": "MULTI-CVE",
+  "rating": 5,
+  "solves": 480,
+  "monogram": "ALPHA",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour Full Kill Chain Compromise Alpha : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (boot2root-killchain) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Scénario complet d'intrusion d'entreprise (Boot2Root) : Une passerelle web exposée en DMZ présente une mauvaise configuration d'authentification et un endpoint d'exécution de scripts. Établis un premier accès non privilégié (User Shell), pivote sur le sous-réseau interne, analyse les tâches d'arrière-plan avec LinPEAS et exploite une mauvaise configuration de droits pour compromettre la machine hôte et voler la clé de chiffrement racine.",
   "target_port": 3333,
-  "virtual_ip": "10.10.58.160"
+  "virtual_ip": "10.10.10.84"
 }

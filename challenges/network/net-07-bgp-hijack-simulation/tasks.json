@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Autonomous System Route Poison)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à bgp-as-path-poison.",
-    "points": 150,
+    "title": "Règle de sélection de route BGP prépondérante",
+    "description": "Quelle règle de table de routage IP donne priorité au préfixe le plus précis ?",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_NET_07_BGP_HIJACK_SIMULATION_CONFIRMED"
+    "canonical_flag": "Longest Prefix Match"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 350,
+    "title": "Annonce du préfixe pirate (User Flag)",
+    "description": "Émets la mise à jour BGP UPDATE avec le préfixe /24 et obtiens le premier accès.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_bgp_route_injection_traffic_diverted}"
+  },
+  {
+    "id": "t3",
+    "title": "Interception des transactions & Root Flag",
+    "description": "Capture les communications interceptées et valide le drapeau souverain.",
+    "points": 250,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{BGP_PREFIX_HIJACK_MED_METRIC_ROUTING_POISONED}"
   }

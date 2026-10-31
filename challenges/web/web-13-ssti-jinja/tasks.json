@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Template Escape)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à ssti-jinja2.",
-    "points": 60,
+    "title": "Détection de l'évaluation d'expressions",
+    "description": "Injecte {{ 7 * 7 }} et confirme l'affichage du résultat 49.",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_13_SSTI_JINJA_CONFIRMED"
+    "canonical_flag": "49"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Navigation dans les sous-classes Python",
+    "description": "Quel attribut d'objet permet de lister toutes les sous-classes héritées en Python ?",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "__subclasses__"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution arbitraire de commande & Flag",
+    "description": "Invoque un shell système pour lire le drapeau dans /flag.txt.",
+    "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SSTI_JINJA2_OS_POPEN_RCE_FLAG_CAPTURED}"
   }

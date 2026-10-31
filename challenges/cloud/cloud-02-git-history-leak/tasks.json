@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Forgotten Commits)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à git-log-reflog.",
+    "title": "Recherche dans l'historique des commits",
+    "description": "Quel commit hash contient le message d'ajout initial des clés ?",
     "points": 30,
     "task_type": "flag",
-    "canonical_flag": "VULN_CLOUD_02_GIT_HISTORY_LEAK_CONFIRMED"
+    "canonical_flag": "COMMIT_FOUND"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 70,
+    "title": "Affichage des différences d'un commit",
+    "description": "Quelle commande git permet d'afficher le diff complet d'un commit spécifique ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "git show"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction de la clé secrète & Flag",
+    "description": "Extrais la clé privée SSH et soumets le drapeau de contrôle.",
+    "points": 40,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{GIT_COMMIT_HISTORY_PRIVATE_SSH_KEY_FOUND}"
   }

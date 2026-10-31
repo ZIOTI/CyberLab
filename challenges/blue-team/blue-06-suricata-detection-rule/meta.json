@@ -1,0 +1,38 @@
+{
+  "id": "blue-06-suricata-detection-rule",
+  "title": "SOC Perimeter Network Intrusion Rule Engine",
+  "organization": "National Critical Infrastructure SOC",
+  "category": "Blue Team & SOC",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 75,
+  "learning_path": "soc-forensics",
+  "author": "Aegis SOC Team",
+  "tags": [
+    "blue-team",
+    "suricata",
+    "ids-ips",
+    "pcaps",
+    "c2-detection"
+  ],
+  "cve": "CWE-200",
+  "rating": 5,
+  "solves": 510,
+  "monogram": "SURIC",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Splunk",
+    "ELK Stack",
+    "Sigma",
+    "Suricata",
+    "Sysmon"
+  ],
+  "narrative_story": "La sonde de détection d'intrusion réseau Suricata du centre de supervision doit être configurée pour bloquer un nouveau protocole de C2 utilisant le port TLS 443 avec un certificat auto-signé spécifique et des balises régulières toutes les 60 secondes (Jitter de 5%). Développe l'ensemble de règles Suricata multicritères et teste-les en conditions réelles.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.44.13"
+}

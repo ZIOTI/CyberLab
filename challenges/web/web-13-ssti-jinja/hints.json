@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Chaîne d'évasion Jinja2",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter ssti-jinja2."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Explore : {{ ''.__class__.__mro__[1].__subclasses__() }} pour trouver la classe subprocess.Popen ou os._wrap_close."
   }
 ]

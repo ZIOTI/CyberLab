@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Parser EVTX",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter usb-event-logs."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Utilise python-evtx ou l'Observateur d'événements Windows pour filtrer sur l'Event ID 1001."
   }
 ]

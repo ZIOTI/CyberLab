@@ -1,28 +1,38 @@
 {
   "id": "rev-05-angr-symbolic",
-  "title": "Symbolic Keygen Execution",
+  "title": "Angr Symbolic Execution Crackme Solver",
+  "organization": "Automated Vulnerability Research Lab",
   "category": "Reverse Engineering",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
-  "duration_min": 45,
+  "duration_min": 50,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Malware Unit",
   "tags": [
-    "angr-symbolic-exec",
     "reverse",
-    "intermediate"
+    "angr",
+    "symbolic-execution",
+    "smt-solver",
+    "python"
   ],
+  "cve": "CWE-20",
+  "rating": 4.9,
+  "solves": 1380,
+  "monogram": "ANGR",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Ghidra",
     "radare2",
     "IDA Free",
-    "x64dbg"
+    "x64dbg",
+    "pycdc"
   ],
-  "narrative_story": "Scénario opérationnel pour Symbolic Keygen Execution : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (angr-symbolic-exec) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Ce binaire crackme applique une suite de 40 équations non linéaires entremêlées sur chaque caractère du mot de passe. L'analyse manuelle prendrait des semaines. Utilise le framework d'exécution symbolique Angr en Python pour explorer automatiquement l'arbre des chemins d'exécution (SimulationManager), trouver l'adresse de la branche 'SUCCESS' et résoudre les contraintes mathématiques du flag.",
   "target_port": 3333,
-  "virtual_ip": "10.10.40.124"
+  "virtual_ip": "10.10.27.143"
 }

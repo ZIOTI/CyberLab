@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Commande Proxychains",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter ssh-tunnel-socks."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Configure socks5 127.0.0.1 1080 dans /etc/proxychains4.conf et lance proxychains nmap -sT ..."
   }
 ]

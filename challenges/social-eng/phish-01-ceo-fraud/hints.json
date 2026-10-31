@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Lecture des en-têtes Received",
-    "cost": 10,
-    "content": "Ouvre le fichier .eml avec un éditeur de texte. Les en-têtes 'Received:' se lisent de bas en haut pour retracer l'origine chronologique."
-  },
-  {
-    "title": "Indice 2 : Décodage du paramètre token",
-    "cost": 20,
-    "content": "L'URL contient '?token=Q1lCRVJM...'. Cette chaîne est encodée en Base64 standard (RFC 4648). Décode-la avec 'echo <token> | base64 -d' ou CyberChef."
+    "title": "Inspection des en-têtes",
+    "cost": 5,
+    "content": "Ouvre le fichier email.eml dans un éditeur de texte et cherche Received: from et SPF:."
   }
 ]

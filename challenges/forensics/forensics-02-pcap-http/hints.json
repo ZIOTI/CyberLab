@@ -1,7 +1,7 @@
 [
   {
-    "title": "Filtre d'affichage Wireshark",
+    "title": "Filtre Wireshark",
     "cost": 10,
-    "content": "Applique le filtre http.request.method == \"POST\" et utilise \"Follow TCP Stream\"."
+    "content": "http.request.method == \"POST\" puis clic droit -> Follow -> TCP Stream."
   }
 ]

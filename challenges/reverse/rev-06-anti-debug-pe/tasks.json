@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Bypassing PE IsDebuggerPresent)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à anti-debugging-peb.",
-    "points": 90,
+    "title": "Structure Windows contenant le drapeau BeingDebugged",
+    "description": "Quelle structure interne de processus Windows est ciblée par fs:[0x30] ?",
+    "points": 80,
     "task_type": "flag",
-    "canonical_flag": "VULN_REV_06_ANTI_DEBUG_PE_CONFIRMED"
+    "canonical_flag": "PEB"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Instruction x86 de mesure des cycles processeur",
+    "description": "Quelle instruction assembleur mesure le nombre de cycles CPU (détection de pas-à-pas) ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "rdtsc"
+  },
+  {
+    "id": "t3",
+    "title": "Contournement et extraction & Flag",
+    "description": "Pose un point d'arrêt matériel après les contrôles et extrais le drapeau.",
+    "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PEB_BEING_DEBUGGED_FLAG_BYPASS_KEY_UNLOCKED}"
   }

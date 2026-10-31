@@ -1,29 +1,38 @@
 {
   "id": "rev-02-pyc-decompile",
-  "title": "Bytecode Secrets",
-  "category": "Reverse",
+  "title": "Python Bytecode Decompilation (pyc)",
+  "organization": "CyberDyne Automation Scripts",
+  "category": "Reverse Engineering",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 35,
   "learning_path": "systems-reversing",
   "author": "Aegis Malware Unit",
   "tags": [
     "reverse",
     "python",
-    "bytecode",
+    "pyc",
     "decompilation",
-    "pyc"
+    "uncompyle6"
   ],
+  "cve": "CWE-312",
+  "rating": 4.9,
+  "solves": 2210,
+  "monogram": "PYC",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
-    "uncompyle6",
-    "decompyle++ (pycdc)",
-    "Python"
+    "Ghidra",
+    "radare2",
+    "IDA Free",
+    "x64dbg",
+    "pycdc"
   ],
-  "narrative_story": "Un script Python compilé (.pyc) a été découvert sur un poste de travail compromis. Le code source original a été effacé par le logiciel malveillant. Ta tâche est de décompiler ce bytecode Python pour comprendre son algorithme de validation et générer une clé valide.",
+  "narrative_story": "Un script de gestionnaire de licences Python compilé (.pyc) a été récupéré sur un serveur sans ses fichiers sources .py d'origine. Utilise decompyle++ (pycdc) ou le module disassemble de Python pour décompiler le bytecode, comprendre l'algorithme de calcul du numéro de série et générer une clé valide.",
   "target_port": 3333,
-  "virtual_ip": "10.10.28.7"
+  "virtual_ip": "10.10.46.65"
 }

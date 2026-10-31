@@ -1,7 +1,10 @@
 {
   "id": "crypto-02-xor-cracker",
-  "title": "Single-Byte Enigma",
-  "category": "Crypto",
+  "title": "Single-Byte XOR Frequency Analysis",
+  "organization": "Aegis Interception Field Station",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "easy",
   "points": 150,
   "duration_min": 35,
@@ -10,19 +13,26 @@
   "tags": [
     "crypto",
     "xor",
+    "single-byte",
     "frequency-analysis",
     "cryptanalysis"
   ],
+  "cve": "CWE-326",
+  "rating": 4.8,
+  "solves": 2100,
+  "monogram": "XOR",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
-    "Python",
     "CyberChef",
+    "Hashcat",
+    "John the Ripper",
+    "SageMath",
     "xortool"
   ],
-  "narrative_story": "Les services de renseignement ont intercepté un bloc binaire chiffré avec un algorithme XOR à clé unique d'un seul octet (0x00 à 0xFF). Sachant que le texte en clair est en anglais et contient des termes de sécurité informatique, développe un analyseur statistique de fréquence ou utilise CyberChef pour retrouver la clé et lire le message.",
+  "narrative_story": "Les services de renseignement ont capturé un flux hexadécimal chiffré par un masque jetable corrompu : l'ensemble des octets du texte en clair a été combiné par un opérateur XOR avec un unique octet secret (0x00 à 0xFF). Développe un script de comptage de fréquences ou utilise CyberChef pour retrouver la clé et lire le message.",
   "target_port": 3333,
-  "virtual_ip": "10.10.35.157"
+  "virtual_ip": "10.10.53.80"
 }

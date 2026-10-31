@@ -1,28 +1,38 @@
 {
   "id": "web-23-http-request-smuggling",
-  "title": "CL.TE Dual Pipeline Desync",
-  "category": "Web",
+  "title": "CL.TE Dual Pipeline Desynchronization",
+  "organization": "MegaProxy Edge & Gateway Corp",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 450,
-  "duration_min": 60,
+  "duration_min": 75,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Research",
   "tags": [
     "request-smuggling",
-    "web",
-    "insane"
+    "cl-te",
+    "http-desync",
+    "rfc7230",
+    "front-back"
   ],
+  "cve": "CWE-444",
+  "rating": 5,
+  "solves": 620,
+  "monogram": "SMUG",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour CL.TE Dual Pipeline Desync : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (request-smuggling) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'architecture réseau repose sur un frontal Nginx priorisant l'en-tête Content-Length et un backend Apache Tomcat priorisant Transfer-Encoding: chunked (désynchronisation CL.TE). En forgeant une requête contenant les deux en-têtes avec une taille tronquée, 'contrebande' une seconde requête HTTP dans le pipeline pour détourner les sessions des utilisateurs suivants.",
   "target_port": 3333,
-  "virtual_ip": "10.10.45.133"
+  "virtual_ip": "10.10.57.26"
 }

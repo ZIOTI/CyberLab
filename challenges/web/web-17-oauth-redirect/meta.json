@@ -1,28 +1,38 @@
 {
   "id": "web-17-oauth-redirect",
-  "title": "Token Stealer Flow",
-  "category": "Web",
+  "title": "ConnectID OAuth Account Hijack",
+  "organization": "ConnectID Single Sign-On Provider",
+  "category": "Web & APIs",
+  "target_os": "Cloud",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
-    "oauth-redirect-uri",
-    "web",
-    "intermediate"
+    "oauth",
+    "open-redirect",
+    "authorization-code",
+    "sso",
+    "account-takeover"
   ],
+  "cve": "CWE-601",
+  "rating": 4.8,
+  "solves": 1470,
+  "monogram": "OAUTH",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Token Stealer Flow : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (oauth-redirect-uri) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le fournisseur d'identité ConnectID permet la connexion aux services tiers via OAuth 2.0 Authorization Code flow. La validation du paramètre redirect_uri autorise les redirections ouvertes vers des sous-domaines non contrôlés, et le paramètre state est absent. Manipule le flux d'autorisation pour intercepter le code d'autorisation d'un cadre dirigeant et usurper son compte.",
   "target_port": 3333,
-  "virtual_ip": "10.10.31.24"
+  "virtual_ip": "10.10.41.191"
 }

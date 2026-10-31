@@ -43,6 +43,13 @@ class TrainingManager {
         writeup_markdown TEXT,
         target_port INTEGER,
         virtual_ip TEXT,
+        target_os TEXT DEFAULT 'Linux',
+        machine_type TEXT DEFAULT 'room',
+        organization TEXT DEFAULT 'CyberLab Target',
+        cve TEXT,
+        rating REAL DEFAULT 4.9,
+        solves INTEGER DEFAULT 1200,
+        monogram TEXT,
         created_at TEXT
       );
 
@@ -89,6 +96,22 @@ class TrainingManager {
         timestamp TEXT
       );
     `);
+
+    // Migration transparente des colonnes pour bases existantes
+    const extraCols = [
+      'target_os TEXT DEFAULT "Linux"',
+      'machine_type TEXT DEFAULT "room"',
+      'organization TEXT DEFAULT "CyberLab Target"',
+      'cve TEXT',
+      'rating REAL DEFAULT 4.9',
+      'solves INTEGER DEFAULT 1200',
+      'monogram TEXT'
+    ];
+    for (const col of extraCols) {
+      try {
+        this.db.exec(`ALTER TABLE training_challenges ADD COLUMN ${col};`);
+      } catch (e) {}
+    }
 
     // Synchronisation automatique des challenges sur disque vers la base
     this.syncChallengesFromDisk();
@@ -149,8 +172,8 @@ class TrainingManager {
             INSERT INTO training_challenges (
               id, title, category, difficulty, points, duration_min, learning_path, author,
               tags, prerequisites, recommended_tools, narrative_story, tasks_json, hints_json,
-              writeup_markdown, target_port, virtual_ip, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              writeup_markdown, target_port, virtual_ip, target_os, machine_type, organization, cve, rating, solves, monogram, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
               title = excluded.title,
               category = excluded.category,
@@ -167,7 +190,14 @@ class TrainingManager {
               hints_json = excluded.hints_json,
               writeup_markdown = excluded.writeup_markdown,
               target_port = excluded.target_port,
-              virtual_ip = excluded.virtual_ip
+              virtual_ip = excluded.virtual_ip,
+              target_os = excluded.target_os,
+              machine_type = excluded.machine_type,
+              organization = excluded.organization,
+              cve = excluded.cve,
+              rating = excluded.rating,
+              solves = excluded.solves,
+              monogram = excluded.monogram
           `);
 
           stmt.run(
@@ -188,6 +218,13 @@ class TrainingManager {
             writeup,
             meta.target_port || 80,
             meta.virtual_ip || '10.10.10.10',
+            meta.target_os || 'Linux',
+            meta.machine_type || 'room',
+            meta.organization || 'CyberLab Target',
+            meta.cve || null,
+            meta.rating || 4.9,
+            meta.solves || 1200,
+            meta.monogram || (meta.id || chId).substring(0, 4).toUpperCase(),
             new Date().toISOString()
           );
         } catch (e) {
@@ -345,7 +382,14 @@ class TrainingManager {
         task_count: tasks.length,
         completed_task_count: completedTasks.length,
         status: prog.status,
-        points_earned: prog.points_earned || 0
+        points_earned: prog.points_earned || 0,
+        target_os: r.target_os || 'Linux',
+        machine_type: r.machine_type || 'room',
+        organization: r.organization || 'CyberLab Target',
+        cve: r.cve || null,
+        rating: r.rating || 4.9,
+        solves: r.solves || 1200,
+        monogram: r.monogram || r.id.substring(0, 4).toUpperCase()
       };
     });
   }
@@ -432,7 +476,14 @@ class TrainingManager {
       writeup_unlocked: prog.writeup_unlocked === 1,
       status: prog.status,
       points_earned: prog.points_earned || 0,
-      instance: instance
+      instance: instance,
+      target_os: ch.target_os || 'Linux',
+      machine_type: ch.machine_type || 'room',
+      organization: ch.organization || 'CyberLab Target',
+      cve: ch.cve || null,
+      rating: ch.rating || 4.9,
+      solves: ch.solves || 1200,
+      monogram: ch.monogram || ch.id.substring(0, 4).toUpperCase()
     };
   }
 

@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Introspection query",
+    "cost": 20,
+    "content": "Envoie la requête standard : {\"query\": \"{ __schema { types { name } } }\"}"
+  }
+]

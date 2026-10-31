@@ -1,17 +1,17 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Hardcoded Validation)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à strings-elf.",
-    "points": 30,
+    "title": "Extraction des chaînes imprimables",
+    "description": "Quelle commande Linux permet de lister les chaînes de texte d'un binaire ?",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_REV_03_STRINGS_CRACKME_CONFIRMED"
+    "canonical_flag": "strings"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 70,
+    "title": "Validation du mot de passe & Flag",
+    "description": "Passe le mot de passe en argument au binaire et capture le drapeau.",
+    "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{STRINGS_COMMAND_REVEALED_HARDCODED_KEY}"
   }

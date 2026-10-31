@@ -1,16 +1,36 @@
 {
   "id": "phish-01-ceo-fraud",
-  "title": "Operation Wire Transfer",
+  "title": "Executive CEO Fraud Email Header Triage",
+  "organization": "Corporate Anti-Fraud Unit",
   "category": "Social Engineering",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
   "duration_min": 30,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Threat Intel",
-  "tags": ["social-engineering", "phishing", "email-analysis", "spf", "dkim", "bec"],
-  "prerequisites": ["Compréhension des en-têtes d'e-mail RFC822", "Mécanismes SPF et DKIM"],
-  "recommended_tools": ["Éditeur de texte", "CyberChef", "MXToolbox", "mailheader.org"],
-  "narrative_story": "La directrice financière d'Aegis a reçu un courriel urgent prétendant provenir du PDG en déplacement, lui ordonnant de virer 450 000 EUR sous peine de rupture d'un contrat stratégique. En tant qu'analyste de cyberdéfense, analyse le fichier 'urgent_transfer_request.eml', dissèque les en-têtes de routage (Received, SPF, DKIM), identifie l'adresse IP de l'attaquant et décode la charge utile du lien malveillant pour neutraliser la campagne.",
-  "target_port": null,
-  "virtual_ip": null
+  "author": "Aegis Social Defense",
+  "tags": [
+    "social-eng",
+    "phishing",
+    "email-headers",
+    "spf",
+    "dkim"
+  ],
+  "cve": "CWE-290",
+  "rating": 4.8,
+  "solves": 2810,
+  "monogram": "PHISH",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Gophish",
+    "MXToolbox",
+    "PhishTool"
+  ],
+  "narrative_story": "Le service comptable a reçu un courriel urgent prétendant provenir du président directeur général, demandant un virement bancaire international immédiat. En analysant les en-têtes bruts du message (RFC 822 / .eml), examine les lignes Received:, les résultats d'authentification SPF (Sender Policy Framework) et les signatures DKIM pour prouver l'usurpation d'identité.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.39.120"
 }

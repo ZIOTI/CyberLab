@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Cross-Site WebSocket Hijacking)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à cswsh-origin.",
-    "points": 105,
+    "title": "Analyse du Handshake WebSocket",
+    "description": "Quel en-tête HTTP doit obligatoirement être validé côté serveur pour bloquer le CSWSH ?",
+    "points": 80,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_26_WEBSOCKET_HIJACK_CONFIRMED"
+    "canonical_flag": "Origin"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 245,
+    "title": "Établissement du tunnel cross-origin",
+    "description": "Initie une connexion WebSocket depuis un domaine tiers non autorisé.",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "WS_HANDSHAKE_ACCEPTED"
+  },
+  {
+    "id": "t3",
+    "title": "Interception du flux boursier & Flag",
+    "description": "Capture le message contenant la transaction VIP et soumets le drapeau.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{CSWSH_MISSING_ORIGIN_CHECK_STREAM_INTERCEPT}"
   }

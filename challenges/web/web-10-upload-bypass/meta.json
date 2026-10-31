@@ -1,28 +1,38 @@
 {
   "id": "web-10-upload-bypass",
-  "title": "Polyglot Avatar",
-  "category": "Web",
+  "title": "PixelForge 3D Avatar Studio",
+  "organization": "PixelForge Web3 Game Engine",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
   "duration_min": 45,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
     "file-upload",
-    "web",
-    "easy"
+    "extension-bypass",
+    "webshell",
+    "phtml",
+    "polyglot"
   ],
+  "cve": "CWE-434",
+  "rating": 4.8,
+  "solves": 2010,
+  "monogram": "PXL",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Polyglot Avatar : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (file-upload) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le studio de création d'avatars 3D PixelForge permet aux joueurs de téléverser des skins de personnages. La liste noire des extensions bloque .php, mais autorise les extensions alternatives interprétées par Apache (.php5, .phtml) ainsi que les doubles extensions. Téléverse un webshell PHP camouflé pour obtenir l'exécution de code à distance sur le serveur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.53.174"
+  "virtual_ip": "10.10.59.201"
 }

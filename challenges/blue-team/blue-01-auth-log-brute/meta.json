@@ -1,7 +1,10 @@
 {
   "id": "blue-01-auth-log-brute",
-  "title": "The Midnight Intrusion",
-  "category": "Blue Team",
+  "title": "SSH Brute Force Forensic Log Analysis",
+  "organization": "Apex Enterprise Linux Bastion",
+  "category": "Blue Team & SOC",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "beginner",
   "points": 100,
   "duration_min": 35,
@@ -14,17 +17,22 @@
     "brute-force",
     "incident-response"
   ],
+  "cve": "CWE-307",
+  "rating": 4.8,
+  "solves": 2750,
+  "monogram": "SOC-1",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
-    "grep",
-    "awk",
-    "cut",
-    "sort"
+    "Splunk",
+    "ELK Stack",
+    "Sigma",
+    "Suricata",
+    "Sysmon"
   ],
-  "narrative_story": "Le serveur bastion de l'entreprise a subi une tentative d'intrusion automatisée par force brute sur le port SSH. Analyse le fichier de journalisation /var/log/auth.log pour identifier l'adresse IP de l'attaquant, le nombre total de tentatives échouées, et le compte utilisateur qui a finalement été compromis.",
+  "narrative_story": "Le serveur bastion d'accès aux infrastructures critiques a subi une tentative d'intrusion automatisée par force brute sur le port SSH. Analyse le fichier de journalisation /var/log/auth.log pour identifier l'adresse IP de l'attaquant, le nombre exact de tentatives échouées, et le compte utilisateur qui a finalement été compromis.",
   "target_port": 3333,
-  "virtual_ip": "10.10.41.193"
+  "virtual_ip": "10.10.17.19"
 }

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Identification du Watermark Cobalt Strike",
+    "description": "Quel est l'identifiant de licence (Watermark) extrait de la configuration du Beacon ?",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "135486920"
+  },
+  {
+    "id": "t2",
+    "title": "Domaine de commande et contrôle (C2) (User Flag)",
+    "description": "Vers quel domaine externe le Beacon émet-il ses balises HTTP ?",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_cobalt_strike_c2_domain_identified}"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction des secrets de session & Root Flag",
+    "description": "Extrais le ticket de session et débloque le drapeau souverain.",
+    "points": 250,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{COBALT_STRIKE_BEACON_CONFIG_LSASS_EXTRACTED_2026}"
+  }
+]

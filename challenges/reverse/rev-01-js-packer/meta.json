@@ -1,16 +1,38 @@
 {
   "id": "rev-01-js-packer",
-  "title": "The Obfuscated Key",
-  "category": "Reverse",
+  "title": "Obfuscated JavaScript Loader Deobfuscation",
+  "organization": "FinTech Web Application Defense",
+  "category": "Reverse Engineering",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
-  "duration_min": 35,
+  "duration_min": 30,
   "learning_path": "systems-reversing",
   "author": "Aegis Malware Unit",
-  "tags": ["reverse", "javascript", "obfuscation", "deobfuscation", "packer"],
-  "prerequisites": ["Notions JavaScript", "Utilisation de la console DevTools (F12)"],
-  "recommended_tools": ["Chrome / Firefox DevTools", "js-beautify", "CyberChef"],
-  "narrative_story": "Un script malveillant de vérification d'activation utilise une chaîne obfusquée avec un tableau de dictionnaires décalé et une opération de décodage hexadécimal. L'attaquant pensait dissimuler la clé maîtresse sous plusieurs couches d'indirection. Désobfusque le script JavaScript client et extrait la clé de licence légitime.",
+  "tags": [
+    "reverse",
+    "javascript",
+    "deobfuscation",
+    "js-packer",
+    "ast"
+  ],
+  "cve": "CWE-312",
+  "rating": 4.8,
+  "solves": 2680,
+  "monogram": "JS",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Ghidra",
+    "radare2",
+    "IDA Free",
+    "x64dbg",
+    "pycdc"
+  ],
+  "narrative_story": "Un script client de vérification de licence a été obfusqué avec un compresseur JS Packer et un tableau de chaînes chiffrées par décalage. Utilise les outils de développement Chrome, un déobfuscateur AST ou une exécution pas-à-pas dans un bac à sable Node.js sécurisé pour nettoyer le code et trouver le mot de passe secret de validation.",
   "target_port": 3333,
-  "virtual_ip": "10.10.18.99"
+  "virtual_ip": "10.10.22.39"
 }

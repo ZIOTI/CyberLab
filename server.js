@@ -873,14 +873,28 @@ const server = http.createServer(async (req, res) => {
   // --- ROUTEUR GÉNÉRIQUE POUR TOUTES LES AUTRES CIBLES DU LAB (/targets/training/:id/*) ---
   if (pathname.startsWith('/targets/training/')) {
     const sub = pathname.replace('/targets/training/', '');
-    const chId = sub.split('/')[0];
+    const parts = sub.split('/');
+    const chId = parts[0];
+    let rest = parts.slice(1).join('/');
+    if (!rest || rest === '') rest = 'index.html';
+
     if (chId) {
-      // Chercher dans challenges/*/<chId>/src/index.html
-      const categories = ['web', 'api', 'osint', 'crypto', 'forensics', 'network', 'linux', 'reverse', 'pwn', 'cloud', 'social', 'blue'];
+      const categories = ['web', 'api', 'osint', 'crypto', 'forensics', 'network', 'linux', 'reverse', 'pwn', 'cloud', 'social', 'blue', 'b2r'];
       for (const cat of categories) {
-        const candidate = path.join(__dirname, 'challenges', cat, chId, 'src', 'index.html');
-        if (fs.existsSync(candidate)) {
-          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        const candidate = path.join(__dirname, 'challenges', cat, chId, 'src', rest);
+        if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+          const ext = path.extname(candidate).toLowerCase();
+          const mimeTypes = {
+            '.html': 'text/html; charset=utf-8',
+            '.css': 'text/css; charset=utf-8',
+            '.js': 'application/javascript; charset=utf-8',
+            '.json': 'application/json; charset=utf-8',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.svg': 'image/svg+xml',
+            '.txt': 'text/plain; charset=utf-8'
+          };
+          res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
           return fs.createReadStream(candidate).pipe(res);
         }
       }
@@ -1364,7 +1378,7 @@ server.on('error', (err) => {
     if (retryCount <= 5) {
       setTimeout(() => {
         try { server.close(); } catch (e) {}
-        server.listen(PORT, '127.0.0.1');
+        server.listen(PORT, '0.0.0.0');
       }, 1000);
     } else {
       console.error(`[FATAL] Impossible d'ouvrir le port ${PORT} après 5 tentatives.`);
@@ -1375,9 +1389,9 @@ server.on('error', (err) => {
   }
 });
 
-server.listen(PORT, '127.0.0.1', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`=================================================================`);
-  console.log(`🚀 [CYBERRANGE PRO] Serveur opérationnel sur http://127.0.0.1:${PORT}`);
-  console.log(`🛡️  5 Modules d'élite, 5 Boss Fights, Cibles réelles prêtes.`);
+  console.log(`🚀 [CYBERRANGE PRO] Serveur opérationnel sur http://localhost:${PORT} (0.0.0.0:${PORT})`);
+  console.log(`🛡️  5 Modules d'élite, 5 Boss Fights, 123 Cibles réelles prêtes.`);
   console.log(`=================================================================`);
 });

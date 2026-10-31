@@ -1,0 +1,34 @@
+[
+  {
+    "id": "t1",
+    "title": "Phase 1 : Extraction d'identifiants depuis le HeapDump",
+    "description": "Analyse le dump de mémoire JVM et trouve le mot de passe SSH de l'utilisateur svc_banking.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "SVC_BANKING_CREDS_CARVED"
+  },
+  {
+    "id": "t2",
+    "title": "Phase 2 : Accès initial SSH (User Flag)",
+    "description": "Connecte-toi en SSH sur la passerelle financière et lis le User Flag.",
+    "points": 110,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_zurich_capital_banking_ssh_foothold_ok}"
+  },
+  {
+    "id": "t3",
+    "title": "Phase 3 : Énumération des modèles PKI Active Directory (AD CS ESC1)",
+    "description": "Identifie le modèle de certificat vulnérable autorisant l'enrôlement client SAN.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "ESC1_CERTIFICATE_TEMPLATE_FOUND"
+  },
+  {
+    "id": "t4",
+    "title": "Phase 4 : Demande de certificat Administrateur & Root Master Flag",
+    "description": "Demande un certificat d'authentification en tant qu'Administrateur et ouvre le coffre-fort.",
+    "points": 200,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{ZURICH_CAPITAL_PRIVATE_BANKING_CORE_DOMAIN_ADMIN_VAULT}"
+  }
+]

@@ -1,16 +1,38 @@
 {
   "id": "web-01-robots",
-  "title": "The Forgotten Vault",
-  "category": "Web",
+  "title": "Apex Logistics Freight Tracker",
+  "organization": "Apex Global Logistics (Rotterdam)",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "beginner",
   "points": 100,
   "duration_min": 30,
   "learning_path": "web-beginner",
-  "author": "Aegis RedOps",
-  "tags": ["reconnaissance", "robots.txt", "information-disclosure", "web"],
-  "prerequisites": ["Notions de base HTTP", "Utilisation d'un navigateur ou de curl"],
-  "recommended_tools": ["Navigateur Web", "curl", "Burp Suite"],
-  "narrative_story": "Un audit externe sur le portail web de la filiale Aegis Logistics a révélé l'existence d'une zone administrative oubliée. Bien que le menu principal du site public ne contienne aucun lien direct, les administrateurs ont tenté d'interdire le référencement de cette zone sensible aux robots de recherche. Ton objectif est de cartographier les directives d'exclusion et de fouiller le répertoire dissimulé pour récupérer des sauvegardes système.",
+  "author": "RedOps Maritime Unit",
+  "tags": [
+    "recon",
+    "robots.txt",
+    "information-disclosure",
+    "logistics",
+    "http-methods"
+  ],
+  "cve": "CWE-200",
+  "rating": 4.8,
+  "solves": 2840,
+  "monogram": "APX",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "Apex Global Logistics opère la plateforme de fret maritime du terminal Maasvlakte II. Lors d'une migration d'infrastructure, l'équipe DevSecOps a laissé subsister des fichiers d'archive de configuration exposés dans des répertoires désindexés. Explore méthodiquement le serveur web, découvre les directives dissimulées aux moteurs de recherche et accède à la sauvegarde confidentielle de la base de données.",
   "target_port": 3333,
-  "virtual_ip": "10.10.12.44"
+  "virtual_ip": "10.10.53.191"
 }

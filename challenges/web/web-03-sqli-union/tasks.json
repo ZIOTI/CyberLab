@@ -2,23 +2,23 @@
   {
     "id": "t1",
     "title": "Détermination du nombre de colonnes",
-    "description": "Combien de colonnes la requête SELECT originale retourne-t-elle (en utilisant ORDER BY n --) ?",
+    "description": "Combien de colonnes la clause SELECT originale renvoie-t-elle ?",
     "points": 40,
     "task_type": "flag",
     "canonical_flag": "4"
   },
   {
     "id": "t2",
-    "title": "Énumération des tables SQLite",
-    "description": "Quel est le nom de la table administrative dissimulée dans sqlite_master ?",
+    "title": "Énumération de sqlite_master",
+    "description": "Quel est le nom de la table administrative dissimulée ?",
     "points": 50,
     "task_type": "flag",
     "canonical_flag": "admin_credentials_vault"
   },
   {
     "id": "t3",
-    "title": "Extraction du mot de passe root & Flag",
-    "description": "Extrais la clé de voûte de l'administrateur système via la clause UNION SELECT.",
+    "title": "Extraction des hashs & Flag",
+    "description": "Extrais la clé secrète de voûte via UNION SELECT.",
     "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SQLI_UNION_SELECT_SCHEMA_UNMASKED_994}"

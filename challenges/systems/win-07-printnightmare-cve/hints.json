@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Exploit PrintNightmare",
+    "cost": 20,
+    "content": "Utilise le script Python CVE-2021-34527.py avec tes identifiants de domaine."
+  }
+]

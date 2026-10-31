@@ -1,27 +1,36 @@
 {
   "id": "phish-02-credential-harvest",
-  "title": "Fake Portal Analysis",
+  "title": "Cloned SSO Credential Harvester Analysis",
+  "organization": "Phishing Threat Defense Team",
   "category": "Social Engineering",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
-  "duration_min": 45,
+  "duration_min": 30,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Social Defense",
   "tags": [
-    "phishing-source-audit",
     "social-eng",
-    "beginner"
+    "phishing",
+    "harvesting",
+    "cloned-portal",
+    "javascript"
   ],
+  "cve": "CWE-200",
+  "rating": 4.8,
+  "solves": 2540,
+  "monogram": "CLONE",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Gophish",
     "MXToolbox",
     "PhishTool"
   ],
-  "narrative_story": "Scénario opérationnel pour Fake Portal Analysis : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (phishing-source-audit) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Une campagne d'hameçonnage a diffusé un lien vers un clone parfait de la mire d'authentification Microsoft 365 de l'entreprise. En inspectant le code source de la page web malveillante (form action, scripts de capture de frappe JavaScript), découvre le serveur de commandement (C2) vers lequel les identifiants volés sont expédiés en arrière-plan.",
   "target_port": 3333,
-  "virtual_ip": "10.10.34.20"
+  "virtual_ip": "10.10.16.129"
 }

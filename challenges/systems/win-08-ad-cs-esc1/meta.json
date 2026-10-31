@@ -1,0 +1,38 @@
+{
+  "id": "win-08-ad-cs-esc1",
+  "title": "Active Directory Certificate Services (AD CS ESC1)",
+  "organization": "Cerberus Financial PKI Infrastructure",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Windows",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 85,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Windows Team",
+  "tags": [
+    "active-directory",
+    "adcs",
+    "esc1",
+    "certipy",
+    "pki"
+  ],
+  "cve": "CWE-287",
+  "rating": 5,
+  "solves": 410,
+  "monogram": "ESC1",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "L'autorité de certification d'entreprise (AD CS) publie un modèle de certificat mal configuré autorisant les utilisateurs ordinaires à demander un certificat d'authentification client (Client Authentication EKU) tout en définissant un nom alternatif de sujet arbitraire (ENROLLEE_SUPPLIES_SUBJECT - ESC1). Avec Certipy, demande un certificat au nom de Administrator et échange-le contre un ticket Kerberos TGT.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.24.167"
+}

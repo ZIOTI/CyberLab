@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Signature Crafting)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à snort-rules.",
-    "points": 60,
+    "title": "Option de règle ciblant le User-Agent",
+    "description": "Quel modificateur de contenu Suricata inspecte spécifiquement le User-Agent HTTP ?",
+    "points": 50,
     "task_type": "flag",
-    "canonical_flag": "VULN_BLUE_03_SNORT_IDS_CONFIRMED"
+    "canonical_flag": "http_user_agent"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Direction du flux réseau dans la règle",
+    "description": "Quelle directive flow garantit l'inspection du client vers le serveur ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "flow:to_server,established"
+  },
+  {
+    "id": "t3",
+    "title": "Test de la signature sur le PCAP & Flag",
+    "description": "Exécute la règle sur la capture réseau et valide le drapeau de détection.",
+    "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{SNORT_SURICATA_RULE_SIGNATURE_ALERT_FIRED}"
   }

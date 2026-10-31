@@ -1,28 +1,38 @@
 {
   "id": "crypto-07-padding-oracle",
-  "title": "CBC Bit Flipping Cipher",
-  "category": "Crypto",
+  "title": "Automated CBC Padding Oracle Decryption",
+  "organization": "SecureVault Enterprise Micro-API",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 300,
   "duration_min": 60,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "padding-oracle-cbc",
     "crypto",
-    "hard"
+    "padding-oracle",
+    "cbc",
+    "pkcs7",
+    "vaudenay"
   ],
+  "cve": "CWE-388",
+  "rating": 4.9,
+  "solves": 890,
+  "monogram": "ORACLE",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour CBC Bit Flipping Cipher : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (padding-oracle-cbc) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'API de chiffrement de cookies de SecureVault renvoie un message HTTP 500 'Invalid Padding' lorsque le bourrage PKCS#7 est corrompu, et HTTP 200 lorsqu'il est valide. En manipulant octet par octet le bloc précédent du texte chiffré (attaque de Vaudenay), interroge l'oracle pour déchiffrer l'intégralité du jeton sans posséder la clé secrète.",
   "target_port": 3333,
-  "virtual_ip": "10.10.49.37"
+  "virtual_ip": "10.10.18.69"
 }

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Custom Virtual Machine Bytecode)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à vm-bytecode-deobf.",
-    "points": 135,
+    "title": "Repérage de la table des pointeurs de fonction (Jump Table)",
+    "description": "Combien d'opcodes virtuels sont pris en charge par la boucle de dispatch ?",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_REV_08_VM_OBFUSCATION_CONFIRMED"
+    "canonical_flag": "12"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 315,
+    "title": "Désassemblage du bytecode propriétaire (User Flag)",
+    "description": "Reconstitue la suite d'instructions de la VM et obtiens le premier secret.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_vm_bytecode_dispatcher_emulated_step}"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction de la clé maîtresse & Root Flag",
+    "description": "Inverse l'algorithme de contrôle de la VM et capture le drapeau souverain.",
+    "points": 200,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{VIRTUAL_MACHINE_DISPATCHER_EMULATION_CRACKED}"
   }

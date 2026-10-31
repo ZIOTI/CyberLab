@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (WAF Filter Evasion RCE)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à command-injection-waf.",
-    "points": 90,
+    "title": "Substitution d'espace par variable système",
+    "description": "Quelle variable d'environnement Bash interne remplace un espace classique ?",
+    "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_19_CMD_INJECTION_BYPASS_CONFIRMED"
+    "canonical_flag": "${IFS}"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Contournement des noms de fichiers par jokers",
+    "description": "Comment écrire /bin/cat sans utiliser les lettres b, i, n, c, a, t ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "/???/??t"
+  },
+  {
+    "id": "t3",
+    "title": "Lecture du fichier secret & Flag",
+    "description": "Exécute l'extraction du fichier /root/flag.txt et soumets la valeur.",
+    "points": 160,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{COMMAND_INJECTION_HEX_WILDCARD_WAF_EVASION}"
   }

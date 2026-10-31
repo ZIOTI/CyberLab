@@ -1,12 +1,12 @@
 [
   {
-    "title": "Indice 1 : Commenter la fin de la requête",
-    "cost": 10,
-    "content": "Pour ignorer la vérification du mot de passe dans la requête SQL, utilise le symbole de commentaire SQL '--' ou '/*'."
+    "title": "Payload universel",
+    "cost": 5,
+    "content": "Tente la combinaison : admin' OR '1'='1' -- avec un mot de passe quelconque."
   },
   {
-    "title": "Indice 2 : Structure de la requête serveur",
-    "cost": 20,
-    "content": "La requête ressemble à : SELECT * FROM users WHERE username = '$user' AND password = '$password'. Injecter admin' -- transforme la condition en vérifiant uniquement l'existence de l'utilisateur admin."
+    "title": "Commentaires SQL",
+    "cost": 10,
+    "content": "Dans SQLite, les commentaires de fin de ligne s'écrivent avec deux tirets : --"
   }
 ]

@@ -1,0 +1,38 @@
+{
+  "id": "win-06-ad-bloodhound-dacl",
+  "title": "Active Directory BloodHound GenericAll Abuse",
+  "organization": "TitanCorp Enterprise Active Directory",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Windows",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 75,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Windows Team",
+  "tags": [
+    "active-directory",
+    "bloodhound",
+    "genericall",
+    "shadow-credentials",
+    "domain-admin"
+  ],
+  "cve": "CWE-272",
+  "rating": 5,
+  "solves": 480,
+  "monogram": "BLOOD",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "L'ingestion des données SharpHound dans BloodHound révèle un chemin d'attaque critique : le groupe 'Helpdesk Support' possède la permission GenericAll sur l'objet utilisateur 'Tier1_Admin', qui lui-même possède WriteDacl sur un contrôleur de domaine. Exploite cette chaîne de privilèges pour réinitialiser le mot de passe ou poser des Shadow Credentials (msDS-KeyCredentialLink) et devenir Domain Admin.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.45.183"
+}

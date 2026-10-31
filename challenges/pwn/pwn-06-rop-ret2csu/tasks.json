@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Fonction libc contenant les gadgets universels",
+    "description": "Quelle fonction d'initialisation standard fournit les gadgets ret2csu ?",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "__libc_csu_init"
+  },
+  {
+    "id": "t2",
+    "title": "Contrôle des trois premiers arguments (User Flag)",
+    "description": "Configure RDI, RSI et RDX via les deux gadgets consécutifs.",
+    "points": 160,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_ret2csu_universal_gadgets_chained}"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution d'execve & Root Flag",
+    "description": "Déclenche l'exécution de commande privilégiée et capture le drapeau.",
+    "points": 200,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{RET2CSU_UNIVERSAL_X64_GADGET_EXECUTION_ROOT}"
+  }
+]

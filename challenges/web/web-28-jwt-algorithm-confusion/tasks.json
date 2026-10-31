@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Extraction de la clé publique RSA",
+    "description": "Quel fichier public sur le serveur expose la clé de chiffrement (au format PEM) ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "public.pem"
+  },
+  {
+    "id": "t2",
+    "title": "Modification de l'en-tête JWT (alg: HS256)",
+    "description": "Modifie l'en-tête du token pour basculer vers l'algorithme symétrique.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "ALG_HS256_SET"
+  },
+  {
+    "id": "t3",
+    "title": "Signature avec la clé publique & Flag",
+    "description": "Signe le token forgé avec les octets de public.pem et débloque le drapeau.",
+    "points": 170,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{JWT_RS256_TO_HS256_PUBLIC_KEY_CONFUSION_PWNED}"
+  }
+]

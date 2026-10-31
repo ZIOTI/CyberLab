@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Subdomain Cartography)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à crtsh-subdomains.",
-    "points": 45,
+    "title": "Sous-domaine d'accès distant découvert",
+    "description": "Quel sous-domaine lié aux passerelles VPN apparaît dans les certificats récents ?",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_OSINT_03_DOMAIN_RECON_CONFIRMED"
+    "canonical_flag": "vpn-emea.finbank.lab"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Nom du portail d'administration interne",
+    "description": "Quel sous-domaine pointe vers la console Git interne ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "gitlab-dev.finbank.lab"
+  },
+  {
+    "id": "t3",
+    "title": "Accès au portail & Flag",
+    "description": "Rejoins le portail découvert et extrais le drapeau de cartographie.",
+    "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{CERTIFICATE_TRANSPARENCY_SUBDOMAIN_LEAK}"
   }

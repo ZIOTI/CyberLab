@@ -1,28 +1,38 @@
 {
   "id": "web-25-java-spring4shell",
-  "title": "Class Loader Binding Exploit",
-  "category": "Web",
+  "title": "Spring4Shell ClassLoader Binding RCE",
+  "organization": "CoreSpring Enterprise Microservice",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 500,
-  "duration_min": 60,
+  "duration_min": 75,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis ZeroDay Unit",
   "tags": [
-    "spring4shell-cve",
-    "web",
-    "insane"
+    "spring4shell",
+    "cve-2022-22965",
+    "java",
+    "classloader",
+    "tomcat-valve"
   ],
+  "cve": "CVE-2022-22965",
+  "rating": 5,
+  "solves": 590,
+  "monogram": "S4S",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Class Loader Binding Exploit : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (spring4shell-cve) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Une application critique de gestion des stocks tourne sur Spring Framework (versions < 5.3.18) déployée dans Apache Tomcat sous JDK 9+. En manipulant le DataBinder de Spring via des paramètres HTTP POST spécifiques (class.module.classLoader...), reconfigure le filtre de journalisation AccessLogValve de Tomcat pour déposer automatiquement un webshell JSP persistant dans le répertoire racine web.",
   "target_port": 3333,
-  "virtual_ip": "10.10.34.166"
+  "virtual_ip": "10.10.47.174"
 }

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Decryption Key Recovery from RAM)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à ransomware-ram-key.",
-    "points": 135,
+    "title": "Localisation de la clé AES dans l'espace mémoire",
+    "description": "Quel outil spécialisé recherche l'expansion de clé AES dans un dump brut ?",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_FORENSICS_09_RANSOMWARE_DECRYPT_CONFIRMED"
+    "canonical_flag": "aeskeyfind"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 315,
+    "title": "Extraction de la clé AES 256 bits (User Flag)",
+    "description": "Extrais la clé de 64 caractères hexadécimaux et déchiffre le premier fichier.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_ransomware_aes_256_key_carved_success}"
+  },
+  {
+    "id": "t3",
+    "title": "Restauration complète de la base de données & Root Flag",
+    "description": "Restaure l'archive des dossiers médicaux et capture le drapeau de libération.",
+    "points": 200,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{AES_EXPANDED_KEY_SCHEDULE_IN_RAM_CARVED_CLEARED}"
   }

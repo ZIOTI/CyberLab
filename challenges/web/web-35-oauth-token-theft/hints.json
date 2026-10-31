@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Fragment d'URL",
+    "cost": 15,
+    "content": "Le fragment d'URL n'est pas envoyé au serveur mais accessible via document.location.hash en JS."
+  }
+]

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Exfiltration via C2 Subdomains)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à dns-tunneling-iodine.",
-    "points": 90,
+    "title": "Type de requête DNS transportant la charge utile",
+    "description": "Quel type d'enregistrement DNS (A, TXT, CNAME) renvoie les blocs de réponse ?",
+    "points": 70,
     "task_type": "flag",
-    "canonical_flag": "VULN_NET_06_DNS_TUNNELING_CONFIRMED"
+    "canonical_flag": "TXT"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Nom de domaine de commandement (C2)",
+    "description": "Quel domaine de premier niveau reçoit les sous-domaines volumineux ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "tunnel.c2-command.org"
+  },
+  {
+    "id": "t3",
+    "title": "Reconstitution du fichier & Flag",
+    "description": "Concatène les fragments de chaînes et soumets le drapeau volé.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{DNS_TXT_QUERY_BASE32_C2_EXFILTRATION_CAUGHT}"
   }

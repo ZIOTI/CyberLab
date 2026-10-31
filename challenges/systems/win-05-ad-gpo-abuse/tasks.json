@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Domain Controller Policy Hijack)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à gpo-permissions-abuse.",
-    "points": 135,
+    "title": "Recherche des droits de contrôle GPO avec BloodHound",
+    "description": "Quel privilège d'écriture sur l'objet GPO permet de modifier la stratégie ?",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_WIN_05_AD_GPO_ABUSE_CONFIRMED"
+    "canonical_flag": "GenericWrite"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 315,
+    "title": "Injection d'une tâche planifiée dans la GPO (User Flag)",
+    "description": "Utilise SharpGPOAbuse pour programmer l'exécution d'un binaire avec les droits SYSTEM.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_gpo_scheduled_task_injected_successfully}"
+  },
+  {
+    "id": "t3",
+    "title": "Propagation de la GPO (gpupdate) & Root Flag",
+    "description": "Force la réplication sur le contrôleur de domaine et capture le drapeau de domaine.",
+    "points": 200,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{GPO_SCHEDULED_TASK_OVERWRITE_ENTERPRISE_ADMIN}"
   }

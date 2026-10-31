@@ -1,26 +1,18 @@
 [
   {
-    "id": "task-1",
-    "title": "Tâche 1 : Déchiffrement de la Première Couche (ROT13)",
-    "description": "Applique un décodage ROT13 sur le message chiffré intercepté. Quel est le premier mot en clair qui apparaît ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "OVJZW"
-  },
-  {
-    "id": "task-2",
-    "title": "Tâche 2 : Identification de la Clé Vigenère",
-    "description": "D'après l'en-tête de la dépêche et le lore de la plateforme, quel est le mot clé de 5 lettres utilisé pour le chiffrement de Vigenère ?",
-    "points": 30,
-    "task_type": "flag",
-    "canonical_flag": "AEGIS"
-  },
-  {
-    "id": "task-3",
-    "title": "Tâche 3 : Révélation du Message & Flag",
-    "description": "Déchiffre le texte intermédiaire avec la clé Vigenère et saisis le drapeau officiel contenu dans le message.",
+    "id": "t1",
+    "title": "Détermination du pas de décalage",
+    "description": "Quel est l'entier de décalage appliqué aux caractères alphabétiques ?",
     "points": 40,
     "task_type": "flag",
-    "canonical_flag": "CYBERLAB{ROT13_VIGENERE_AEGIS_TRANSMISSION_CRACKED}"
+    "canonical_flag": "13"
+  },
+  {
+    "id": "t2",
+    "title": "Déchiffrement du parchemin & Flag",
+    "description": "Déchiffre le texte avec CyberChef et soumets le drapeau confidentiel.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{CAESAR_ROT13_HISTORICAL_SHIFT_UNLOCKED}"
   }
 ]

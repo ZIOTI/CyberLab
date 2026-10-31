@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Disassembly 101)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à radare2-ghidra.",
-    "points": 45,
+    "title": "Adresse de l'instruction de saut conditionnel",
+    "description": "Quelle est l'adresse mémoire de l'instruction jne incriminée ?",
+    "points": 50,
     "task_type": "flag",
-    "canonical_flag": "VULN_REV_04_RADARE_SIMPLE_CONFIRMED"
+    "canonical_flag": "0x00401142"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Opcode de remplacement NOP",
+    "description": "Quel octet hexadécimal correspond à l'instruction No-Operation (NOP) en x86 ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "0x90"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution du binaire patché & Flag",
+    "description": "Patche le fichier, exécute-le et soumets le drapeau de victoire.",
+    "points": 60,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{DISASSEMBLY_RADARE2_JNZ_PATCH_BYPASS}"
   }

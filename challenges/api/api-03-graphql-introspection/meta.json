@@ -1,28 +1,38 @@
 {
   "id": "api-03-graphql-introspection",
-  "title": "Hidden Schema Discovery",
-  "category": "Mobile & API",
+  "title": "GraphQL Hidden Mutations & Schema Discovery",
+  "organization": "FinTech GraphQL Mobile Backend",
+  "category": "APIs & Microservices",
+  "target_os": "API",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis API Security",
   "tags": [
-    "graphql-introspection",
     "api",
-    "intermediate"
+    "graphql",
+    "introspection",
+    "schema-dump",
+    "mutation"
   ],
+  "cve": "CWE-200",
+  "rating": 4.8,
+  "solves": 1680,
+  "monogram": "GRAPH",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Postman",
     "Insomnia",
     "Kiterunner",
-    "Burp Suite"
+    "Burp Suite",
+    "GraphQL Voyager"
   ],
-  "narrative_story": "Scénario opérationnel pour Hidden Schema Discovery : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (graphql-introspection) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'application mobile de la banque communique avec une API GraphQL dont la documentation publique a été masquée. Cependant, la directive d'introspection est restée activée en production. Exécute une requête complète d'introspection (__schema) pour cartographier les types, les requêtes et les mutations d'administration cachées (ex: emergencyBypassAuth).",
   "target_port": 3333,
-  "virtual_ip": "10.10.13.177"
+  "virtual_ip": "10.10.10.86"
 }

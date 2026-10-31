@@ -1,0 +1,38 @@
+{
+  "id": "web-34-insecure-direct-object-id",
+  "title": "MediCloud Telemetry API BOLA & Enumerable Leak",
+  "organization": "MediCloud Hospital Health Care",
+  "category": "Web & APIs",
+  "target_os": "API",
+  "machine_type": "room",
+  "difficulty": "intermediate",
+  "points": 200,
+  "duration_min": 45,
+  "learning_path": "web-beginner",
+  "author": "Aegis API Security",
+  "tags": [
+    "api",
+    "bola",
+    "idor",
+    "health",
+    "broken-auth"
+  ],
+  "cve": "CWE-639",
+  "rating": 4.8,
+  "solves": 1420,
+  "monogram": "MEDI",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "L'API de suivi des patients MediCloud utilise des identifiants énumérables dans /api/v2/records/:uuid. En observant le motif de génération pseudo-aléatoire, prédis les enregistrements des chirurgiens en chef et extrais les données médicales réservées.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.21.122"
+}

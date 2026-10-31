@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Polyglot Avatar)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à file-upload.",
-    "points": 45,
+    "title": "Analyse de la liste noire d'extensions",
+    "description": "Téléverse un fichier .php et note le message de rejet exact.",
+    "points": 30,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_10_UPLOAD_BYPASS_CONFIRMED"
+    "canonical_flag": "EXTENSION_REJECTED"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 105,
+    "title": "Contournement par extension alternative",
+    "description": "Quelle extension alternative permet à Apache d'exécuter le script PHP ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": ".phtml"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution du webshell & Flag",
+    "description": "Accède à ton fichier dans /uploads/ et exécute la commande de lecture du drapeau.",
+    "points": 70,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{FILE_UPLOAD_EXTENSION_BYPASS_PHP5_EXECUTED}"
   }

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Empreinte JA3 du client C2 malveillant",
+    "description": "Quel hash MD5 d'empreinte TLS JA3 correspond au binaire attaquant ?",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "e7d705a3286e19ea42f587b344ee6865"
+  },
+  {
+    "id": "t2",
+    "title": "Règle d'alerte sur l'émetteur TLS (User Flag)",
+    "description": "Rédige la règle tls.fingerprint et confirme le déclenchement de l'alerte.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_suricata_ja3_fingerprint_rule_alerted}"
+  },
+  {
+    "id": "t3",
+    "title": "Blocage dynamique en mode IPS & Root Flag",
+    "description": "Active le mode IPS (drop) et capture le drapeau de confirmation.",
+    "points": 200,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{SURICATA_PERIMETER_IPS_BLOCK_C2_ACTIVE_2026}"
+  }
+]

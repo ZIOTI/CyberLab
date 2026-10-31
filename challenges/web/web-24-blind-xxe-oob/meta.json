@@ -1,28 +1,38 @@
 {
   "id": "web-24-blind-xxe-oob",
-  "title": "Out-of-Band Exfiltration DTD",
-  "category": "Web",
+  "title": "Out-of-Band DTD File Exfiltration",
+  "organization": "FinDoc Automated Analysis Portal",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "hard",
   "points": 350,
   "duration_min": 60,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
-    "blind-xxe-oob",
-    "web",
-    "hard"
+    "xxe",
+    "blind-xxe",
+    "oob",
+    "parameter-entities",
+    "dtd"
   ],
+  "cve": "CWE-611",
+  "rating": 4.8,
+  "solves": 780,
+  "monogram": "OOB",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Out-of-Band Exfiltration DTD : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (blind-xxe-oob) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le parseur financier FinDoc traite des flux XML sans renvoyer aucun contenu dans la réponse HTTP et sans message d'erreur verbeux (Blind XXE). Héberge une DTD externe malveillante sur ton serveur et exploite les entités de paramètres XML (%eval, %dtd) pour forcer le serveur à exfiltrer les données sensibles vers ton écouteur via un paramètre d'URL.",
   "target_port": 3333,
-  "virtual_ip": "10.10.15.94"
+  "virtual_ip": "10.10.50.52"
 }

@@ -1,28 +1,38 @@
 {
   "id": "crypto-06-aes-cbc-iv-reuse",
-  "title": "Two Time Pad CBC",
-  "category": "Crypto",
+  "title": "AES-CBC Reused IV Known Plaintext Attack",
+  "organization": "AeroLink Satellite Telemetry",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
   "duration_min": 45,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "aes-cbc-iv-reuse",
     "crypto",
-    "intermediate"
+    "aes-cbc",
+    "iv-reuse",
+    "xor-cancellation",
+    "telemetry"
   ],
+  "cve": "CWE-329",
+  "rating": 4.8,
+  "solves": 1320,
+  "monogram": "CBC",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour Two Time Pad CBC : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (aes-cbc-iv-reuse) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le récepteur de télémesure AeroLink chiffre les paquets de commande des drones avec AES-CBC en utilisant un vecteur d'initialisation (IV) fixe codé en dur pour toutes les sessions. Connaissant le premier bloc de texte en clair d'une commande de synchronisation standard, déchiffre le premier bloc de la commande classifiée transmise immédiatement après.",
   "target_port": 3333,
-  "virtual_ip": "10.10.21.37"
+  "virtual_ip": "10.10.40.54"
 }

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (XML Entity Harvester)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à xxe-entity.",
-    "points": 60,
+    "title": "Identification du parseur vulnérable",
+    "description": "Injecte une entité XML locale <!ENTITY test \"HELO\"> et confirme son reflet dans la réponse.",
+    "points": 50,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_12_XXE_INJECTION_CONFIRMED"
+    "canonical_flag": "ENTITY_EXPANDED"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Définition d'une entité externe SYSTEM",
+    "description": "Quelle clause XML permet d'importer une ressource système locale ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "SYSTEM"
+  },
+  {
+    "id": "t3",
+    "title": "Exfiltration de /etc/shadow & Flag",
+    "description": "Lis le fichier de configuration de l'application et soumets le token de voûte.",
+    "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{XXE_SYSTEM_FILE_ENTITY_EXPANSION_SUCCESS}"
   }

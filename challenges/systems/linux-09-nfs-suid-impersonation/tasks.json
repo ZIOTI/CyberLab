@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Option de montage manquante",
+    "description": "Quelle option fstab empêche l'exécution des bits SUID sur une partition ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "nosuid"
+  },
+  {
+    "id": "t2",
+    "title": "Exécution du wrapper & Flag",
+    "description": "Exécute bash -p et lis le drapeau de contrôle.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{LINUX_SHARED_STORAGE_NOSUID_MISSING_ROOT}"
+  }
+]

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Fake Portal Analysis)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à phishing-source-audit.",
-    "points": 30,
+    "title": "URL du script d'exfiltration en arrière-plan",
+    "description": "Vers quel endpoint externe le formulaire HTML transmet-il les identifiants ?",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_PHISH_02_CREDENTIAL_HARVEST_CONFIRMED"
+    "canonical_flag": "http://c2-collector.attacker.net/harvest.php"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 70,
+    "title": "Méthode d'interception des frappes clavier",
+    "description": "Quel écouteur d'événement JavaScript surveille la saisie du mot de passe ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "onkeyup"
+  },
+  {
+    "id": "t3",
+    "title": "Clôture du dossier & Flag",
+    "description": "Neutralise le serveur collecteur et valide le drapeau de sécurité.",
+    "points": 30,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PHISHING_CLONED_LOGIN_EXFILTRATION_POST_FOUND}"
   }

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter final-boss-master."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Stratégie globale",
+    "cost": 30,
+    "content": "Chaque étape fournit les informations nécessaires pour la suivante. Sauvegarde tes découvertes dans un carnet de notes."
   }
 ]

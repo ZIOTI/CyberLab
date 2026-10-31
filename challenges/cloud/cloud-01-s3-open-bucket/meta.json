@@ -1,28 +1,38 @@
 {
   "id": "cloud-01-s3-open-bucket",
-  "title": "The Leaking Bucket",
+  "title": "AWS S3 Leaking Financial Records",
+  "organization": "FinTech Cloud Storage Services",
   "category": "Cloud & Conteneurs",
+  "target_os": "Cloud",
+  "machine_type": "room",
   "difficulty": "beginner",
   "points": 100,
-  "duration_min": 45,
+  "duration_min": 30,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cloudsec",
   "tags": [
-    "s3-bucket",
-    "cloud",
-    "beginner"
+    "aws",
+    "s3",
+    "bucket-leak",
+    "aws-cli",
+    "cloud-storage"
   ],
+  "cve": "CWE-284",
+  "rating": 4.8,
+  "solves": 2510,
+  "monogram": "S3",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "AWS CLI",
     "ScoutSuite",
     "Pacu",
-    "Trivy"
+    "kubectl",
+    "trivy"
   ],
-  "narrative_story": "Scénario opérationnel pour The Leaking Bucket : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (s3-bucket) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Une société de conseil financier a configuré un compartiment de stockage AWS S3 sans contrôle d'accès adéquat, autorisant la lecture anonyme via l'API AWS S3. Utilise l'outil awscli avec l'option --no-sign-request pour explorer les dossiers, télécharger les fichiers de sauvegarde confidentiels et découvrir les clés privées exposées.",
   "target_port": 3333,
-  "virtual_ip": "10.10.23.96"
+  "virtual_ip": "10.10.30.70"
 }

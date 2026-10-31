@@ -1,0 +1,38 @@
+{
+  "id": "b2r-04-aerospace-telemetry",
+  "title": "AeroDynamics Flight Telemetry Gateway",
+  "organization": "AeroDynamics Satellite Ground Station",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Multi-Host",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 90,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Offensive Operations",
+  "tags": [
+    "boot2root",
+    "aerospace",
+    "scada",
+    "kernel-driver",
+    "killchain"
+  ],
+  "cve": "MULTI-CVE",
+  "rating": 5,
+  "solves": 390,
+  "monogram": "AERO-B2R",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "LinPEAS",
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
+  ],
+  "narrative_story": "Scénario complet d'intrusion dans une station terrienne de contrôle de satellites : Compromets la passerelle web d'ingénierie via une fuite de clé d'API dans un fichier JavaScript de télémétrie, pivote sur le sous-réseau interne de pilotage industriel (SCADA), exploite un pilote de périphérique vulnérable et compromets le contrôleur de vol pour débloquer les drapeaux User et Root.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.24.180"
+}

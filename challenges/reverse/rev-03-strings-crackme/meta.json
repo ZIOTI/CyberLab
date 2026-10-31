@@ -1,28 +1,38 @@
 {
   "id": "rev-03-strings-crackme",
-  "title": "Hardcoded Validation",
+  "title": "ELF Binary Hardcoded Validation Crackme",
+  "organization": "Aegis Binary Analysis Unit",
   "category": "Reverse Engineering",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
-  "duration_min": 45,
+  "duration_min": 30,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Malware Unit",
   "tags": [
-    "strings-elf",
     "reverse",
-    "beginner"
+    "elf",
+    "strings",
+    "crackme",
+    "binary"
   ],
+  "cve": "CWE-312",
+  "rating": 4.8,
+  "solves": 2840,
+  "monogram": "ELF",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Ghidra",
     "radare2",
     "IDA Free",
-    "x64dbg"
+    "x64dbg",
+    "pycdc"
   ],
-  "narrative_story": "Scénario opérationnel pour Hardcoded Validation : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (strings-elf) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Un exécutable Linux ELF x86_64 demande un mot de passe d'activation. L'ingénieur novice a stocké la clé de validation directement en clair dans la section de données en lecture seule (.rodata) du binaire. Utilise l'utilitaire strings ou l'explorateur Ghidra pour extraire la chaîne secrète sans exécuter le fichier.",
   "target_port": 3333,
-  "virtual_ip": "10.10.35.121"
+  "virtual_ip": "10.10.28.59"
 }

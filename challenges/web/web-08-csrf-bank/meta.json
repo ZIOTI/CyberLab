@@ -1,28 +1,38 @@
 {
   "id": "web-08-csrf-bank",
-  "title": "Phantom Wire Transfer",
-  "category": "Web",
+  "title": "Novus Pay European NeoBank",
+  "organization": "Novus Pay NeoBank SAS",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
-  "duration_min": 45,
+  "duration_min": 40,
   "learning_path": "web-beginner",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Websec",
   "tags": [
     "csrf",
-    "web",
-    "easy"
+    "cross-site-request-forgery",
+    "banking",
+    "samesite",
+    "financial"
   ],
+  "cve": "CWE-352",
+  "rating": 4.8,
+  "solves": 1890,
+  "monogram": "NOV",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Burp Suite",
     "curl",
     "sqlmap",
-    "ffuf"
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "Scénario opérationnel pour Phantom Wire Transfer : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (csrf) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "L'application bancaire Novus Pay permet des virements SEPA instantanés via des requêtes HTTP POST sans jeton CSRF et avec des cookies configurés en SameSite=None. Crée une page HTML malveillante qui déclenche automatiquement un virement de 5 000 € vers le compte d'un attaquant dès qu'un utilisateur connecté visite le lien piégé.",
   "target_port": 3333,
-  "virtual_ip": "10.10.33.72"
+  "virtual_ip": "10.10.59.7"
 }

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Fichier noyau de gestion des core dumps",
+    "description": "Quel fichier dans /proc/sys/kernel contrôle le programme exécuté lors d'un crash ?",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "core_pattern"
+  },
+  {
+    "id": "t2",
+    "title": "Configuration du gestionnaire de crash (User Flag)",
+    "description": "Écris le chemin du script dans core_pattern et obtiens le premier token.",
+    "points": 160,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_core_pattern_handler_registered_ok}"
+  },
+  {
+    "id": "t3",
+    "title": "Déclenchement du SIGSEGV & Root Flag",
+    "description": "Provoque un crash mémoire et obtiens le shell root sur l'hôte.",
+    "points": 200,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{DOCKER_CORE_PATTERN_KERNEL_HOST_BREAKOUT}"
+  }
+]

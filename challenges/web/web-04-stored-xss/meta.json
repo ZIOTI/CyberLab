@@ -1,7 +1,10 @@
 {
   "id": "web-04-stored-xss",
-  "title": "Comment Hijack",
-  "category": "Web",
+  "title": "DevSphere Developer RFC Forum",
+  "organization": "DevSphere Software Community",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
   "difficulty": "easy",
   "points": 150,
   "duration_min": 45,
@@ -11,18 +14,25 @@
     "xss",
     "stored-xss",
     "cookie-theft",
-    "javascript"
+    "javascript",
+    "headless-bot"
   ],
+  "cve": "CWE-79",
+  "rating": 4.7,
+  "solves": 1980,
+  "monogram": "DEV",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
-    "DevTools",
     "Burp Suite",
-    "Webhook.site"
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
   ],
-  "narrative_story": "L'espace d'évaluation des clients sur la plateforme de support Aegis ne filtre pas correctement les balises HTML dans le corps des messages. Un bot administrateur consulte régulièrement les nouveaux commentaires. Exploite cette faille XSS stockée pour forcer l'administrateur à t'envoyer son jeton de session chiffré.",
+  "narrative_story": "DevSphere héberge un forum collaboratif pour la révision de propositions techniques (RFC). Le moteur de rendu Markdown filtre imparfaitement les balises HTML dans les commentaires. Un bot administrateur headless consulte automatiquement chaque message publié. Conçois une charge utile XSS stockée capable d'exfiltrer le cookie de session de l'administrateur vers ton écouteur.",
   "target_port": 3333,
-  "virtual_ip": "10.10.17.174"
+  "virtual_ip": "10.10.29.157"
 }

@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Container Host Takeover)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à docker-sock-mount.",
-    "points": 90,
+    "title": "Détection du socket Docker monté",
+    "description": "Quel fichier spécial dans /var/run permet d'interagir avec le démon Docker de l'hôte ?",
+    "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_CLOUD_03_DOCKER_SOCKET_ESCAPE_CONFIRMED"
+    "canonical_flag": "docker.sock"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Instanciation d'un conteneur avec volume racine (User Flag)",
+    "description": "Monte la racine de l'hôte dans un nouveau conteneur et obtiens le premier drapeau.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_docker_socket_mounted_volume_accessed}"
+  },
+  {
+    "id": "t3",
+    "title": "Chroot sur l'hôte & Root Flag",
+    "description": "Exécute chroot /mnt/host bash pour devenir root sur la machine physique hôte.",
+    "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{DOCKER_SOCK_MOUNTED_CHROOT_HOST_BREAKOUT}"
   }

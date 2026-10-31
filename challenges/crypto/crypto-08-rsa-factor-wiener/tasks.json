@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Small Private Exponent d)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à wiener-attack-d.",
-    "points": 90,
+    "title": "Condition de l'attaque de Wiener",
+    "description": "Quelle approximation relie l'exposant public e, la clé privée d et le module N ?",
+    "points": 80,
     "task_type": "flag",
-    "canonical_flag": "VULN_CRYPTO_08_RSA_FACTOR_WIENER_CONFIRMED"
+    "canonical_flag": "e/N ~ k/d"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Factorisation du module N",
+    "description": "Retrouve les facteurs premiers p et q via l'algorithme des fractions continues.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "FACTOR_N_SUCCESS"
+  },
+  {
+    "id": "t3",
+    "title": "Déchiffrement du secret d'État & Flag",
+    "description": "Reconstitue la clé privée RSA et valide le drapeau.",
+    "points": 120,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{WIENER_ATTACK_CONTINUED_FRACTIONS_FACTOR_N}"
   }

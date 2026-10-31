@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (RAM Footprint)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à volatility-memdump.",
+    "title": "PID du processus malveillant injecté",
+    "description": "Quel processus anormal n'a pas de processus parent valide ?",
     "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_FORENSICS_04_MEMORY_DUMP_CONFIRMED"
+    "canonical_flag": "3844"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Nom du fichier binaire exécuté",
+    "description": "Quel exécutable a été invoqué depuis le répertoire AppData\\Local\\Temp ?",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "beacon_x64.exe"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction de la commande & Flag",
+    "description": "Extrais l'historique des commandes avec windows.cmdline et valide le drapeau.",
+    "points": 80,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{MEMORY_DUMP_VOLATILITY_HASHES_EXTRACTED}"
   }

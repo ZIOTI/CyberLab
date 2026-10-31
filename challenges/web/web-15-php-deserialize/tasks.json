@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Magic Method RCE)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à php-unserialize.",
-    "points": 60,
+    "title": "Identification de la méthode magique déclencheuse",
+    "description": "Quelle méthode magique PHP s'exécute automatiquement lors de la destruction d'un objet ?",
+    "points": 40,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_15_PHP_DESERIALIZE_CONFIRMED"
+    "canonical_flag": "__destruct"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 140,
+    "title": "Sérialisation de la charge utile",
+    "description": "Quelle chaîne sérialisée permet de corrompre l'attribut de chemin de journalisation ?",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "O:13:\"LoggerManager\":1:{s:8:\"filePath\";s:12:\"webshell.php\";}"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution de code & Flag",
+    "description": "Déclenche la chaîne POP et exécute la lecture du drapeau.",
+    "points": 100,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{PHP_DESERIALIZE_MAGIC_DESTRUCT_POP_CHAIN}"
   }

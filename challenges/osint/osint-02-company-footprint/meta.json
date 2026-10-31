@@ -1,7 +1,10 @@
 {
   "id": "osint-02-company-footprint",
-  "title": "Ghost Corporation",
-  "category": "OSINT",
+  "title": "Ghost Corporation Wayback Footprinting",
+  "organization": "Aegis Corporate Reconnaissance",
+  "category": "OSINT & Recon",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "beginner",
   "points": 100,
   "duration_min": 35,
@@ -10,21 +13,26 @@
   "tags": [
     "osint",
     "footprinting",
-    "whois",
+    "wayback",
     "dns",
     "archive"
   ],
+  "cve": "CWE-200",
+  "rating": 4.8,
+  "solves": 2450,
+  "monogram": "GHOST",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
-    "whois",
-    "dig",
-    "Wayback Machine",
-    "Google Dorks"
+    "Spiderfoot",
+    "theHarvester",
+    "Maltego",
+    "Google Dorks",
+    "Wayback"
   ],
-  "narrative_story": "L'entreprise fictive \"Kestrel Aerospace\" semble avoir dissimulé un incident survenu en 2023. En inspectant les enregistrements DNS historiques, les archives web Wayback simulées et les certificats numériques, retrouve le nom du sous-domaine de pré-production qui a fait l'objet d'une fuite.",
+  "narrative_story": "L'entreprise 'Kestrel Aerospace' semble avoir effacé un site de pré-production après un incident de sécurité en 2023. En inspectant les archives web simulées (Wayback Machine), les enregistrements DNS historiques et les certificats numériques, retrouve le nom du sous-domaine de test qui a fait l'objet d'une fuite.",
   "target_port": 3333,
-  "virtual_ip": "10.10.15.158"
+  "virtual_ip": "10.10.34.162"
 }

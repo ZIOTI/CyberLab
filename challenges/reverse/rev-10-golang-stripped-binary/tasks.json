@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Table interne du runtime Go contenant les symboles",
+    "description": "Quelle table de métadonnées interne Go permet de récupérer les noms de fonctions ?",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "pclntab"
+  },
+  {
+    "id": "t2",
+    "title": "Nom de la fonction d'exfiltration principale (User Flag)",
+    "description": "Quelle fonction dans le package main déclenche l'appel réseau ?",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "main.exfiltrateCredentials"
+  },
+  {
+    "id": "t3",
+    "title": "Déchiffrement des flux & Root Flag",
+    "description": "Extrais la clé de session et valide le drapeau de contrôle.",
+    "points": 250,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{GOLANG_STRIPPED_PCLNTAB_FUNCTIONS_RESTORED_2026}"
+  }
+]

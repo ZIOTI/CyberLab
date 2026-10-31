@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
+    "title": "Script Turbo Intruder",
     "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter race-condition."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Utilise le template race-single-packet-attack.py dans Turbo Intruder pour synchroniser les requêtes TCP au millième de seconde."
   }
 ]

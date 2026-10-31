@@ -1,28 +1,38 @@
 {
   "id": "crypto-08-rsa-factor-wiener",
-  "title": "Small Private Exponent d",
-  "category": "Crypto",
+  "title": "Wiener Continued Fractions Attack on RSA",
+  "organization": "Aegis Cryptographic Labs",
+  "category": "Cryptographie",
+  "target_os": "Linux",
+  "machine_type": "challenge",
   "difficulty": "hard",
   "points": 300,
-  "duration_min": 60,
+  "duration_min": 55,
   "learning_path": "crypto-osint-core",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cipher Office",
   "tags": [
-    "wiener-attack-d",
     "crypto",
-    "hard"
+    "rsa",
+    "wiener-attack",
+    "continued-fractions",
+    "small-d"
   ],
+  "cve": "CWE-326",
+  "rating": 4.9,
+  "solves": 760,
+  "monogram": "WIEN",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "CyberChef",
     "Hashcat",
     "John the Ripper",
-    "SageMath"
+    "SageMath",
+    "xortool"
   ],
-  "narrative_story": "Scénario opérationnel pour Small Private Exponent d : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (wiener-attack-d) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Pour accélérer les signatures cryptographiques de ses serveurs, un ingénieur a sélectionné un exposant privé d très court (d < (1/3) * N^(1/4)). Grâce au théorème de Wiener basé sur le développement en fractions continues de e/N, retrouve l'exposant privé d et factorise le module RSA N pour déchiffrer la clé de chiffrement.",
   "target_port": 3333,
-  "virtual_ip": "10.10.29.124"
+  "virtual_ip": "10.10.46.71"
 }

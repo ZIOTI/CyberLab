@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (WebAssembly Logic Decompile)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à wasm2wat-disasm.",
-    "points": 90,
+    "title": "Outil de conversion binaire vers texte WASM",
+    "description": "Quel utilitaire de la suite WABT transforme un fichier .wasm en code .wat lisible ?",
+    "points": 70,
     "task_type": "flag",
-    "canonical_flag": "VULN_REV_07_WASM_REVERSE_CONFIRMED"
+    "canonical_flag": "wasm2wat"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Nom de la fonction de validation exportée",
+    "description": "Quelle fonction est déclarée dans la section (export \"...\") du module WASM ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "validate_pin"
+  },
+  {
+    "id": "t3",
+    "title": "Reconstitution du PIN & Flag",
+    "description": "Retrouve la valeur secrète du PIN et soumets le drapeau de validation.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{WASM2WAT_BYTECODE_STACK_MACHINE_KEY_PARSED}"
   }

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "title": "Flag de configuration de modèle vulnérable (ESC1)",
+    "description": "Quel drapeau de certificat permet à l'enrôleur de spécifier le SAN ?",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "ENROLLEE_SUPPLIES_SUBJECT"
+  },
+  {
+    "id": "t2",
+    "title": "Demande de certificat au nom d'Administrator (User Flag)",
+    "description": "Exécute Certipy req pour générer le certificat PFX de l'admin.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_adcs_esc1_administrator_pfx_issued}"
+  },
+  {
+    "id": "t3",
+    "title": "Authentification PKINIT & Domain Admin Root Flag",
+    "description": "Échange le certificat contre le TGT administrateur et capture le drapeau souverain.",
+    "points": 250,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{ADCS_ESC1_SAN_IMPERSONATION_DOMAIN_ADMIN_VAULT}"
+  }
+]

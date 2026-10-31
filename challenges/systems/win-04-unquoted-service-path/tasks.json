@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Space Injection Privilege)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à unquoted-service.",
-    "points": 90,
+    "title": "Énumération des services mal configurés avec WMI",
+    "description": "Quelle commande wmic ou PowerShell permet de repérer les services sans guillemets ?",
+    "points": 70,
     "task_type": "flag",
-    "canonical_flag": "VULN_WIN_04_UNQUOTED_SERVICE_PATH_CONFIRMED"
+    "canonical_flag": "wmic service get name,pathname"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Emplacement du fichier binaire pirate",
+    "description": "Quel nom de fichier binaire placé dans C:\\Program Files\\ sera exécuté en premier ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "Aegis.exe"
+  },
+  {
+    "id": "t3",
+    "title": "Redémarrage du service & SYSTEM Flag",
+    "description": "Déclenche le redémarrage du service et capture le drapeau SYSTEM.",
+    "points": 150,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{UNQUOTED_SERVICE_PATH_EXE_HIJACK_SYSTEM_ELEV}"
   }

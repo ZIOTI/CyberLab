@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Use-After-Free Fastbin Poisoning)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à heap-uaf-tcache.",
-    "points": 150,
+    "title": "Détection du pointeur suspendu (Dangling Pointer)",
+    "description": "Libère un objet et accède à ses champs pour confirmer le Use-After-Free.",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_PWN_05_HEAP_UAF_CONFIRMED"
+    "canonical_flag": "UAF_TRIGGERED_SUCCESS"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 350,
+    "title": "Corruption du pointeur forward tcache (User Flag)",
+    "description": "Modifie le pointeur fd d'un bloc libéré pour forcer une allocation ciblée.",
+    "points": 150,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_tcache_poisoning_arbitrary_chunk_allocated}"
+  },
+  {
+    "id": "t3",
+    "title": "Écrasement de __free_hook & Root Flag",
+    "description": "Écris l'adresse de system() dans __free_hook et déclenche un free() pour obtenir root.",
+    "points": 250,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{HEAP_UAF_FASTBIN_TCACHE_POISON_ALLOC_STACK}"
   }

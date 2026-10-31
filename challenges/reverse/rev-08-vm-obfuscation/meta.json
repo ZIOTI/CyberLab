@@ -1,28 +1,38 @@
 {
   "id": "rev-08-vm-obfuscation",
-  "title": "Custom Virtual Machine Bytecode",
+  "title": "Custom Virtual Machine Bytecode Dispatcher",
+  "organization": "Commercial DRM Licensing Core",
   "category": "Reverse Engineering",
+  "target_os": "Linux",
+  "machine_type": "machine",
   "difficulty": "insane",
   "points": 450,
-  "duration_min": 60,
+  "duration_min": 80,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Malware Unit",
   "tags": [
-    "vm-bytecode-deobf",
     "reverse",
-    "insane"
+    "vm-obfuscation",
+    "virtual-machine",
+    "bytecode",
+    "dispatcher"
   ],
+  "cve": "CWE-20",
+  "rating": 5,
+  "solves": 480,
+  "monogram": "VM",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "Ghidra",
     "radare2",
     "IDA Free",
-    "x64dbg"
+    "x64dbg",
+    "pycdc"
   ],
-  "narrative_story": "Scénario opérationnel pour Custom Virtual Machine Bytecode : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (vm-bytecode-deobf) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Le binaire intègre un moteur de machine virtuelle personnalisée (VM-based Obfuscation) avec un dispatcheur d'opcodes sur boucle switch-case. Les instructions x86 natives ont été traduites dans un bytecode propriétaire non documenté opérant sur des registres virtuels (V_REG0 à V_REG7). Écris un émulateur ou un désassembleur pour cartographier les 12 opcodes de la VM et extraire la clé de licence.",
   "target_port": 3333,
-  "virtual_ip": "10.10.12.134"
+  "virtual_ip": "10.10.16.166"
 }

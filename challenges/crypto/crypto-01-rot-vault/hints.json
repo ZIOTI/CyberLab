@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Recette CyberChef",
-    "cost": 10,
-    "content": "Charge le fichier dans CyberChef et empile les opérations : 1. 'ROT13' (amount: 13), 2. 'Vigenère Decode' avec la clé 'AEGIS'."
-  },
-  {
-    "title": "Indice 2 : Inversion des opérations",
-    "cost": 20,
-    "content": "Si le chiffrement a été fait dans l'ordre : Plaintext -> Vigenere -> ROT13, le déchiffrement doit s'opérer dans l'ordre inverse : Ciphertext -> ROT13 -> Vigenere Decode."
+    "title": "Recette CyberChef",
+    "cost": 5,
+    "content": "Utilise la formule ROT13 avec amount 13 dans CyberChef."
   }
 ]

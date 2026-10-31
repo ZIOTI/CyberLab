@@ -1,0 +1,18 @@
+[
+  {
+    "id": "t1",
+    "title": "Détection du fragment d'accès",
+    "description": "Confirme le renvoi du jeton d'accès dans le fragment # de l'URL.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "ACCESS_TOKEN_FRAGMENT_LEAK"
+  },
+  {
+    "id": "t2",
+    "title": "Détournement de jeton & Flag",
+    "description": "Capture le jeton d'administration et soumets le drapeau de compromission.",
+    "points": 240,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{OAUTH_IMPLICIT_GRANT_FRAGMENT_TOKEN_STOLEN}"
+  }
+]

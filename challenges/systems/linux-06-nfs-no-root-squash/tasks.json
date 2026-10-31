@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Remote Root Mount Escape)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à nfs-no-root-squash.",
-    "points": 90,
+    "title": "Analyse du fichier /etc/exports",
+    "description": "Quelle directive d'export NFS dangereuse désactive la rétrogradation de root ?",
+    "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_LINUX_06_NFS_NO_ROOT_SQUASH_CONFIRMED"
+    "canonical_flag": "no_root_squash"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Dépôt du binaire SUID",
+    "description": "Compile un binaire avec setuid(0) et attribue-lui les permissions 4755.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "SUID_PLANTED_NFS"
+  },
+  {
+    "id": "t3",
+    "title": "Exécution sur la cible & Flag",
+    "description": "Exécute le binaire sur la cible et capture le drapeau super-utilisateur.",
+    "points": 160,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{NFS_NO_ROOT_SQUASH_SUID_BASH_PLANTED_ROOT}"
   }

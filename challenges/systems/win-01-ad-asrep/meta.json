@@ -1,28 +1,38 @@
 {
   "id": "win-01-ad-asrep",
-  "title": "Kerberos Without Preauth",
-  "category": "Linux & Windows",
+  "title": "Kerberos AS-REP Roasting Without Preauth",
+  "organization": "NorthCorp Active Directory Forest",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Windows",
+  "machine_type": "room",
   "difficulty": "intermediate",
   "points": 200,
-  "duration_min": 45,
+  "duration_min": 50,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Windows Team",
   "tags": [
+    "active-directory",
+    "kerberos",
     "asreproast",
-    "systems",
-    "intermediate"
+    "impacket",
+    "hashcat"
   ],
+  "cve": "CWE-287",
+  "rating": 4.9,
+  "solves": 1720,
+  "monogram": "ASREP",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "LinPEAS",
-    "GTFOBins",
-    "PowerUp",
-    "Mimikatz"
+    "WinPEAS",
+    "BloodHound",
+    "Mimikatz",
+    "GTFOBins"
   ],
-  "narrative_story": "Scénario opérationnel pour Kerberos Without Preauth : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (asreproast) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Dans le domaine Active Directory de NorthCorp, le compte de service svc_sql_backup a été configuré avec l'attribut DONT_REQ_PREAUTH (pré-authentification Kerberos désactivée). Utilise GetNPUsers.py d'Impacket pour demander un ticket AS-REP sans connaître le mot de passe, puis casse le hachage krb5asrep hors-ligne avec Hashcat.",
   "target_port": 3333,
-  "virtual_ip": "10.10.19.104"
+  "virtual_ip": "10.10.37.8"
 }

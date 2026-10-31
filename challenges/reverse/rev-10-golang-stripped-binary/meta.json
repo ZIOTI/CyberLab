@@ -1,0 +1,38 @@
+{
+  "id": "rev-10-golang-stripped-binary",
+  "title": "Stripped Go Binary Symbol Reconstruction",
+  "organization": "Modern Cloud Native Malware Lab",
+  "category": "Reverse Engineering",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 500,
+  "duration_min": 80,
+  "learning_path": "systems-reversing",
+  "author": "Aegis Malware Unit",
+  "tags": [
+    "reverse",
+    "golang",
+    "stripped",
+    "pclntab",
+    "ghidra"
+  ],
+  "cve": "CWE-20",
+  "rating": 5,
+  "solves": 450,
+  "monogram": "GO",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Ghidra",
+    "radare2",
+    "IDA Free",
+    "x64dbg",
+    "pycdc"
+  ],
+  "narrative_story": "Un binaire compilé en Go 1.21 a été débarrassé de tous ses symboles standards (stripped binaire). La convention d'appel inhabituelle de Go et l'absence de tables de symboles standard compliquent le désassemblage. En analysant la table interne pclntab (PC-Line Table) propre au runtime Go, restaure les noms de fonctions, les délimiteurs de paquets et la fonction principale main.main() pour identifier l'implant malveillant.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.46.195"
+}

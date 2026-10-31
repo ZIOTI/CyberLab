@@ -1,12 +1,7 @@
 [
   {
-    "title": "Indice 1 : Vecteur d'attaque",
-    "cost": 15,
-    "content": "Recherche la documentation officielle et les techniques éprouvées pour exploiter printf-format-string."
-  },
-  {
-    "title": "Indice 2 : Format du drapeau",
-    "cost": 25,
-    "content": "Le drapeau respecte le format standard : CYBERLAB{...}."
+    "title": "Position sur la pile",
+    "cost": 20,
+    "content": "Teste AAAA%1$x, AAAA%2$x ... pour identifier à quel index ton buffer d'entrée apparaît sur la pile."
   }
 ]

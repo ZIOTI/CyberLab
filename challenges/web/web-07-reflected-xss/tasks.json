@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Mirror Mirror)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à reflected-xss.",
+    "title": "Détection du paramètre réfléchi",
+    "description": "Quel paramètre URL GET est réinjecté directement dans le corps de la page ?",
     "points": 30,
     "task_type": "flag",
-    "canonical_flag": "VULN_WEB_07_REFLECTED_XSS_CONFIRMED"
+    "canonical_flag": "q"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 70,
+    "title": "Échappement du contexte de recherche",
+    "description": "Injecte un payload déclenchant un événement onerror sans balise <script>.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "XSS_REFLECTED_FIRED"
+  },
+  {
+    "id": "t3",
+    "title": "Capture de session & Flag",
+    "description": "Valide l'exécution du script et récupère le drapeau de contrôle.",
+    "points": 40,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{REFLECTED_XSS_QUERY_PARAM_INJECT_SUCCESS}"
   }

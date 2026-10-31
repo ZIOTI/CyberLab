@@ -1,17 +1,25 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Replication Rights Abused)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à ad-dcsync-mimikatz.",
-    "points": 90,
+    "title": "Énumération des droits DACL étendus",
+    "description": "Quel privilège d'annuaire permet d'effectuer une synchronisation DCSync ?",
+    "points": 70,
     "task_type": "flag",
-    "canonical_flag": "VULN_WIN_03_AD_DCSYNC_CONFIRMED"
+    "canonical_flag": "DS-Replication-Get-Changes-All"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 210,
+    "title": "Réplication du hash NTLM Administrateur (User Flag)",
+    "description": "Extrais le hachage NTLM du compte Administrateur du domaine.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_dcsync_administrator_ntlm_hash_dumped}"
+  },
+  {
+    "id": "t3",
+    "title": "Extraction du compte KRBTGT & Root Flag",
+    "description": "Récupère le hachage du compte KRBTGT pour forger un Golden Ticket.",
+    "points": 130,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{MIMIKATZ_DCSYNC_KRBTGT_NTLM_HASH_REPLICATED}"
   }

@@ -1,16 +1,16 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (Two Time Pad CBC)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à aes-cbc-iv-reuse.",
+    "title": "Vulnérabilité de l'IV fixe",
+    "description": "Quelle propriété mathématique du premier bloc CBC est rompue par la réutilisation de l'IV ?",
     "points": 60,
     "task_type": "flag",
-    "canonical_flag": "VULN_CRYPTO_06_AES_CBC_IV_REUSE_CONFIRMED"
+    "canonical_flag": "C1 = E(P1 XOR IV)"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
+    "title": "Annulation XOR & Flag",
+    "description": "Combine les textes chiffrés par XOR et extrait les coordonnées confidentielles.",
     "points": 140,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{AES_CBC_FIXED_IV_KNOWN_PLAINTEXT_XOR_DECRYPT}"

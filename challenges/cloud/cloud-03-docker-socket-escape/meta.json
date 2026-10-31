@@ -1,28 +1,38 @@
 {
   "id": "cloud-03-docker-socket-escape",
-  "title": "Container Host Takeover",
+  "title": "Docker Socket Mount Host Escape",
+  "organization": "Containerized Microservices Cluster",
   "category": "Cloud & Conteneurs",
+  "target_os": "Docker",
+  "machine_type": "machine",
   "difficulty": "hard",
   "points": 300,
-  "duration_min": 60,
+  "duration_min": 55,
   "learning_path": "systems-reversing",
-  "author": "Aegis Offensive Operations",
+  "author": "Aegis Cloudsec",
   "tags": [
-    "docker-sock-mount",
-    "cloud",
-    "hard"
+    "docker",
+    "container-escape",
+    "docker-sock",
+    "chroot",
+    "privesc"
   ],
+  "cve": "CWE-250",
+  "rating": 5,
+  "solves": 890,
+  "monogram": "DOCK",
   "prerequisites": [
-    "Connaissances fondamentales en sécurité informatique",
-    "Utilisation de la ligne de commande Linux / Web"
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
   ],
   "recommended_tools": [
     "AWS CLI",
     "ScoutSuite",
     "Pacu",
-    "Trivy"
+    "kubectl",
+    "trivy"
   ],
-  "narrative_story": "Scénario opérationnel pour Container Host Takeover : Une infrastructure critique sous surveillance nécessite un audit de sécurité approfondi. Exploite la faille identifiée (docker-sock-mount) dans un environnement local simulé et sécurisé pour débloquer les privilèges requis et extraire le drapeau de contrôle.",
+  "narrative_story": "Dans un conteneur applicatif, l'administrateur a monté le socket Docker de l'hôte (/var/run/docker.sock) pour permettre au conteneur de gérer d'autres images. Utilise le binaire docker ou des requêtes HTTP directes sur le socket UNIX pour instancier un nouveau conteneur montant le système de fichiers racine de l'hôte (/mnt/host) et échapper complètement au bac à sable.",
   "target_port": 3333,
-  "virtual_ip": "10.10.59.44"
+  "virtual_ip": "10.10.11.157"
 }

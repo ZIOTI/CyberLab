@@ -1,17 +1,33 @@
 [
   {
     "id": "t1",
-    "title": "Tâche 1 : Reconnaissance & Détection de la surface (The Final Boss: Master Kill Chain)",
-    "description": "Analyse l'environnement cible et confirme l'existence de la vulnérabilité liée à final-boss-master.",
-    "points": 150,
+    "title": "Étape 1 : Accès initial sur l'application bancaire",
+    "description": "Enchaîne les failles web pour déposer ton premier implant.",
+    "points": 100,
     "task_type": "flag",
-    "canonical_flag": "VULN_B2R_03_THE_MASTER_VAULT_CONFIRMED"
+    "canonical_flag": "STAGE_1_WEB_FOOTHOLD_CLEAR"
   },
   {
     "id": "t2",
-    "title": "Tâche 2 : Exploitation & Capture du Flag",
-    "description": "Mène à bien l'exploitation technique et valide le drapeau final.",
-    "points": 350,
+    "title": "Étape 2 : Évasion de bac à sable (User Flag)",
+    "description": "Sors du conteneur d'exécution et obtiens un accès sur l'hôte.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "CYBERLAB{user_master_vault_container_escaped_shell}"
+  },
+  {
+    "id": "t3",
+    "title": "Étape 3 : Compromission du domaine Active Directory",
+    "description": "Pivote sur le contrôleur de domaine et récupère les identifiants Enterprise Admin.",
+    "points": 100,
+    "task_type": "flag",
+    "canonical_flag": "STAGE_3_DOMAIN_ADMIN_REACHED"
+  },
+  {
+    "id": "t4",
+    "title": "Étape 4 : Déverrouillage de la chambre forte & Master Flag",
+    "description": "Extraits la clé de chiffrement racine de la chambre forte.",
+    "points": 200,
     "task_type": "flag",
     "canonical_flag": "CYBERLAB{CYBERRANGE_OFFENSIVE_MASTER_CHALLENGE_CONQUERED_2026}"
   }

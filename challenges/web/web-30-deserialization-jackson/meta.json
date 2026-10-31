@@ -1,0 +1,38 @@
+{
+  "id": "web-30-deserialization-jackson",
+  "title": "Enterprise Logistics Java Jackson Polymorphism",
+  "organization": "EuroFreight Global ERP Integration",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "machine",
+  "difficulty": "insane",
+  "points": 450,
+  "duration_min": 70,
+  "learning_path": "web-beginner",
+  "author": "Aegis JavaSec",
+  "tags": [
+    "deserialization",
+    "jackson",
+    "java",
+    "cve-2019-12384",
+    "logback"
+  ],
+  "cve": "CVE-2019-12384",
+  "rating": 4.9,
+  "solves": 540,
+  "monogram": "JCK",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "L'API de facturation EuroFreight utilise la bibliothèque Jackson-databind avec le typage polymorphique activé (enableDefaultTyping). En soumettant une charge utile JSON ciblant la classe ch.qos.logback.core.db.DriverManagerConnectionSource, force le serveur Java à charger une base de données distante H2 et exécuter du code SQL malveillant pour obtenir un shell distant.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.23.91"
+}

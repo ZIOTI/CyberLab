@@ -1,0 +1,38 @@
+{
+  "id": "web-32-ssti-twig-math",
+  "title": "Twig Template Injection Remote Code Execution",
+  "organization": "BlogCraft Publishing Engine",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 300,
+  "duration_min": 50,
+  "learning_path": "web-beginner",
+  "author": "Aegis Websec",
+  "tags": [
+    "ssti",
+    "twig",
+    "php",
+    "template-injection",
+    "rce"
+  ],
+  "cve": "CWE-1336",
+  "rating": 4.8,
+  "solves": 910,
+  "monogram": "TWIG",
+  "prerequisites": [
+    "Connaissances méthodologiques en test d'intrusion offensif",
+    "Maîtrise des outils de reconnaissance (Nmap, Burp Suite, Terminal Linux)"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "sqlmap",
+    "ffuf",
+    "Turbo Intruder"
+  ],
+  "narrative_story": "Le CMS BlogCraft utilise Twig pour formater les profils auteurs. En utilisant la fonction _self.env.registerUndefinedFilterCallback('system') ou des filtres de closure, exécute des commandes shell sur le serveur web.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.49.175"
+}
