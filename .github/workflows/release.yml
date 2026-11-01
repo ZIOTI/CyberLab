@@ -58,7 +58,7 @@ jobs:
           Copy-Item -Recurse -Force docs dist\CyberRange-PRO\
           Copy-Item -Recurse -Force scripts dist\CyberRange-PRO\
           Copy-Item -Recurse -Force .github dist\CyberRange-PRO\
-          Copy-Item -Force test_suite.js, test_edge_cases_phase3.js, test_edge_cases_phase4.js, test_edge_cases_phase5.js dist\CyberRange-PRO\
+          Copy-Item -Force test_suite.js, test_flags.js, test_edge_cases_phase3.js, test_edge_cases_phase4.js, test_edge_cases_phase5.js dist\CyberRange-PRO\
           Copy-Item -Force CyberRange-PRO.exe dist\CyberRange-PRO\
           Copy-Item -Force CyberRange-PRO-Setup.exe dist\CyberRange-PRO\
           Copy-Item -Force server.js dist\CyberRange-PRO\
@@ -100,7 +100,7 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           name: "CyberRange PRO ${{ env.RELEASE_TAG }} (Installer & Portable)"
           generate_release_notes: true
-          body_path: docs/RELEASE-v1.3.2.md
+          body_path: docs/RELEASE-v1.4.0.md
           draft: false
           prerelease: false
           files: |
