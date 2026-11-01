@@ -1,0 +1,38 @@
+{
+  "id": "osint-04-social-footprint",
+  "title": "Digital Footprint & Pseudonym Correlation",
+  "organization": "Vanguard Cyber Intelligence",
+  "category": "OSINT & Recon",
+  "target_os": "Linux",
+  "machine_type": "challenge",
+  "difficulty": "easy",
+  "points": 90,
+  "duration_min": 25,
+  "learning_path": "path-04-osint-intelligence",
+  "author": "Vanguard Threat Desk",
+  "tags": [
+    "osint",
+    "footprint",
+    "username-recon",
+    "cross-platform",
+    "threat-profiling"
+  ],
+  "cve": "CWE-200",
+  "rating": 4.9,
+  "solves": 1420,
+  "monogram": "FOOT",
+  "prerequisites": [
+    "Méthodologie de renseignement en sources ouvertes (OSINT)",
+    "Recherche d'identifiants numériques et corrélation de profils"
+  ],
+  "recommended_tools": [
+    "WhatsMyName",
+    "Sherlock",
+    "Blackbird",
+    "Maigret",
+    "Google Dorks"
+  ],
+  "narrative_story": "Un acteur malveillant opérant sous le pseudonyme \"v01d_ph4nt0m\" a diffusé un extrait de code interne. Les enquêteurs doivent recouper les traces numériques laissées par ce pseudonyme sur différentes plateformes (dépôts de code, profils techniques, forums) pour identifier son adresse de contact secrète et neutraliser la menace.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.71.12"
+}

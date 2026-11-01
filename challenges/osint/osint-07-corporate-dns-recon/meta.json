@@ -1,0 +1,39 @@
+{
+  "id": "osint-07-corporate-dns-recon",
+  "title": "Global Shadow IT & Certificate Transparency Recon",
+  "organization": "Titanium Financial Group",
+  "category": "OSINT & Recon",
+  "target_os": "Linux",
+  "machine_type": "challenge",
+  "difficulty": "expert",
+  "points": 240,
+  "duration_min": 50,
+  "learning_path": "path-04-osint-intelligence",
+  "author": "Titanium RedOps",
+  "tags": [
+    "osint",
+    "dns",
+    "shadow-it",
+    "crt.sh",
+    "recon",
+    "subdomains"
+  ],
+  "cve": "CWE-200",
+  "rating": 4.9,
+  "solves": 430,
+  "monogram": "SHAD",
+  "prerequisites": [
+    "Journaux Certificate Transparency (CT)",
+    "Énumération DNS passive et détection de Cloud Assets"
+  ],
+  "recommended_tools": [
+    "Amass",
+    "Sublist3r",
+    "crt.sh",
+    "dnsx",
+    "shodan"
+  ],
+  "narrative_story": "Titanium Financial Group a migré ses passerelles bancaires vers le cloud. Cependant, d'anciens serveurs de staging et des buckets de pré-production oubliés par les équipes de développement sont restés indexés dans les journaux publics de Certificate Transparency. Cartographie l'infrastructure fantôme et découvre le sous-domaine secret exposé.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.71.30"
+}

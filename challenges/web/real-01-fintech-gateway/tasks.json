@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Exploration du portail & Découverte de l'API de virement",
+    "description": "Explorez le site multi-pages /targets/training/real-01-fintech/ et identifiez l'endpoint d'exécution des transactions.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CTF{FINTECH_TRANSFER_ENDPOINT_ENUMERATED}"
+  },
+  {
+    "id": "t2",
+    "title": "Exploitation du montant négatif (Negative Balance Flaw)",
+    "description": "Exécutez un virement avec un montant négatif pour inverser la transaction et siphonner les fonds du compte réservé.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CTF{REAL_FINTECH_BALANCE_MANIPULATION_PWN}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Validation Stricte & Transactions ACID)",
+    "description": "Appliquez la validation stricte de montant positif et l'isolation de transaction avec idempotence dans le contrôleur backend.",
+    "points": 50,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{FINTECH_ACID_POSITIVE_CHECK_ENFORCED}"
+  }
+]

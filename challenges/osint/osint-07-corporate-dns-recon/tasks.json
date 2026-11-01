@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Découverte du sous-domaine interne masqué",
+    "description": "Trouvez le nom de domaine complet (FQDN) du serveur de staging interne révélé par crt.sh.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "dev-gateway-alpha.staging.titanium-bank.internal"
+  },
+  {
+    "id": "t2",
+    "title": "Extraction du bucket Cloud S3 exposé",
+    "description": "Quel bucket public de télémétrie est référencé dans les enregistrements CNAME du sous-domaine ?",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "CTF{OSINT_SHADOW_BUCKET_TITANIUM_LEAK_991}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Gouvernance Cloud & Détection ASM)",
+    "description": "Mettez en place un inventaire Attack Surface Management (ASM) continu et révoquez les certificats de pré-production obsolètes.",
+    "points": 80,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{ASM_CONTINUOUS_SURFACE_MONITORING_ACTIVE}"
+  }
+]

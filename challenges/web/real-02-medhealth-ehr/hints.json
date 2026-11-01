@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Structure d'URL",
+    "content": "Observez la requête émise lors de la consultation d'une prescription : /targets/training/real-02-medhealth/api/patient?id=102."
+  },
+  {
+    "title": "Cible d'attaque",
+    "content": "Modifiez l'identifiant id vers 9001 pour afficher le dossier présidentiel restreint."
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "id": "purple-04-active-mitigation-c2",
+  "title": "Automated C2 Beacon Hunting & Active Network BGP Shunning",
+  "organization": "National Cyber Security Response",
+  "category": "Blue Team & SOC",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "pro",
+  "points": 250,
+  "duration_min": 55,
+  "learning_path": "path-03-soc-defense",
+  "author": "Purple Defense Command",
+  "tags": [
+    "purple-team",
+    "c2-hunting",
+    "beaconing",
+    "bgp-shunning",
+    "suricata",
+    "automated-defense"
+  ],
+  "cve": "CWE-693",
+  "rating": 5,
+  "solves": 290,
+  "monogram": "C2BG",
+  "prerequisites": [
+    "Analyse de jitter et périodicité de balises C2 (Beaconing)",
+    "Réponse à incident automatisée (SOAR) et filtrage réseau dynamique"
+  ],
+  "recommended_tools": [
+    "RITA",
+    "Zeek",
+    "Suricata",
+    "iptables",
+    "BGP Flowspec"
+  ],
+  "narrative_story": "Une balise C2 avancée émet des requêtes HTTP à intervalles réguliers avec un jitter de 10% vers une adresse IP hostile. L'analyste Purple Team doit calculer la périodicité du trafic sortant à l'aide de Zeek/Suricata et déclencher un playbook SOAR de null-routing réseau pour neutraliser l'exfiltration en temps réel.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.93.40"
+}

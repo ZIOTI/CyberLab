@@ -13,6 +13,7 @@ const TrainingManager = require('./platform/training_manager');
 const SkillTreeManager = require('./platform/skill_tree_manager');
 const GamificationManager = require('./platform/gamification_manager');
 const { defaultLimiter: rateLimiter } = require('./platform/rate_limiter');
+const { handleRealAttackLabs } = require('./platform/real_attack_labs');
 
 // Gestionnaire global d'exceptions pour garantir la haute disponibilité locale
 process.on('uncaughtException', (err) => {
@@ -395,6 +396,11 @@ const server = http.createServer(async (req, res) => {
     return res.end();
   }
 
+  // --- Real Attack Labs Multi-Pages Environments ---
+  if (handleRealAttackLabs(req, res, pathname, method, parsedUrl)) {
+    return;
+  }
+
   // --- Endpoint Anti-CSRF : Distribution de jetons de session ---
   if (pathname === '/api/csrf-token' && method === 'GET') {
     if (!isSameOrigin(req)) {
@@ -521,7 +527,8 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === '/api/training/submit-flag' && method === 'POST') {
     const clientIp = getClientIdentifier(req);
-    const rateCheck = rateLimiter.check(`${clientIp}:/api/training/submit-flag`, 50, 10000);
+    const limitMax = process.env.CYBERLAB_TEST_ISOLATED === '1' ? 5000 : 50;
+    const rateCheck = rateLimiter.check(`${clientIp}:/api/training/submit-flag`, limitMax, 10000);
     if (rateCheck.limited) {
       res.setHeader('Retry-After', String(rateCheck.retryAfter));
       return sendJSON(res, 429, {

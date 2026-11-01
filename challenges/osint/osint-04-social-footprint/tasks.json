@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Corrélation de pseudonyme & Dépôt Git",
+    "description": "Retrouvez le dépôt public lié au pseudonyme \"v01d_ph4nt0m\" et identifiez le commit contenant la clé de contact.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "CTF{OSINT_GIT_COMMIT_AUTHOR_LOCATED}"
+  },
+  {
+    "id": "t2",
+    "title": "Extraction de l'empreinte PGP & E-mail masqué",
+    "description": "Analysez les commits du développeur et extrayez l'adresse e-mail dissimulée dans les métadonnées.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "phantom_ops_2026@proton.me"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Défense OPSEC & Neutralisation)",
+    "description": "Appliquez les bonnes pratiques d'OPSEC et de compartmentalisation pour supprimer les métadonnées sensibles exposées publiquement.",
+    "points": 30,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{OPSEC_IDENTITY_COMPARTMENTALIZED_OK}"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "id": "red-02-capabilities-tar-privesc",
+  "title": "Linux POSIX File Capabilities cap_setuid Exploitation",
+  "organization": "Telecom Data Center Operations",
+  "category": "Systèmes & Active Directory",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "moyen",
+  "points": 120,
+  "duration_min": 30,
+  "learning_path": "path-05-redteam-labs",
+  "author": "Aegis Systems Team",
+  "tags": [
+    "red-team",
+    "linux",
+    "capabilities",
+    "getcap",
+    "setuid",
+    "privesc"
+  ],
+  "cve": "CWE-250",
+  "rating": 4.8,
+  "solves": 1100,
+  "monogram": "CAPS",
+  "prerequisites": [
+    "Système de Capabilities Linux (man 7 capabilities)",
+    "Élévation de privilèges via getcap / setcap"
+  ],
+  "recommended_tools": [
+    "getcap",
+    "tar",
+    "python3",
+    "GTFOBins"
+  ],
+  "narrative_story": "Pour permettre des sauvegardes automatisées sans accorder les pleins pouvoirs sudo, l'administrateur a configuré la capability cap_setuid+ep sur le binaire python3 ou tar. Un attaquant présent sur la machine locale peut invoquer cette capability pour changer son UID effectif en 0 (root) et acquérir les privilèges super-utilisateur.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.65.18"
+}

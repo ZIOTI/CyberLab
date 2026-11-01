@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Recherche de motif dans le dump",
+    "content": "Filtrez le fichier avec grep -i \"domain admin\" ou grep -i \"admin\" pour isoler les lignes critiques."
+  },
+  {
+    "title": "Déchiffrement NTLM",
+    "content": "Ce hash NTLM standard est répertorié dans les tables de hachage publiques ou cassable instantanément avec Rockyou."
+  }
+]

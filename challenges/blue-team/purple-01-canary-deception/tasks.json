@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Localisation de la clé canarytoken factice",
+    "description": "Analysez le fichier config.json abandonné et extrayez la clé d'API piégée.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CTF{PURPLE_CANARY_TOKEN_DISCOVERED}"
+  },
+  {
+    "id": "t2",
+    "title": "Déclenchement du piège & Détection SOC",
+    "description": "Émettez une requête avec le canarytoken pour vérifier que la détection se déclenche en temps réel.",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "CTF{PURPLE_CANARY_TOKEN_TRIPWIRE_TRIGGERED}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Stratégie de Leurre & Neutralisation Rapide)",
+    "description": "Configurez la révocation automatisée et le blacklisting IP dès la première interaction avec un canarytoken.",
+    "points": 30,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{DECEPTION_AUTO_ISOLATION_WORKFLOW_ACTIVE}"
+  }
+]

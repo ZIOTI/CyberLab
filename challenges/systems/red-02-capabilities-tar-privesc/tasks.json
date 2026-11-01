@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Énumération des capabilities avec getcap",
+    "description": "Quelle commande liste toutes les capabilities définies sur les exécutables du système ?",
+    "points": 30,
+    "task_type": "flag",
+    "canonical_flag": "getcap -r / 2>/dev/null"
+  },
+  {
+    "id": "t2",
+    "title": "Élévation UID 0 & Extraction du flag root",
+    "description": "Exploitez la capability cap_setuid pour exécuter un shell root et capturer le drapeau.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "CTF{RED_CAPABILITIES_ELEVATION_SYSTEM_ROOT}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Principe du Moindre Privilège & Audit AIDE)",
+    "description": "Supprimez les capabilities superflues avec setcap -r et auditez l'intégrité des binaires système.",
+    "points": 40,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{SETCAP_REMOVED_AUDITD_INTEGRITY_VERIFIED}"
+  }
+]

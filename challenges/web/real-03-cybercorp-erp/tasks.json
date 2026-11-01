@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Reconnaissance du module de téléversement de firmware",
+    "description": "Identifiez le formulaire d'upload de firmware et découvrez les extensions officiellement acceptées.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CTF{CYBERCORP_FIRMWARE_UPLOAD_LOCATED}"
+  },
+  {
+    "id": "t2",
+    "title": "Contournement de filtre & Téléversement de payload",
+    "description": "Bypassez le filtre d'extension (double extension ou null-byte) pour exécuter une commande système et lire le flag maître.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "CTF{REAL_CYBERCORP_SUPPLY_CHAIN_RCE}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Stockage Déconnecté & Liste Blanche Stricte)",
+    "description": "Configurez le stockage des uploads en dehors de la racine web avec renommage aléatoire et vérification des magic bytes.",
+    "points": 80,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{SECURE_FILE_UPLOAD_OFF_ROOT_ENFORCED}"
+  }
+]

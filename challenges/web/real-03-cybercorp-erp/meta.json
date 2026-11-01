@@ -1,0 +1,38 @@
+{
+  "id": "real-03-cybercorp-erp",
+  "title": "CyberCorp Global Industrial Supply Chain ERP",
+  "organization": "CyberCorp Manufacturing Inc.",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "expert",
+  "points": 220,
+  "duration_min": 55,
+  "learning_path": "path-05-redteam-labs",
+  "author": "RedOps Industrial Taskforce",
+  "tags": [
+    "real-attack",
+    "erp",
+    "file-upload",
+    "mime-bypass",
+    "webshell",
+    "multi-page"
+  ],
+  "cve": "CWE-434",
+  "rating": 4.9,
+  "solves": 390,
+  "monogram": "CORP",
+  "prerequisites": [
+    "Contournement de filtres d'upload de fichiers",
+    "Téléversement de code exécutable et RCE"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "Weevely",
+    "curl",
+    "Netcat"
+  ],
+  "narrative_story": "CyberCorp gère sa chaîne logistique usine à l'aide d'un portail ERP complet comportant la gestion des stocks, la facturation fournisseurs, le diagnostic d'automates et la mise à jour des firmwares. Un filtre d'extension de fichier mal conçu sur le module firmware permet d'injecter un script exécutable pour obtenir un shell sur le serveur de production.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.82.28"
+}

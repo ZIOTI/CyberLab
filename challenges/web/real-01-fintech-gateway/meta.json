@@ -1,0 +1,38 @@
+{
+  "id": "real-01-fintech-gateway",
+  "title": "PayShield FinTech Real Attack Lab",
+  "organization": "PayShield Global Payments (Zurich)",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "intermediate",
+  "points": 150,
+  "duration_min": 40,
+  "learning_path": "path-05-redteam-labs",
+  "author": "FinTech RedOps Unit",
+  "tags": [
+    "real-attack",
+    "fintech",
+    "business-logic",
+    "idor",
+    "banking",
+    "multi-page"
+  ],
+  "cve": "CWE-840",
+  "rating": 4.9,
+  "solves": 980,
+  "monogram": "BANK",
+  "prerequisites": [
+    "Audit d'applications financières multi-pages",
+    "Logique métier et manipulations de requêtes"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "Postman",
+    "curl",
+    "Firefox DevTools"
+  ],
+  "narrative_story": "PayShield héberge une plateforme de virement bancaire multi-pages comprenant une page d'accueil, un portail d'authentification, un tableau de bord des soldes, une interface d'exécution de virements et un journal d'audit des transactions. Une faille de validation logique permet aux attaquants de manipuler les montants transférés pour créditer des comptes sans autorisation.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.82.15"
+}

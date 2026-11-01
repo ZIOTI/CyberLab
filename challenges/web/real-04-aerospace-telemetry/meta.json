@@ -1,0 +1,38 @@
+{
+  "id": "real-04-aerospace-telemetry",
+  "title": "AeroSpace Telemetry & Satellite Uplink Control",
+  "organization": "AeroSpace Orbital Operations",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "pro",
+  "points": 300,
+  "duration_min": 60,
+  "learning_path": "path-05-redteam-labs",
+  "author": "AeroSpace RedOps",
+  "tags": [
+    "real-attack",
+    "aerospace",
+    "command-injection",
+    "scada",
+    "satellite",
+    "multi-page"
+  ],
+  "cve": "CWE-78",
+  "rating": 5,
+  "solves": 210,
+  "monogram": "SAT",
+  "prerequisites": [
+    "Injections de commandes OS complexes",
+    "Bypass de sanitization WAF et élévation de privilèges"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "Netcat",
+    "Linux Shell"
+  ],
+  "narrative_story": "Le centre spatial opère une station de contrôle satellite multi-pages comportant la télémétrie orbitale, l'alignement des antennes paraboliques, le journal de liaison montante (uplink) et l'outil de diagnostic réseau ping/traceroute. Une injection de commande dans le paramètre d'adresse IP de l'antenne permet d'exécuter du code avec les privilèges root sur la console de contrôle orbitale.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.82.35"
+}

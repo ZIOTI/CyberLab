@@ -1157,6 +1157,12 @@ body.view-skill-tree-active .duo-right-panel {
   border-color: rgba(244, 63, 94, 0.35);
 }
 
+.diff-expert {
+  background: rgba(236, 72, 153, 0.12);
+  color: #f472b6;
+  border-color: rgba(236, 72, 153, 0.35);
+}
+
 .diff-insane {
   background: rgba(168, 85, 247, 0.12);
   color: #c084fc;
@@ -1692,7 +1698,9 @@ body.view-skill-tree-active .duo-right-panel {
 .diff-meter-segment.active-easy { background: #06b6d4; box-shadow: 0 0 6px rgba(6, 182, 212, 0.5); }
 .diff-meter-segment.active-intermediate { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
 .diff-meter-segment.active-hard { background: #ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
-.diff-meter-segment.active-insane { background: #d946ef; box-shadow: 0 0 6px rgba(217, 70, 239, 0.5); }
+.diff-meter-segment.active-expert { background: #ec4899; box-shadow: 0 0 6px rgba(236, 72, 153, 0.5); }
+.diff-meter-segment.active-insane, .diff-meter-segment.active-pro { background: #d946ef; box-shadow: 0 0 6px rgba(217, 70, 239, 0.5); }
+.diff-pro { background: rgba(168, 85, 247, 0.12); color: #c084fc; border-color: rgba(168, 85, 247, 0.35); }
 
 /* Spotlight Hero Card (Machine Vedette) */
 .spotlight-hero-card {

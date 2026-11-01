@@ -1,0 +1,37 @@
+{
+  "id": "purple-01-canary-deception",
+  "title": "Canary Tokens & Honeypot Deception Defense",
+  "organization": "Aegis Active Cyber Defense",
+  "category": "Blue Team & SOC",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "easy",
+  "points": 100,
+  "duration_min": 30,
+  "learning_path": "path-03-soc-defense",
+  "author": "Aegis Purple Taskforce",
+  "tags": [
+    "purple-team",
+    "canarytoken",
+    "honeypot",
+    "deception",
+    "early-detection"
+  ],
+  "cve": "CWE-200",
+  "rating": 4.9,
+  "solves": 1250,
+  "monogram": "CANR",
+  "prerequisites": [
+    "Principes de déception cyber (Deception Technology)",
+    "Déploiement de tokens piégés et alerte SIEM"
+  ],
+  "recommended_tools": [
+    "Canarytokens.org",
+    "Wireshark",
+    "curl",
+    "Splunk"
+  ],
+  "narrative_story": "Dans le cadre d'une posture de défense active Purple Team, l'équipe sécurité a disséminé des clés API factices (Canarytokens) dans des fichiers de configuration abandonnés. Lorsqu'un attaquant exfiltre et tente d'utiliser le token, une alerte immédiate est transmise au SOC avec l'IP source et le User-Agent.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.93.10"
+}

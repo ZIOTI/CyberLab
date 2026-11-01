@@ -1,0 +1,37 @@
+{
+  "id": "purple-03-kerberoast-detection",
+  "title": "Kerberoasting Attack & Kerberos Ticket Event 4769 Audit",
+  "organization": "Active Directory Security Ops",
+  "category": "Blue Team & SOC",
+  "target_os": "Windows",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 180,
+  "duration_min": 45,
+  "learning_path": "path-03-soc-defense",
+  "author": "AD Defense Specialists",
+  "tags": [
+    "purple-team",
+    "active-directory",
+    "kerberoast",
+    "event-4769",
+    "rc4-encryption"
+  ],
+  "cve": "CWE-287",
+  "rating": 4.9,
+  "solves": 640,
+  "monogram": "KERB",
+  "prerequisites": [
+    "Architecture Active Directory Kerberos TGS",
+    "Journal de sécurité Windows Event 4769 et chiffrement RC4 (0x17)"
+  ],
+  "recommended_tools": [
+    "Rubeus",
+    "Impacket",
+    "Splunk",
+    "GetUserSPNs.py"
+  ],
+  "narrative_story": "Une attaque Kerberoasting est simulée par l'équipe offensive pour extraire les tickets TGS de comptes de service (SPN). L'équipe Blue Team doit surveiller les requêtes de tickets de service chiffrées en RC4 (TicketOptions 0x40810000 et TicketEncryptionType 0x17) dans le journal d'événements 4769 pour détecter la tentative d'exfiltration.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.93.30"
+}

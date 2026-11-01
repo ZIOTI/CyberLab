@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Calcul de l'intervalle moyen de balisage C2",
+    "description": "Analysez les timestamps des requêtes dans le log et déterminez l'intervalle moyen de balisage en secondes (ex: 45s).",
+    "points": 70,
+    "task_type": "flag",
+    "canonical_flag": "45s"
+  },
+  {
+    "id": "t2",
+    "title": "Neutralisation active de l'IP C2 ennemie",
+    "description": "Appliquez le bannissement réseau dynamique et récupérez la preuve de scellement de la passerelle.",
+    "points": 90,
+    "task_type": "flag",
+    "canonical_flag": "CTF{PURPLE_C2_BEACON_HUNT_AUTOMATED_BLOCK}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Inspection TLS & Proxy Sortant Restreint)",
+    "description": "Déployez un proxy d'interception TLS avec détection de catégories inconnues et réputation de domaine en temps réel.",
+    "points": 90,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{TLS_INSPECTION_EGRESS_PROXY_ENFORCED}"
+  }
+]

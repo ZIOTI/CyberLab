@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Piste méthodologique Git",
+    "content": "Examinez l'historique des commits avec git log --format=\"fuller\" pour révéler l'auteur réel et le committer distinct."
+  },
+  {
+    "title": "Recherche de pseudonyme",
+    "content": "L'outil Maigret ou WhatsMyName permet d'interroger plus de 500 plateformes simultanément."
+  }
+]

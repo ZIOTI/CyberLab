@@ -9,7 +9,7 @@
     "dev": "node server.js",
     "check-update": "node updater.js check",
     "update": "node updater.js apply",
-    "test:all": "node scripts/test-isolated.js test_suite.js test_edge_cases_phase3.js test_edge_cases_phase4.js test_edge_cases_phase5.js"
+    "test:all": "node scripts/test-isolated.js test_suite.js test_flags.js test_edge_cases_phase3.js test_edge_cases_phase4.js test_edge_cases_phase5.js"
   },
   "repository": {
     "type": "git",

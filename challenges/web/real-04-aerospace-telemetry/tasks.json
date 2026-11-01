@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Reconnaissance de la console de liaison montante",
+    "description": "Explorez la console multi-pages /targets/training/real-04-aerospace/ et découvrez l'outil de diagnostic d'antenne.",
+    "points": 80,
+    "task_type": "flag",
+    "canonical_flag": "CTF{AEROSPACE_UPLINK_DIAGNOSTICS_LOCATED}"
+  },
+  {
+    "id": "t2",
+    "title": "Injection de commande aveugle & Prise de contrôle root",
+    "description": "Injectez une commande arbitraire via le paramètre antenna_ip en contournant les espaces avec ${IFS} pour capturer le flag root.",
+    "points": 120,
+    "task_type": "flag",
+    "canonical_flag": "CTF{REAL_AEROSPACE_SCADA_OVERRIDE_ROOT}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (API POSIX Sans Shell & Isolation Confinée)",
+    "description": "Bannissez l'appel à system() ou exec() avec shell = true et remplacez par execFile() avec tableau d'arguments stricts.",
+    "points": 100,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{EXECFILE_SAFE_ARG_ARRAY_ISOLATION_OK}"
+  }
+]

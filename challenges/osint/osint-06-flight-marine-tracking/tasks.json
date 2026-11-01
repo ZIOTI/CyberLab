@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Identification du transpondeur ADS-B de l'aéronef",
+    "description": "Quel est l'indicatif (callsign) de l'aéronef privé ayant effectué l'approche côtière ?",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "CTF{OSINT_AERO_CALLSIGN_SKY_VIP_404}"
+  },
+  {
+    "id": "t2",
+    "title": "Numéro MMSI du navire suspect",
+    "description": "Retrouvez le code MMSI unique à 9 chiffres du cargo ayant coupé ses émissions radio.",
+    "points": 60,
+    "task_type": "flag",
+    "canonical_flag": "228394000"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Défense Radionavigation & Surveillance)",
+    "description": "Déployez un système de surveillance radar passif et d'imagerie satellite SAR pour combler les zones d'ombre de transpondeurs.",
+    "points": 60,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{SAR_RADAR_SATELLITE_FUSION_DEPLOYED}"
+  }
+]

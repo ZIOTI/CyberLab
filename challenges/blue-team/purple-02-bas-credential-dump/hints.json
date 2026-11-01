@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Event ID Sysmon",
+    "content": "Sysmon Event ID 1 correspond à ProcessCreation, 3 à NetworkConnect, et 10 à ProcessAccess."
+  },
+  {
+    "title": "Mesure de protection Windows",
+    "content": "La clé de registre HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RunAsPPL = 1 active la protection matérielle."
+  }
+]

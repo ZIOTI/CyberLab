@@ -1,0 +1,37 @@
+{
+  "id": "osint-05-darkweb-leak",
+  "title": "Dark Web Breach Triage & Credential Cache",
+  "organization": "Cyber Defense CERT Coordination",
+  "category": "OSINT & Recon",
+  "target_os": "Linux",
+  "machine_type": "challenge",
+  "difficulty": "intermediate",
+  "points": 120,
+  "duration_min": 35,
+  "learning_path": "path-04-osint-intelligence",
+  "author": "Aegis Threat Intel",
+  "tags": [
+    "osint",
+    "darkweb",
+    "credential-leak",
+    "threat-hunting",
+    "passwords"
+  ],
+  "cve": "CWE-522",
+  "rating": 4.8,
+  "solves": 1180,
+  "monogram": "LEAK",
+  "prerequisites": [
+    "Analyse de dumps de données",
+    "Détection de hachages et corrélation de comptes compromis"
+  ],
+  "recommended_tools": [
+    "HaveIBeenPwned API",
+    "DeHashed",
+    "Tor Browser",
+    "Hashcat"
+  ],
+  "narrative_story": "Un pastebin du Dark Web contient une archive chiffrée issue d'une fuite chez un sous-traitant critique. L'analyste de cyber-renseignement doit trier les entrées, identifier le compte ayant des privilèges administratifs et récupérer le hash compromis avant sa réutilisation.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.71.18"
+}

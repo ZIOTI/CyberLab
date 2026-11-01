@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Pages de la station",
+    "content": "Accédez à /targets/training/real-04-aerospace/uplink-gateway pour trouver le formulaire de test réseau."
+  },
+  {
+    "title": "Bypass d'espaces",
+    "content": "Si les espaces sont bloqués par le filtre WAF, utilisez ${IFS} ou la redirection <."
+  }
+]

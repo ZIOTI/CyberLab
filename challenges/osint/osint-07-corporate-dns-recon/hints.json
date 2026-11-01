@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Exploration crt.sh",
+    "content": "Interrogez les certificats délivrés avec l'empreinte %.titanium-bank.% pour lister tous les FQDN historiques."
+  },
+  {
+    "title": "CNAME Inspection",
+    "content": "Utilisez dig +trace ou host -t CNAME sur le domaine identifié pour remonter jusqu'à l'alias de stockage S3."
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Identification de l'événement Sysmon ProcessAccess",
+    "description": "Quel numéro d'Event ID Sysmon signale l'accès à la mémoire d'un processus sensible par un tiers ?",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "10"
+  },
+  {
+    "id": "t2",
+    "title": "Validation de la signature d'accès mémoire LSASS",
+    "description": "Vérifiez la détection de la tentative de dump et récupérez le flag de détection validé.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "CTF{PURPLE_LSASS_DUMP_DETECTION_CONFIRMED}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Activer LSA Protection RunAsPPL & Credential Guard)",
+    "description": "Activez RunAsPPL (Protected Process Light) dans le registre Windows pour interdire tout dump de LSASS par des processus non-signés.",
+    "points": 50,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{LSA_PROTECTION_RUNASPPL_ENABLED_OK}"
+  }
+]

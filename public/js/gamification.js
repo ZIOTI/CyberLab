@@ -10,7 +10,7 @@ const CYBER_TRANSLATIONS = {
     // Navigation & Layout
     curriculum: "Curriculum (15 Mod.)",
     skill_tree: "Arbre de Compétences",
-    training_labs: "Entraînement (100 Labs)",
+    training_labs: "Entraînement (148 Labs)",
     badges_trophies: "Badges & Exploits",
     operator_profile: "Profil Opérateur",
     leagues_leaderboard: "Ligues & Classement",
@@ -104,7 +104,7 @@ const CYBER_TRANSLATIONS = {
     // Navigation & Layout
     curriculum: "Curriculum (15 Mod.)",
     skill_tree: "Skill Tree",
-    training_labs: "Training (100 Labs)",
+    training_labs: "Training (148 Labs)",
     badges_trophies: "Badges & Exploits",
     operator_profile: "Operator Profile",
     leagues_leaderboard: "Leagues & Leaderboard",

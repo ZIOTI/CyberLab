@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Exploration de l'ERP",
+    "content": "Accédez à la page /targets/training/real-03-cybercorp/firmware-upload."
+  },
+  {
+    "title": "Extension tolérée",
+    "content": "Le serveur vérifie si le nom de fichier se termine par .bin mais accepte les fichiers contenant .php.bin ou une validation MIME falsifiée."
+  }
+]

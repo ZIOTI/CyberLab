@@ -1,0 +1,38 @@
+{
+  "id": "osint-06-flight-marine-tracking",
+  "title": "Geoint Flight Radar & Maritime AIS Intercept",
+  "organization": "Maritime & Aviation Border Security",
+  "category": "OSINT & Recon",
+  "target_os": "Linux",
+  "machine_type": "challenge",
+  "difficulty": "hard",
+  "points": 180,
+  "duration_min": 45,
+  "learning_path": "path-04-osint-intelligence",
+  "author": "Cyber Intercept Command",
+  "tags": [
+    "osint",
+    "geoint",
+    "ads-b",
+    "ais",
+    "radar-tracking"
+  ],
+  "cve": "CWE-200",
+  "rating": 4.9,
+  "solves": 740,
+  "monogram": "AERO",
+  "prerequisites": [
+    "Protocoles ADS-B / Mode-S et AIS maritime",
+    "Tracés de routes et recoupement de transpondeurs"
+  ],
+  "recommended_tools": [
+    "FlightRadar24",
+    "ADS-B Exchange",
+    "MarineTraffic",
+    "VesselFinder",
+    "CyberChef"
+  ],
+  "narrative_story": "Un cargo sous pavillon de complaisance a désactivé son transpondeur AIS à proximité d'eaux territoriales protégées, au moment précis où un vol privé atterrissait sur un aérodrome côtier adjacent. Corrèle les télémétries de vol ADS-B et les traces maritimes pour identifier le navire et le callsign de l'aéronef.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.71.24"
+}

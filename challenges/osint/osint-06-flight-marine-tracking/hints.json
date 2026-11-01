@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Recoupement des coordonnées géographiques",
+    "content": "Filtrez le fichier JSON sur la bounding box maritime (latitude 43.1 à 43.4 N, longitude 5.2 à 5.6 E)."
+  },
+  {
+    "title": "Format MMSI",
+    "content": "Le numéro MMSI comporte 9 chiffres et commence par le MID national (228 pour la France)."
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "id": "purple-02-bas-credential-dump",
+  "title": "Breach & Attack Simulation: LSASS Memory Dump vs Sysmon",
+  "organization": "Defensive Cyber Operations Command",
+  "category": "Blue Team & SOC",
+  "target_os": "Windows",
+  "machine_type": "room",
+  "difficulty": "intermediate",
+  "points": 140,
+  "duration_min": 35,
+  "learning_path": "path-03-soc-defense",
+  "author": "Aegis Blue/Red Core",
+  "tags": [
+    "purple-team",
+    "lsass",
+    "sysmon",
+    "event-id-10",
+    "mimikatz",
+    "credential-access"
+  ],
+  "cve": "CWE-522",
+  "rating": 4.8,
+  "solves": 910,
+  "monogram": "LSAS",
+  "prerequisites": [
+    "Fonctionnement de LSASS sous Windows",
+    "Télémétrie Sysmon Event ID 10 (ProcessAccess)"
+  ],
+  "recommended_tools": [
+    "ProcDump",
+    "Mimikatz",
+    "Sysmon",
+    "Sigma CLI"
+  ],
+  "narrative_story": "Le groupe Red Team simule une extraction de credentials en vidant la mémoire de LSASS à l'aide de ProcDump. L'analyste Blue Team doit vérifier que la configuration Sysmon génère bien un événement ID 10 avec le niveau d'accès 0x1FFFFF, et formaliser la règle de détection Sigma correspondante.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.93.20"
+}

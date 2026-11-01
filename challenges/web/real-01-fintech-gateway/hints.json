@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Navigation multi-pages",
+    "content": "Accédez à /targets/training/real-01-fintech/ et parcourez les onglets \"Dashboard\", \"Transfers\" et \"Audit\"."
+  },
+  {
+    "title": "Injection de montant",
+    "content": "Testez une valeur négative (ex: -50000) dans le champ montant pour vérifier si le serveur décrémente la cible au lieu de votre compte."
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Reconnaissance de l'espace patient multi-pages",
+    "description": "Connectez-vous avec le compte de test et identifiez le paramètre d'accès au dossier médical.",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "CTF{MEDHEALTH_PATIENT_PARAM_IDENTIFIED}"
+  },
+  {
+    "id": "t2",
+    "title": "Exploitation IDOR sur le dossier VIP de la présidence",
+    "description": "Exfiltrez le dossier patient confidentiel #9001 et récupérez le diagnostic protégé.",
+    "points": 70,
+    "task_type": "flag",
+    "canonical_flag": "CTF{REAL_MEDHEALTH_PATIENT_RECORDS_EXFIL}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Contrôle d'Accès Basé sur les Attributs ABAC)",
+    "description": "Implémentez la vérification systématique de propriété de ressource (Session User ID == Resource Owner ID) avant tout affichage.",
+    "points": 60,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{ABAC_PATIENT_RECORD_AUTHORIZATION_VERIFIED}"
+  }
+]

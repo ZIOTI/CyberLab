@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Identification du type de chiffrement faible RC4",
+    "description": "Quelle valeur hexadécimale représente le chiffrement RC4-HMAC dans l'événement Kerberos 4769 ?",
+    "points": 50,
+    "task_type": "flag",
+    "canonical_flag": "0x17"
+  },
+  {
+    "id": "t2",
+    "title": "Validation de l'alerte d'attaque Kerberoasting",
+    "description": "Capturez l'événement de demande anormale de ticket TGS et validez la détection SOC.",
+    "points": 70,
+    "task_type": "flag",
+    "canonical_flag": "CTF{PURPLE_KERBEROAST_RC4_ANOMALY_HUNTED}"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Comptes gMSA & Désactivation de RC4)",
+    "description": "Migrez les comptes de service vers des Group Managed Service Accounts (gMSA) à mot de passe aléatoire de 128 caractères et forcez AES-256.",
+    "points": 60,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{GMSA_ACCOUNTS_AES256_ONLY_ENFORCED}"
+  }
+]

@@ -276,7 +276,8 @@ class TrainingSystem {
               <option value="easy" ${this.activeFilter.difficulty === 'easy' ? 'selected' : ''}>Facile</option>
               <option value="intermediate" ${this.activeFilter.difficulty === 'intermediate' ? 'selected' : ''}>Intermédiaire</option>
               <option value="hard" ${this.activeFilter.difficulty === 'hard' ? 'selected' : ''}>Difficile</option>
-              <option value="insane" ${this.activeFilter.difficulty === 'insane' ? 'selected' : ''}>Insane</option>
+              <option value="expert" ${this.activeFilter.difficulty === 'expert' ? 'selected' : ''}>Expert</option>
+              <option value="insane" ${this.activeFilter.difficulty === 'insane' || this.activeFilter.difficulty === 'pro' ? 'selected' : ''}>Pro / Insane</option>
             </select>
 
             <!-- Filtre Statut -->
@@ -343,12 +344,18 @@ class TrainingSystem {
   renderCategoryPills() {
     const categories = [
       { id: 'all', label: 'Toutes les Rooms' },
-      { id: 'Linux', label: 'Systèmes & Linux' },
+      { id: 'Red Team', label: '🔴 Red Team' },
+      { id: 'Blue Team', label: '🔵 Blue Team & SOC' },
+      { id: 'Purple Team', label: '🟣 Purple Team' },
+      { id: 'Real Labs', label: '🌐 Real Attack Labs' },
+      { id: 'OSINT', label: '🧭 OSINT & Recon' },
       { id: 'Web', label: 'Web Exploitation' },
+      { id: 'Linux', label: 'Systèmes & Linux' },
       { id: 'Windows', label: 'Active Directory' },
-      { id: 'Forensics', label: 'Forensics & SOC' },
+      { id: 'Forensics', label: 'Forensics & DFIR' },
+      { id: 'Network', label: 'Réseau & Wireshark' },
       { id: 'Crypto', label: 'Cryptographie' },
-      { id: 'Pwn', label: 'Pwn & Binaires' },
+      { id: 'Pwn', label: 'Reverse & Pwn' },
       { id: 'Cloud', label: 'Cloud & Docker' },
       { id: 'Boot2Root', label: 'Boot2Root' }
     ];
@@ -376,14 +383,49 @@ class TrainingSystem {
       if (this.activeFilter.category !== 'all') {
         const cCat = (c.category || '').toLowerCase();
         const fCat = this.activeFilter.category.toLowerCase();
-        if (cCat !== fCat && !cCat.includes(fCat) && !fCat.includes(cCat)) {
-          return false;
+        const tags = Array.isArray(c.tags) ? c.tags.map(t => String(t).toLowerCase()) : [];
+        const chId = (c.id || '').toLowerCase();
+
+        let matches = (cCat === fCat || cCat.includes(fCat) || fCat.includes(cCat));
+
+        if (!matches) {
+          if (fCat === 'red team') {
+            matches = tags.includes('red-team') || chId.startsWith('red-') || chId.startsWith('b2r-') || cCat.includes('pwn') || cCat.includes('systèmes') || chId.startsWith('aegis-box-');
+          } else if (fCat === 'blue team') {
+            matches = cCat.includes('blue team') || cCat.includes('soc') || cCat.includes('forensics') || tags.includes('blue-team') || tags.includes('soc');
+          } else if (fCat === 'purple team') {
+            matches = tags.includes('purple-team') || chId.startsWith('purple-');
+          } else if (fCat === 'real labs') {
+            matches = tags.includes('real-attack') || chId.startsWith('real-');
+          } else if (fCat === 'osint') {
+            matches = cCat.includes('osint') || chId.startsWith('osint-');
+          } else if (fCat === 'pwn') {
+            matches = cCat.includes('pwn') || cCat.includes('reverse') || chId.startsWith('pwn-') || chId.startsWith('rev-');
+          } else if (fCat === 'linux') {
+            matches = cCat.includes('linux') || cCat.includes('systèmes') || chId.startsWith('linux-');
+          } else if (fCat === 'windows') {
+            matches = cCat.includes('windows') || cCat.includes('active directory') || chId.startsWith('win-');
+          } else if (fCat === 'forensics') {
+            matches = cCat.includes('forensics') || chId.startsWith('forensics-');
+          } else if (fCat === 'network') {
+            matches = cCat.includes('réseau') || cCat.includes('network') || chId.startsWith('net-');
+          } else if (fCat === 'crypto') {
+            matches = cCat.includes('crypto') || chId.startsWith('crypto-');
+          } else if (fCat === 'cloud') {
+            matches = cCat.includes('cloud') || chId.startsWith('cloud-');
+          } else if (fCat === 'boot2root') {
+            matches = cCat.includes('boot2root') || chId.startsWith('b2r-') || chId.startsWith('aegis-box-');
+          } else if (fCat === 'web') {
+            matches = cCat.includes('web') || chId.startsWith('web-');
+          }
         }
+
+        if (!matches) return false;
       }
-      // Filtre difficulté
+      // Filtre difficulté normalisé
       if (this.activeFilter.difficulty !== 'all') {
-        const cDiff = (c.difficulty || '').toLowerCase();
-        const fDiff = this.activeFilter.difficulty.toLowerCase();
+        const cDiff = this.mapDifficultyClass(c.difficulty);
+        const fDiff = this.mapDifficultyClass(this.activeFilter.difficulty);
         if (cDiff !== fDiff) return false;
       }
       // Filtre statut
@@ -1121,6 +1163,7 @@ class TrainingSystem {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
     }
+    this.terminalDrawerOpen = false;
     const modal = document.getElementById('modal-training-room');
     if (modal) modal.classList.add('hidden');
     
@@ -1138,239 +1181,335 @@ class TrainingSystem {
     const c = this.activeChallenge;
     const diffClass = `diff-${this.mapDifficultyClass(c.difficulty)}`;
     const allTasksCompleted = c.tasks.every(t => t.is_completed);
-    const org = c.organization || 'Entreprise Cible';
-    const isWeb = (c.category || '').toLowerCase().includes('web');
+    const org = c.organization || 'Infrastructure Cible';
+    const ip = this.activeInstance?.virtual_ip || this.activeInstance?.target_ip || '10.30.45.88';
+    const isRunning = this.activeInstance && (this.activeInstance.status === 'RUNNING' || this.activeInstance.status === 'running');
+    const localWebTarget = this.getLocalWebTarget(c.id);
+    const isWeb = localWebTarget !== null;
+    const avatar = CyberAvatarEngine.getAvatar(c);
+
+    // Defense metadata
+    const defData = c.defense_tasks || c.defense_json || {};
+    const soc = defData.soc_investigation || {};
+    const det = defData.detection_engineering || {};
+    const rem = defData.system_hardening || {};
 
     mount.innerHTML = `
-      <!-- EN-TÊTE ÉPURÉ DE LA ROOM -->
-      <div class="p-4 sm:p-5 bg-slate-950 border-b border-slate-800 flex items-center justify-between gap-4 font-sans">
+      <!-- EN-TÊTE FIXE DU ROOM (TRYHACKME STYLE) -->
+      <header class="sticky top-0 z-40 bg-[#070b14]/95 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4 font-sans">
         <div class="flex items-center gap-3.5 min-w-0">
-          <button onclick="window.trainingSystem.closeRoom()" class="text-slate-400 hover:text-white transition font-mono text-sm px-2 py-1 rounded bg-slate-900 border border-slate-800" title="Retour aux challenges">
-            &larr; Retour
+          <button onclick="window.trainingSystem.closeRoom()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-mono font-bold transition-colors">
+            <span>&larr;</span>
+            <span class="hidden sm:inline">Retour aux Rooms</span>
           </button>
+          
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr ${avatar.bg} border flex items-center justify-center text-sm font-black flex-shrink-0">
+            <span>${avatar.icon}</span>
+          </div>
+
           <div class="min-w-0">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <span class="diff-badge ${diffClass} text-[10px] font-mono py-0.5 px-2">${this.getDifficultyLabel(c.difficulty)}</span>
-              <span class="text-xs text-slate-400 font-mono">${c.points} PTS • ${c.duration_min} MIN</span>
-              <span class="text-xs text-cyan-400 font-mono hidden sm:inline">• ${org}</span>
+              <span class="text-xs text-slate-400 font-mono">${c.points} PTS • ${c.duration_min || 30} MIN</span>
+              <span class="text-xs text-cyan-400 font-mono hidden md:inline">• ${this.escapeHtml(org)}</span>
+              ${c.cve ? `<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800/80 font-bold">${this.escapeHtml(c.cve)}</span>` : ''}
             </div>
-            <h2 class="text-lg sm:text-xl font-black text-white truncate mt-0.5">
+            <h1 class="text-base sm:text-lg font-black text-white truncate mt-0.5">
               ${this.escapeHtml(c.title)}
-            </h2>
+            </h1>
           </div>
         </div>
 
-        <button onclick="window.trainingSystem.closeRoom()" class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors flex-shrink-0 font-mono text-sm" title="Fermer la Room">
-          ✕
-        </button>
-      </div>
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono">
+            <span class="text-slate-400">Progression :</span>
+            <span class="font-black ${allTasksCompleted ? 'text-emerald-400' : 'text-cyan-400'}">
+              ${c.tasks.filter(t => t.is_completed).length}/${c.tasks.length} Tâches
+            </span>
+          </div>
+          <button onclick="window.trainingSystem.closeRoom()" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors font-mono text-sm" title="Fermer la Room">
+            ✕
+          </button>
+        </div>
+      </header>
 
-      <!-- CORPS DE LA ROOM : PANNEAU LATÉRAL & ESPACE DE TRAVAIL -->
-      <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+      <!-- CORPS DE LA ROOM (PAGE UNIQUE VERTICALE) -->
+      <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6 font-sans">
         
-        <!-- PANNEAU GAUCHE : MACHINE ET INFORMATIONS -->
-        <div class="w-full md:w-80 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-950/70 p-4 sm:p-5 overflow-y-auto space-y-4 font-sans">
-          
-          <!-- LIVE TARGET BOX -->
-          <div id="room-target-box-mount">
-            ${this.renderTargetBox()}
+        <!-- SECTION 1 : LIVE TARGET BOX -->
+        <section id="room-target-box-mount" class="p-5 rounded-2xl bg-[#090e1c] border border-slate-800/90 shadow-xl space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
+            <div class="flex items-center gap-2.5">
+              <span class="relative flex h-3 w-3">
+                ${isRunning ? `
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                ` : `
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-slate-600"></span>
+                `}
+              </span>
+              <span class="text-xs font-black uppercase tracking-wider font-mono ${isRunning ? 'text-emerald-400' : 'text-slate-400'}">
+                ${isRunning ? 'MACHINE VIRTUELLE ACTIVE — RÉSEAU LAB CONNECTÉ' : 'MACHINE VIRTUELLE HORS LIGNE'}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-3 font-mono text-xs">
+              <span class="text-slate-400">OS Cible :</span>
+              <span class="text-slate-200 font-bold px-2 py-0.5 rounded bg-slate-900 border border-slate-800">${this.escapeHtml(c.target_os || 'Linux Ubuntu 22.04 LTS')}</span>
+              ${isRunning ? `
+                <span class="text-slate-400 ml-2">Temps restant :</span>
+                <span id="target-countdown-display" class="font-black text-amber-400">--:--</span>
+              ` : ''}
+            </div>
           </div>
 
-          <!-- Artefacts / Fichiers à télécharger -->
-          ${(c.downloadable_files && c.downloadable_files.length > 0) ? `
-            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 space-y-2">
-              <div class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-                <span>📦</span>
-                <span>Fichiers de la Mission</span>
+          <!-- IP Cible et Contrôles -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 px-3.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs flex items-center gap-2.5">
+                <span class="text-slate-400 font-bold uppercase">IP Cible :</span>
+                <span class="text-cyan-400 font-black text-sm tracking-wide select-all">${ip}</span>
+                <button id="btn-copy-target-ip" onclick="window.trainingSystem.copyTargetIp('${ip}')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white text-[11px] font-bold border border-slate-700 transition" title="Copier l'adresse IP">
+                  Copier
+                </button>
               </div>
-              <div class="space-y-1.5 font-mono">
+
+              <div class="hidden sm:block text-xs text-slate-400 font-mono">
+                <span class="text-slate-500">Attaquant (Toi) :</span> <span class="text-slate-300 font-bold">10.10.14.5</span>
+              </div>
+            </div>
+
+            <!-- Boutons d'Action de l'Instance -->
+            <div class="flex items-center gap-2 flex-wrap font-mono text-xs">
+              ${!isRunning ? `
+                <button onclick="window.trainingSystem.startInstance('${c.id}')" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black transition shadow-lg flex items-center gap-2">
+                  <span>▶</span>
+                  <span>Démarrer la Machine</span>
+                </button>
+              ` : `
+                <button onclick="window.trainingSystem.renewInstance('${c.id}')" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-800 font-bold transition" title="Ajouter 15 minutes">
+                  +15 min
+                </button>
+                <button onclick="window.trainingSystem.resetInstance('${c.id}')" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-800 font-bold transition" title="Réinitialiser la machine">
+                  ↻ Reset
+                </button>
+                <button onclick="window.trainingSystem.stopInstance('${c.id}')" class="px-3 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 border border-rose-800/80 font-bold transition" title="Arrêter l'instance">
+                  ■ Arrêter
+                </button>
+              `}
+
+              ${isWeb ? `
+                <a href="${localWebTarget}" target="_blank" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold transition shadow flex items-center gap-1.5">
+                  <span>🌐</span>
+                  <span>Ouvrir la Cible Web ↗</span>
+                </a>
+              ` : ''}
+
+              <button id="btn-toggle-terminal-drawer" onclick="window.trainingSystem.toggleTerminalDrawer()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-700 font-bold transition flex items-center gap-1.5">
+                <span>💻</span>
+                <span>${this.terminalDrawerOpen ? 'Masquer le Terminal' : 'Terminal en direct'}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TERMINAL EN DIRECT INTÉGRÉ (COLLAPSIBLE DRAWER) -->
+          <div id="room-terminal-drawer" class="${this.terminalDrawerOpen ? '' : 'hidden'} mt-4 pt-4 border-t border-slate-800 space-y-3 font-mono">
+            <div class="flex items-center justify-between bg-slate-950 px-3 py-2 rounded-xl border border-slate-800 text-xs overflow-x-auto">
+              <div class="flex items-center gap-2 text-slate-400 text-[11px] font-bold uppercase flex-shrink-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Shell Machine Interactif</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button onclick="window.cyberActiveTerminal?.runCommand('whoami')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold border border-slate-700 text-[11px]">
+                  whoami
+                </button>
+                <button onclick="window.cyberActiveTerminal?.runCommand('id')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold border border-slate-700 text-[11px]">
+                  id
+                </button>
+                <button onclick="window.cyberActiveTerminal?.runCommand('ls -la')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold border border-slate-700 text-[11px]">
+                  ls -la
+                </button>
+                <button onclick="window.cyberActiveTerminal?.runCommand('sudo -l')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold border border-slate-700 text-[11px]">
+                  sudo -l
+                </button>
+                <button onclick="window.cyberActiveTerminal?.runCommand('cat user.txt')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold border border-slate-700 text-[11px]">
+                  cat user.txt
+                </button>
+                <button onclick="window.cyberActiveTerminal?.runCommand('cat /root/root.txt')" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-rose-300 font-bold border border-slate-700 text-[11px]">
+                  cat root.txt
+                </button>
+                <button onclick="window.cyberActiveTerminal?.clear()" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold border border-slate-700 text-[11px]">
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Terminal Mount -->
+            <div class="room-terminal-wrapper rounded-xl overflow-hidden border border-slate-800" id="room-terminal-mount" style="min-height: 420px;">
+              <!-- Injecté par CyberTerminal -->
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2 : FICHIERS & OUTILS RECOMMANDÉS (SI DISPONIBLES) -->
+        ${(c.downloadable_files && c.downloadable_files.length > 0) || (c.recommended_tools && c.recommended_tools.length > 0) ? `
+          <section class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+            ${(c.downloadable_files && c.downloadable_files.length > 0) ? `
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-slate-400 font-bold uppercase">📦 Artefacts :</span>
                 ${c.downloadable_files.map(f => `
-                  <a href="${f.url}" download class="flex items-center justify-between p-2 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs text-cyan-400 transition-colors">
-                    <span class="truncate">${this.escapeHtml(f.name)}</span>
-                    <span class="text-[10px] text-slate-400">${f.size || ''}</span>
+                  <a href="${f.url}" download class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-cyan-400 transition-colors">
+                    <span>${this.escapeHtml(f.name)}</span>
+                    <span class="text-[10px] text-slate-500">${f.size || ''}</span>
+                    <span>↓</span>
                   </a>
                 `).join('')}
               </div>
-            </div>
-          ` : ''}
+            ` : '<div></div>'}
 
-          <!-- Boîte à outils conseillée -->
-          <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
-            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">Outils Conseillés</div>
-            <div class="flex flex-wrap gap-1 font-mono">
-              ${(c.recommended_tools || []).map(tool => `
-                <span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
-                  ${this.escapeHtml(tool)}
+            ${(c.recommended_tools && c.recommended_tools.length > 0) ? `
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-slate-500">Outils conseillés :</span>
+                ${c.recommended_tools.map(tool => `
+                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-300 text-[11px]">
+                    ${this.escapeHtml(tool)}
+                  </span>
+                `).join('')}
+              </div>
+            ` : ''}
+          </section>
+        ` : ''}
+
+        <!-- SECTION 3 : DESCRIPTION & BRIEFING DU LAB -->
+        <section class="p-6 rounded-2xl bg-[#090e1c] border border-slate-800 space-y-3">
+          <div class="flex items-center gap-2 text-xs font-bold font-mono text-cyan-400 uppercase tracking-wider">
+            <span>🎯</span>
+            <span>Contexte Opérationnel & Briefing</span>
+          </div>
+          <div class="text-sm text-slate-300 leading-relaxed space-y-3">
+            <p class="whitespace-pre-wrap">${this.escapeHtml(c.description)}</p>
+            ${c.scenario ? `
+              <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs text-slate-300 font-mono space-y-1.5">
+                <span class="text-amber-400 font-bold uppercase tracking-wider block text-[10px]">Directive d'Engagement :</span>
+                <p class="leading-relaxed whitespace-pre-wrap">${this.escapeHtml(c.scenario)}</p>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- MITRE ATT&CK & OWASP TAGS -->
+          ${((c.mitre_tags && c.mitre_tags.length > 0) || (c.owasp_tags && c.owasp_tags.length > 0)) ? `
+            <div class="pt-3 border-t border-slate-800/80 flex items-center gap-2 flex-wrap text-xs font-mono">
+              ${(c.mitre_tags || []).map(m => `
+                <span class="px-2 py-0.5 rounded bg-rose-950/60 border border-rose-800/60 text-rose-300 text-[10px] font-bold">
+                  MITRE: ${this.escapeHtml(m)}
+                </span>
+              `).join('')}
+              ${(c.owasp_tags || []).map(o => `
+                <span class="px-2 py-0.5 rounded bg-amber-950/60 border border-amber-800/60 text-amber-300 text-[10px] font-bold">
+                  OWASP: ${this.escapeHtml(o)}
                 </span>
               `).join('')}
             </div>
-          </div>
-
-          <!-- Indices Déblocables -->
-          ${(c.hints && c.hints.length > 0) ? `
-            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2.5">
-              <div class="flex items-center justify-between font-mono">
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Indices</div>
-                <span class="text-[10px] text-emerald-400">${c.hints.filter(h => h.is_unlocked).length}/${c.hints.length} débloqué${c.hints.length > 1 ? 's' : ''}</span>
-              </div>
-              <div class="space-y-2">
-                ${c.hints.map(h => `
-                  <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-xs">
-                    <div class="flex items-center justify-between mb-1">
-                      <span class="font-bold text-slate-300 text-[11px]">${this.escapeHtml(h.title)}</span>
-                      ${!h.is_unlocked ? `
-                        <button onclick="window.trainingSystem.unlockHint('${c.id}', ${h.index})" class="btn-mini-3d btn-mini-slate py-0.5 px-2 text-[9px] flex items-center gap-1 font-mono">
-                          <span class="text-emerald-400">${h.cost} 💎</span>
-                          <span>Débloquer</span>
-                        </button>
-                      ` : `
-                        <span class="text-[9px] text-emerald-400 font-bold font-mono">DÉBLOQUÉ</span>
-                      `}
-                    </div>
-                    ${h.is_unlocked ? `
-                      <p class="text-[11px] text-cyan-200/90 leading-relaxed font-sans mt-1 p-2 bg-cyan-950/40 rounded border border-cyan-900/50">
-                        ${this.escapeHtml(h.content)}
-                      </p>
-                    ` : `
-                      <p class="text-[10px] text-slate-500 italic">Contenu masqué. Débloque avec tes gemmes.</p>
-                    `}
-                  </div>
-                `).join('')}
-              </div>
-            </div>
           ` : ''}
+        </section>
 
-          <!-- Tags MITRE ATT&CK & OWASP -->
-          ${(c.mitre_tags && c.mitre_tags.length > 0) ? `
-            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
-              <div class="text-xs font-bold text-rose-400 uppercase tracking-wider font-mono">MITRE ATT&CK</div>
-              <div class="flex flex-wrap gap-1 font-mono">
-                ${c.mitre_tags.map(m => `
-                  <span class="text-[10px] bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800/60 text-rose-300 font-bold">
-                    ${this.escapeHtml(m)}
-                  </span>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          ${(c.owasp_tags && c.owasp_tags.length > 0) ? `
-            <div class="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
-              <div class="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono">OWASP TOP 10</div>
-              <div class="flex flex-wrap gap-1 font-mono">
-                ${c.owasp_tags.map(o => `
-                  <span class="text-[10px] bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/60 text-amber-300 font-bold">
-                    ${this.escapeHtml(o)}
-                  </span>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-        </div>
-
-        <!-- ESPACE DE TRAVAIL PRINCIPAL : ONGLETS & CONTENU -->
-        <div class="flex-1 flex flex-col bg-slate-900/40 overflow-hidden font-sans">
-          
-          <!-- Barre d'onglets épurée -->
-          <div class="bg-slate-950/90 px-4 py-2 border-b border-slate-800 flex items-center gap-2 overflow-x-auto text-xs font-mono">
-            <!-- Onglet Split-Screen : Tâches + Terminal côte-à-côte -->
-            <button 
-              onclick="window.trainingSystem.switchRoomTab('split')"
-              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'split' ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 shadow-md font-black' : 'text-emerald-400 hover:text-white'}"
-              title="Afficher les questions et le terminal interactif côte-à-côte"
-            >
-              <span>⚡</span>
-              <span>Split-Screen (Questions + Shell)</span>
-            </button>
-
-            <button 
-              onclick="window.trainingSystem.switchRoomTab('tasks')"
-              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'tasks' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
-            >
+        <!-- SECTION 4 : LISTE VERTICALE DES TÂCHES / QUESTIONS -->
+        <section class="space-y-4">
+          <div class="flex items-center justify-between font-mono">
+            <h2 class="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
               <span>📋</span>
-              <span>Tâches & Questions (${c.tasks.filter(t => t.is_completed).length}/${c.tasks.length})</span>
-            </button>
-
-            <!-- Onglet Terminal Web Interactif pour Linux/System/Pwn -->
-            <button 
-              onclick="window.trainingSystem.switchRoomTab('terminal')"
-              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'terminal' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
-            >
-              <span>💻</span>
-              <span>Terminal Plein Écran</span>
-            </button>
-
-            ${this.getLocalWebTarget(c.id) ? `
-              <button 
-                onclick="window.trainingSystem.switchRoomTab('browser')"
-                class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'browser' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
-              >
-                <span>🌐</span>
-                <span>Navigateur Web Cible</span>
-              </button>
-            ` : ''}
-
-            <!-- Onglet Simulateur & Outils Interactifs (Phase 3) -->
-            <button 
-              onclick="window.trainingSystem.switchRoomTab('interactive')"
-              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'interactive' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md' : 'text-amber-400 hover:text-white'}"
-            >
-              <span>⚡</span>
-              <span>Simulateur & Outils</span>
-            </button>
-
-            ${((c.defense_json && Object.keys(c.defense_json).length > 0) || (c.defense_tasks && Object.keys(c.defense_tasks).length > 0) || c.is_campaign || c.act || (c.tasks && c.tasks.some(t => t.is_defense))) ? `
-              <button 
-                onclick="window.trainingSystem.switchRoomTab('defense')"
-                class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'defense' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}"
-              >
-                <span>🛡️</span>
-                <span>Mode Défenseur (Blue Team)</span>
-              </button>
-              <button 
-                onclick="window.trainingSystem.switchRoomTab('debrief')"
-                class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'debrief' ? 'bg-gradient-to-r from-purple-600 to-cyan-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}"
-              >
-                <span>📜</span>
-                <span>Débrief & Retex</span>
-              </button>
-            ` : ''}
-
-            <button 
-              onclick="window.trainingSystem.switchRoomTab('scenario')"
-              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'scenario' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
-            >
-              <span>🎯</span>
-              <span>Contexte & Briefing</span>
-            </button>
-
-            <button 
-              onclick="window.trainingSystem.switchRoomTab('guide')"
-              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'guide' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
-            >
-              <span>📚</span>
-              <span>Guide Terminal</span>
-            </button>
-
-            <button 
-              onclick="window.trainingSystem.switchRoomTab('writeup')"
-              class="px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-2 ${this.activeRoomTab === 'writeup' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}"
-            >
-              <span>${allTasksCompleted ? '📖' : '🔒'}</span>
-              <span>Writeup Solution</span>
-            </button>
+              <span>Tâches de la Mission (${c.tasks.filter(t => t.is_completed).length}/${c.tasks.length} résolues)</span>
+            </h2>
+            <span class="text-xs text-slate-400">Progression : ${Math.round((c.tasks.filter(t => t.is_completed).length / Math.max(1, c.tasks.length)) * 100)}%</span>
           </div>
 
-          <!-- Contenu dynamique de l'onglet -->
-          <div class="flex-1 p-5 overflow-y-auto" id="room-tab-content">
-            ${this.renderRoomTabContent()}
+          <div class="space-y-4">
+            ${c.tasks.map((task, idx) => this.renderTaskCard(task, idx + 1)).join('')}
           </div>
-        </div>
-      </div>
+        </section>
+
+        <!-- SECTION 5 : COMMENT S'EN PROTÉGER // DÉFENSE & BLUE TEAM -->
+        <section class="p-6 rounded-2xl bg-gradient-to-r from-blue-950/40 via-slate-900 to-indigo-950/40 border border-blue-500/30 space-y-4 font-sans">
+          <div class="flex items-center justify-between pb-3 border-b border-blue-500/20 font-mono">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🛡️</span>
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-500/40">
+                  COMMENT S'EN PROTÉGER // BLUE TEAM & DURCISSEMENT
+                </span>
+                <h3 class="text-base font-black text-white mt-1">Analyse Défensive, Causes Racines & Hardening</h3>
+              </div>
+            </div>
+            <span class="hidden sm:inline text-xs text-blue-300 font-mono font-bold">Posture Post-Exploitation</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Cause Racine -->
+            <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2">
+              <div class="text-rose-400 font-bold font-mono uppercase tracking-wider flex items-center gap-1.5">
+                <span>⚠️</span>
+                <span>Cause Racine de la Vulnérabilité</span>
+              </div>
+              <p class="text-slate-300 leading-relaxed">
+                ${this.escapeHtml(soc.description || c.defense_description || "L'exploitation repose sur l'absence de validation stricte des entrées et l'attribution de privilèges excessifs à un composant non isolé.")}
+              </p>
+            </div>
+
+            <!-- Mesures de Durcissement -->
+            <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2">
+              <div class="text-emerald-400 font-bold font-mono uppercase tracking-wider flex items-center gap-1.5">
+                <span>🔒</span>
+                <span>Correctif de Sécurité & Hardening</span>
+              </div>
+              <p class="text-slate-300 leading-relaxed">
+                ${this.escapeHtml(rem.description || "Appliquer le principe du moindre privilège, révoquer les capacités setuid superflues et intégrer un contrôle d'intégrité strict.")}
+              </p>
+            </div>
+          </div>
+
+          <!-- Détection SOC & Règles SIEM / Sigma -->
+          <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2 text-xs font-mono">
+            <div class="text-cyan-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span>📡</span>
+              <span>Indicateurs de Détection SOC & Règles SIEM</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed font-sans">
+              Surveille l'exécution de processus inhabituels avec EUID=0, l'émission de requêtes HTTP suspectes ou les tentatives d'accès aux fichiers sensibles du système.
+            </p>
+            ${(det.starter_template || det.description) ? `
+              <pre class="p-3 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-cyan-300 overflow-x-auto select-all max-h-36"><code>${this.escapeHtml(det.starter_template || det.description)}</code></pre>
+            ` : ''}
+          </div>
+        </section>
+
+        <!-- SECTION 6 : SOLUTION COMPLÈTE & WRITEUP DÉTAILLÉ (DÉPLIABLE EN BAS) -->
+        <section class="p-5 rounded-2xl bg-[#090e1c] border border-slate-800 space-y-3 font-sans">
+          <details class="group">
+            <summary class="cursor-pointer list-none flex items-center justify-between text-xs font-mono font-bold text-slate-300 hover:text-white transition">
+              <span class="flex items-center gap-2">
+                <span>📖</span>
+                <span class="text-cyan-400">SOLUTION COMPLÈTE & WRITEUP DE LA ROOM</span>
+                <span class="text-[10px] text-slate-500 font-normal">(Clique pour déplier la solution pas-à-pas)</span>
+              </span>
+              <span class="group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            
+            <div class="mt-4 pt-4 border-t border-slate-800 text-xs text-slate-300 space-y-3" id="writeup-body-mount">
+              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2 font-mono">
+                <p class="text-slate-400">Clique ci-dessous pour charger la solution complète de la room :</p>
+                <button onclick="window.trainingSystem.fetchWriteup('${c.id}')" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white border border-slate-700 text-xs font-bold transition">
+                  Charger le Writeup Détaillé
+                </button>
+              </div>
+            </div>
+          </details>
+        </section>
+
+      </main>
     `;
 
-    // Si l'onglet terminal ou split est actif, initialiser CyberTerminal
-    if (this.activeRoomTab === 'terminal' || this.activeRoomTab === 'split') {
+    // Si le terminal est ouvert, l'initialiser
+    if (this.terminalDrawerOpen) {
       this.initRoomTerminal();
     }
   }
@@ -1381,6 +1520,10 @@ class TrainingSystem {
     if (chId === 'aegis-box-01-perimeter') return `${window.location.origin}/portal/`;
     if (chId === 'aegis-box-02-internal') return `${window.location.origin}/nexus/`;
     if (chId === 'aegis-box-03-vault') return `${window.location.origin}/vault/`;
+    if (chId.startsWith('real-01')) return `${window.location.origin}/targets/training/real-01-fintech-gateway/`;
+    if (chId.startsWith('real-02')) return `${window.location.origin}/targets/training/real-02-medhealth-ehr/`;
+    if (chId.startsWith('real-03')) return `${window.location.origin}/targets/training/real-03-cybercorp-erp/`;
+    if (chId.startsWith('real-04')) return `${window.location.origin}/targets/training/real-04-aerospace-telemetry/`;
     if (chId.startsWith('web-01')) return `${window.location.origin}/targets/training/web-01/`;
     if (chId.startsWith('web-02')) return `${window.location.origin}/targets/training/web-02/`;
     if (chId.startsWith('web-03')) return `${window.location.origin}/targets/training/web-03/`;
@@ -1392,7 +1535,7 @@ class TrainingSystem {
     if (chId.startsWith('web-09')) return `${window.location.origin}/targets/training/web-09/`;
     if (chId.startsWith('web-10')) return `${window.location.origin}/targets/training/web-10/`;
     if (chId.startsWith('api-01')) return `${window.location.origin}/targets/training/api-01/`;
-    if (cat.includes('web') || cat.includes('api') || cat.includes('boot2root') || cat.includes('campaign') || chId.startsWith('b2r-') || chId.startsWith('cloud-') || chId.startsWith('aegis-box-')) {
+    if (cat.includes('web') || cat.includes('api') || cat.includes('boot2root') || cat.includes('campaign') || chId.startsWith('b2r-') || chId.startsWith('cloud-') || chId.startsWith('aegis-box-') || chId.startsWith('real-')) {
       return `${window.location.origin}/targets/training/${chId}/`;
     }
     return null;
@@ -2863,60 +3006,113 @@ class TrainingSystem {
 
   renderTaskCard(task, taskNum) {
     const isCompleted = task.is_completed;
-    const isExpanded = this.expandedTaskId === task.id;
+    const hints = task.hints || (taskNum === 1 ? this.activeChallenge?.hints : []) || [];
+    const flagFormat = task.flag_format || 'Format : CTF{...}';
 
     return `
-      <div class="room-task-card ${isCompleted ? 'task-completed' : ''}" id="task-card-${task.id}">
+      <div class="room-task-card p-5 rounded-2xl bg-[#090e1c] border ${isCompleted ? 'border-emerald-500/50 bg-emerald-950/10' : 'border-slate-800'} space-y-4" id="task-card-${task.id}">
         <!-- En-tête de la tâche -->
-        <div class="room-task-header cursor-pointer" onclick="window.trainingSystem.toggleTaskAccordion('${task.id}')">
+        <div class="flex items-center justify-between gap-3 font-sans">
           <div class="flex items-center gap-3">
-            <div class="w-7 h-7 rounded-lg ${isCompleted ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-400 border border-slate-800'} flex items-center justify-center text-xs font-bold font-mono">
-              ${isCompleted ? '✓' : taskNum}
+            <div class="w-8 h-8 rounded-xl ${isCompleted ? 'bg-emerald-500 text-slate-950 font-black' : 'bg-slate-900 text-cyan-400 border border-slate-700'} flex items-center justify-center text-xs font-mono font-bold flex-shrink-0">
+              ${isCompleted ? '✓' : `T${taskNum}`}
             </div>
             <div>
-              <h4 class="text-sm font-bold text-white">${this.escapeHtml(task.title)}</h4>
-              <span class="text-xs text-slate-400 font-mono">${task.points || 0} points • ${isCompleted ? '<span class="text-emerald-400 font-bold">RÉSOLUE</span>' : 'À résoudre'}</span>
+              <h3 class="text-sm sm:text-base font-bold text-white">${this.escapeHtml(task.title)}</h3>
+              <div class="text-xs text-slate-400 font-mono flex items-center gap-2 mt-0.5">
+                <span>${task.points || 25} PTS</span>
+                <span>•</span>
+                <span class="${isCompleted ? 'text-emerald-400 font-bold' : 'text-slate-400'}">
+                  ${isCompleted ? 'RÉSOLU ✓' : 'À résoudre'}
+                </span>
+              </div>
             </div>
           </div>
-          <span class="text-slate-400 text-xs transition-transform ${isExpanded ? 'rotate-180' : ''}">▼</span>
+          ${isCompleted ? `
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono">
+              VALIDÉ
+            </span>
+          ` : ''}
         </div>
 
-        <!-- Corps de la tâche accordéon -->
-        ${isExpanded ? `
-          <div class="room-task-body space-y-4">
-            <p class="text-sm text-slate-300 leading-relaxed">${this.escapeHtml(task.description)}</p>
+        <!-- Description / Question claire de la tâche -->
+        <div class="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans pl-1">
+          ${this.escapeHtml(task.description)}
+        </div>
 
-            <!-- Champ de soumission de Flag -->
-            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
-              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-mono">
-                Réponse ou Flag (Format: CYBERLAB{...} ou valeur)
-              </label>
-              ${isCompleted ? `
-                <div class="flex items-center gap-2 p-2 bg-emerald-950/60 border border-emerald-800/80 rounded-lg text-emerald-300 text-xs font-mono font-bold">
-                  <span>✓</span>
-                  <span>Tâche résolue avec succès ! Flag validé.</span>
-                </div>
-              ` : `
-                <div class="flex items-center gap-2">
-                  <input 
-                    type="text" 
-                    id="input-flag-${task.id}"
-                    placeholder="Tape ta réponse ou ton flag..." 
-                    class="flex-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-xs text-cyan-300 font-mono focus:border-cyan-500 focus:outline-none"
-                    onkeydown="if(event.key === 'Enter') window.trainingSystem.submitFlag('${task.id}')"
-                  />
-                  <button 
-                    onclick="window.trainingSystem.submitFlag('${task.id}')"
-                    class="btn-mini-3d btn-mini-cyan py-2 px-4 font-mono text-xs"
-                  >
-                    Soumettre
-                  </button>
-                </div>
-                <div id="flag-error-${task.id}" class="text-[11px] text-rose-400 font-bold hidden font-mono"></div>
-              `}
-            </div>
+        <!-- Indices 100% Gratuits et Progressifs -->
+        ${hints.length > 0 ? `
+          <div class="space-y-2 pt-1 font-mono">
+            ${hints.map((h, hIdx) => {
+              const isUnlocked = Boolean(h.is_unlocked || h.content);
+              if (isUnlocked) {
+                return `
+                  <div class="p-3 bg-slate-950/90 rounded-xl border border-cyan-800/60 text-xs font-mono space-y-1.5">
+                    <div class="flex items-center justify-between text-cyan-400 font-bold">
+                      <span class="flex items-center gap-1.5">
+                        <span>💡</span>
+                        <span>${this.escapeHtml(h.title || `Indice n°${hIdx + 1}`)}</span>
+                      </span>
+                      <span class="text-[10px] text-emerald-400 font-normal">✓ Indice révélé</span>
+                    </div>
+                    <p class="text-slate-300 font-sans text-xs leading-relaxed pt-1 border-t border-slate-800/80">${this.escapeHtml(h.content || 'Consultez les requêtes réseau et les fichiers d\'en-tête.')}</p>
+                  </div>
+                `;
+              } else {
+                return `
+                  <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between gap-3 text-xs font-mono">
+                    <div class="flex items-center gap-2">
+                      <span class="text-base">💡</span>
+                      <div>
+                        <span class="font-bold text-slate-300">${this.escapeHtml(h.title || `Indice gratuit ${hIdx + 1}`)}</span>
+                        <span class="text-[10px] text-emerald-400 block font-normal">100% Gratuit // Déblocage immédiat</span>
+                      </div>
+                    </div>
+                    <button 
+                      onclick="window.trainingSystem.unlockHint('${this.activeChallenge.id}', ${h.index !== undefined ? h.index : hIdx})"
+                      class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-cyan-400 hover:text-cyan-300 border border-cyan-900/60 font-bold text-xs transition-colors flex items-center gap-1.5"
+                    >
+                      <span>Débloquer l'indice</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+                `;
+              }
+            }).join('')}
           </div>
         ` : ''}
+
+        <!-- Zone de Soumission du Flag -->
+        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800/90 space-y-2 font-mono">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-400 font-bold uppercase text-[10px] tracking-wider">Réponse / Flag :</span>
+            <span class="text-[11px] text-cyan-400 font-bold">${this.escapeHtml(flagFormat)}</span>
+          </div>
+
+          ${isCompleted ? `
+            <div class="flex items-center gap-2 p-2.5 bg-emerald-950/60 border border-emerald-800/80 rounded-lg text-emerald-300 text-xs font-bold">
+              <span>✓</span>
+              <span>Flag validé avec succès ! Tâche complétée (+${task.points || 25} XP).</span>
+            </div>
+          ` : `
+            <div class="flex items-center gap-2">
+              <input 
+                type="text" 
+                id="input-flag-${task.id}"
+                placeholder="${this.escapeHtml(flagFormat)}..." 
+                class="flex-1 px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-cyan-300 font-mono focus:border-cyan-500 focus:outline-none transition-colors"
+                onkeydown="if(event.key === 'Enter') window.trainingSystem.submitFlag('${task.id}')"
+              />
+              <button 
+                onclick="window.trainingSystem.submitFlag('${task.id}')"
+                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-black text-xs transition shadow-md"
+              >
+                Soumettre
+              </button>
+            </div>
+            <div id="flag-error-${task.id}" class="text-[11px] text-rose-400 font-bold hidden font-mono mt-1"></div>
+          `}
+        </div>
       </div>
     `;
   }
@@ -2965,18 +3161,8 @@ class TrainingSystem {
 
       const data = await res.json();
       this.activeInstance = data.instance || data;
-      const boxMount = document.getElementById('room-target-box-mount');
-      if (boxMount) boxMount.innerHTML = this.renderTargetBox();
-
+      this.renderRoom();
       this.startCountdownTimer();
-
-      // Bascule automatique vers le terminal si lab système, ou navigateur si web
-      const isWeb = (this.activeChallenge?.category || '').toLowerCase().includes('web');
-      if (isWeb) {
-        setTimeout(() => this.switchRoomTab('browser'), 200);
-      } else {
-        setTimeout(() => this.switchRoomTab('split'), 200);
-      }
     } catch (e) {
       alert('Impossible de lancer la machine : ' + e.message);
     }
@@ -2993,9 +3179,7 @@ class TrainingSystem {
 
       if (this.timerInterval) clearInterval(this.timerInterval);
       this.activeInstance = null;
-
-      const boxMount = document.getElementById('room-target-box-mount');
-      if (boxMount) boxMount.innerHTML = this.renderTargetBox();
+      this.renderRoom();
     } catch (e) {
       console.error('Erreur arrêt instance:', e);
     }
@@ -3013,6 +3197,8 @@ class TrainingSystem {
       if (res.ok) {
         const data = await res.json();
         this.activeInstance = data.instance || data;
+        this.renderRoom();
+        this.startCountdownTimer();
       }
     } catch (e) {
       console.error('Erreur renouvellement:', e);
@@ -3032,8 +3218,7 @@ class TrainingSystem {
       if (res.ok) {
         const data = await res.json();
         this.activeInstance = data.instance || data;
-        const boxMount = document.getElementById('room-target-box-mount');
-        if (boxMount) boxMount.innerHTML = this.renderTargetBox();
+        this.renderRoom();
         this.startCountdownTimer();
         if (window.cyberActiveTerminal) {
           window.cyberActiveTerminal.reset();
@@ -3147,10 +3332,38 @@ class TrainingSystem {
     }
   }
 
-  async unlockHint(challengeId, hintIdx) {
-    if (!confirm('Débloquer cet indice pour des Gemmes 💎 ?')) return;
+  copyTargetIp(ip) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(ip).then(() => {
+        const btn = document.getElementById('btn-copy-target-ip');
+        if (btn) {
+          const orig = btn.innerHTML;
+          btn.innerHTML = '✓ Copié !';
+          setTimeout(() => { if (btn) btn.innerHTML = orig; }, 1500);
+        }
+      }).catch(() => {});
+    }
+  }
 
+  toggleTerminalDrawer() {
+    this.terminalDrawerOpen = !this.terminalDrawerOpen;
+    const drawer = document.getElementById('room-terminal-drawer');
+    const btn = document.getElementById('btn-toggle-terminal-drawer');
+    if (drawer) {
+      if (this.terminalDrawerOpen) {
+        drawer.classList.remove('hidden');
+        if (btn) btn.innerHTML = `<span>✕</span> <span>Masquer le Terminal</span>`;
+        this.initRoomTerminal();
+      } else {
+        drawer.classList.add('hidden');
+        if (btn) btn.innerHTML = `<span>💻</span> <span>Terminal en direct</span>`;
+      }
+    }
+  }
+
+  async unlockHint(challengeId, hintIdx) {
     try {
+      if (window.cyberAudio) window.cyberAudio.playTactileClick();
       const res = await fetch('/api/training/unlock-hint', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -3162,26 +3375,19 @@ class TrainingSystem {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        if (window.cyberAudio) window.cyberAudio.playTactileClick();
-        
-        const hint = this.activeChallenge.hints?.find(h => h.index === hintIdx);
+        let hint = this.activeChallenge?.hints?.find(h => h.index === hintIdx);
+        if (!hint && this.activeChallenge?.hints && this.activeChallenge.hints[hintIdx]) {
+          hint = this.activeChallenge.hints[hintIdx];
+        }
         if (hint) {
           hint.is_unlocked = true;
           hint.content = data.hint || data.content;
         }
 
-        if (window.cyberApp && data.gems_remaining !== undefined) {
-          window.cyberApp.state.gems = data.gems_remaining;
-          window.cyberApp.renderHeaderWidgets();
-          window.cyberApp.renderRightWidgets();
-        }
-
         this.renderRoom();
-      } else {
-        alert(data.error || 'Gemmes insuffisantes ou erreur lors du déblocage.');
       }
     } catch (e) {
-      alert('Erreur réseau : ' + e.message);
+      console.error('Erreur réseau déblocage indice:', e);
     }
   }
 
@@ -3233,8 +3439,10 @@ class TrainingSystem {
     const d = (diff || '').toLowerCase();
     if (d === 'beginner' || d === 'debutant') return 'debutant';
     if (d === 'easy' || d === 'facile') return 'facile';
-    if (d === 'intermediate' || d === 'intermediaire') return 'intermediaire';
+    if (d === 'intermediate' || d === 'intermediaire' || d === 'medium' || d === 'moyen') return 'intermediaire';
     if (d === 'hard' || d === 'difficile') return 'difficile';
+    if (d === 'expert') return 'expert';
+    if (d === 'pro') return 'insane';
     return 'insane';
   }
 
@@ -3242,9 +3450,11 @@ class TrainingSystem {
     const d = (diff || '').toLowerCase();
     if (d === 'beginner' || d === 'debutant') return 'Débutant';
     if (d === 'easy' || d === 'facile') return 'Facile';
-    if (d === 'intermediate' || d === 'intermediaire') return 'Intermédiaire';
+    if (d === 'intermediate' || d === 'intermediaire' || d === 'medium' || d === 'moyen') return 'Moyen';
     if (d === 'hard' || d === 'difficile') return 'Difficile';
-    return 'Insane';
+    if (d === 'expert') return 'Expert';
+    if (d === 'pro') return 'Pro';
+    return 'Pro / Insane';
   }
 
   escapeHtml(str) {

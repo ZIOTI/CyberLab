@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Valeur de chiffrement",
+    "content": "Les types de chiffrement Kerberos sont : 0x12 pour AES256-CTS-HMAC-SHA1-96, 0x11 pour AES128, et 0x17 pour RC4-HMAC."
+  },
+  {
+    "title": "Solution définitive",
+    "content": "Les comptes gMSA gérés automatiquement par Active Directory rendent le cassage hors ligne impossible."
+  }
+]

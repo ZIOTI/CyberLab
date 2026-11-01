@@ -1,0 +1,27 @@
+[
+  {
+    "id": "t1",
+    "title": "Identification du compte VIP compromis",
+    "description": "Analysez l'extrait de dump et identifiez le compte ayant le rôle \"Domain-Admin\" infiltré.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "CTF{OSINT_DARKWEB_ADMIN_ACCOUNT_SPOTTED}"
+  },
+  {
+    "id": "t2",
+    "title": "Cassage de hachage NTLM fuité",
+    "description": "Retrouvez le mot de passe en clair correspondant au hash NTLM 8846f7eaee8fb117ad06bdd830b7586c.",
+    "points": 40,
+    "task_type": "flag",
+    "canonical_flag": "Password123!"
+  },
+  {
+    "id": "t3",
+    "title": "Comment s'en protéger (Défense & Détection)",
+    "description": "Mettez en place la surveillance continue des identifiants d'entreprise sur le Dark Web et imposez le MFA FIDO2.",
+    "points": 40,
+    "task_type": "flag",
+    "is_defense": true,
+    "canonical_flag": "DEFENSE{MFA_FIDO2_CREDENTIAL_SURVEILLANCE_ENFORCED}"
+  }
+]

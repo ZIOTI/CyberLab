@@ -1,0 +1,37 @@
+{
+  "id": "real-02-medhealth-ehr",
+  "title": "MedHealth Clinic Electronic Health Records Portal",
+  "organization": "Hôpital Métropolitain de Santé",
+  "category": "Web & APIs",
+  "target_os": "Linux",
+  "machine_type": "room",
+  "difficulty": "hard",
+  "points": 180,
+  "duration_min": 45,
+  "learning_path": "path-05-redteam-labs",
+  "author": "Healthcare CyberOps",
+  "tags": [
+    "real-attack",
+    "health",
+    "idor",
+    "hipaa",
+    "patient-records",
+    "multi-page"
+  ],
+  "cve": "CWE-639",
+  "rating": 4.8,
+  "solves": 620,
+  "monogram": "MED",
+  "prerequisites": [
+    "Sécurité des données de santé (HDS / HIPAA)",
+    "Attaques IDOR et élévation horizontale de privilèges"
+  ],
+  "recommended_tools": [
+    "Burp Suite",
+    "curl",
+    "Firefox DevTools"
+  ],
+  "narrative_story": "MedHealth opère un portail hospitalier complet comprenant l'accueil public, la prise de rendez-vous, l'espace patient, les résultats de radiologie et les prescriptions médicales. Un contrôle d'accès déficient sur les identifiants de dossier patient (IDOR) expose les dossiers médicaux confidentiels des personnalités politiques.",
+  "target_port": 3333,
+  "virtual_ip": "10.10.82.20"
+}

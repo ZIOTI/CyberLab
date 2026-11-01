@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Calcul d'intervalle",
+    "content": "Différenciez les timestamps successifs des requêtes POST /beacon dans le journal réseau."
+  },
+  {
+    "title": "Action de blocage",
+    "content": "Exécutez la règle iptables -A OUTPUT -d 198.51.100.99 -j DROP pour valider l'isolement."
+  }
+]

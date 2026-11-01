@@ -12,6 +12,21 @@ const { exec } = require('node:child_process');
 const CHALLENGES_ROOT = path.join(__dirname, '..', 'challenges');
 const HMAC_SECRET = 'CYBERLAB_SUPER_SECRET_SALT_2026_REDTEAM';
 
+function normalizeTaskId(id) {
+  if (!id) return '';
+  return String(id).trim().toLowerCase();
+}
+
+function taskIdsMatch(idA, idB) {
+  if (!idA || !idB) return false;
+  const a = normalizeTaskId(idA);
+  const b = normalizeTaskId(idB);
+  if (a === b) return true;
+  const numA = a.replace(/^(task[-_]?|t)/, '');
+  const numB = b.replace(/^(task[-_]?|t)/, '');
+  return numA.length > 0 && numA === numB;
+}
+
 class TrainingManager {
   constructor(db) {
     this.db = db;
@@ -300,30 +315,30 @@ class TrainingManager {
     const paths = [
       {
         id: 'web-beginner',
-        title: 'Fondations Web Pentesting',
-        description: 'Apprends à explorer les vulnérabilités du Web moderne : SQLi, XSS, wrappers LFI et contournements d\'auth.',
+        title: 'Web Application Security & Pentest Moderne',
+        description: 'Maîtrisez l\'audit du Web OWASP Top 10 : SQLi, XSS, SSRF, IDOR, LFI et contournements d\'authentification.',
         icon: 'globe',
         difficulty: 'beginner',
-        challenge_ids: ['web-01-robots', 'web-02-sqli-login', 'web-03-sqli-union', 'web-04-stored-xss', 'web-05-lfi-wrapper'],
-        badge_reward: 'Web Novice Investigator'
+        challenge_ids: ['web-01-robots', 'web-02-sqli-login', 'web-03-sqli-union', 'web-04-stored-xss', 'web-05-lfi-wrapper', 'web-06-sqli-blind-boolean', 'web-25-java-spring4shell'],
+        badge_reward: 'Web Security Specialist'
       },
       {
         id: 'soc-forensics',
-        title: 'Analyste SOC & Investigations Numériques',
-        description: 'Maîtrise la détection d\'intrusions, l\'analyse de captures de trafic réseau et la reconstruction d\'artefacts corrompus.',
+        title: 'SOC Analyst, Forensics & Blue Team Defense',
+        description: 'Devenez analyste de détection d\'élite : analyse de flux PCAP, mémoire vive, règles Sigma/YARA, triage de ransomware et canary deception.',
         icon: 'shield',
         difficulty: 'easy',
-        challenge_ids: ['net-01-wireshark-ftp', 'forensics-01-magic-bytes', 'forensics-02-pcap-http', 'blue-01-auth-log-brute'],
-        badge_reward: 'Blue Sentinel Specialist'
+        challenge_ids: ['net-01-wireshark-ftp', 'forensics-01-magic-bytes', 'forensics-02-pcap-http', 'blue-01-auth-log-brute', 'purple-01-canary-deception', 'purple-02-bas-credential-dump', 'purple-03-kerberoast-detection', 'purple-04-active-mitigation-c2'],
+        badge_reward: 'Blue Sentinel Guardian'
       },
       {
         id: 'crypto-osint-core',
-        title: 'Cryptanalyse & Renseignement Ouvert (OSINT)',
-        description: 'Passe au crible les traces numériques, métadonnées géographiques et chiffrements historiques ou cassés.',
+        title: 'OSINT, Renseignement & Enquêtes Numériques',
+        description: 'Méthodologie d\'investigation en sources ouvertes : métadonnées géographiques, empreintes d\'entreprises, fuites Dark Web, traçage et cryptanalyse.',
         icon: 'search',
         difficulty: 'beginner',
-        challenge_ids: ['osint-01-exif-trace', 'crypto-01-rot-vault', 'crypto-02-xor-cracker', 'phish-01-ceo-fraud'],
-        badge_reward: 'Shadow Intelligence Agent'
+        challenge_ids: ['osint-01-exif-trace', 'crypto-01-rot-vault', 'crypto-02-xor-cracker', 'phish-01-ceo-fraud', 'osint-04-social-footprint', 'osint-05-darkweb-leak', 'osint-06-flight-marine-tracking', 'osint-07-corporate-dns-recon'],
+        badge_reward: 'Shadow Intelligence Investigator'
       },
       {
         id: 'systems-reversing',
@@ -399,12 +414,12 @@ class TrainingManager {
       },
       {
         id: 'master-boot2root',
-        title: 'Certification Master Boot2Root // Insane',
-        description: 'Scénarios multi-machines complets en chaîne de compromission : DMZ, pivoting, privesc Linux/Windows et Vault.',
+        title: 'Red Team Operator, Labs d\'Attaque Réelle & Boot2Root',
+        description: 'Compromission d\'infrastructures d\'entreprises complètes multi-pages : PayShield FinTech, MedHealth EHR, CyberCorp ERP, AeroSpace SCADA, élévation Dirty Pipe et Vault.',
         icon: 'target',
         difficulty: 'insane',
-        challenge_ids: ['b2r-01-enterprise-alpha', 'b2r-02-shadow-corp-dmz', 'b2r-03-the-master-vault', 'linux-07-kernel-dirty-pipe', 'web-25-java-spring4shell'],
-        badge_reward: 'CyberRange Master Cert 2026'
+        challenge_ids: ['real-01-fintech-gateway', 'real-02-medhealth-ehr', 'real-03-cybercorp-erp', 'real-04-aerospace-telemetry', 'red-01-dirty-pipe-exploit', 'red-02-capabilities-tar-privesc', 'b2r-01-enterprise-alpha', 'b2r-02-shadow-corp-dmz', 'b2r-03-the-master-vault', 'linux-07-kernel-dirty-pipe', 'web-25-java-spring4shell'],
+        badge_reward: 'Master Red Team Operator'
       }
     ];
 
@@ -519,22 +534,39 @@ class TrainingManager {
     const unlockedHints = new Set(JSON.parse(prog.unlocked_hints || '[]'));
 
     // Sécurisation des flags : on ne renvoie JAMAIS les flags bruts au client
-    const safeTasks = tasks.map(t => ({
-      id: t.id,
-      title: t.title,
-      description: t.description,
-      points: t.points || 0,
-      is_completed: completedTasks.has(t.id),
-      requires_flag: !!t.flag || !!t.canonical_flag,
-      task_type: t.task_type || 'flag',
-      is_defense: t.id === 't4' || t.id === 't5' || t.id === 't6'
-    }));
+    const safeTasks = tasks.map(t => {
+      const isCompleted = [...completedTasks].some(cId => taskIdsMatch(cId, t.id));
+      const canon = (t.flag || t.canonical_flag || '').trim();
+      let format = 'Format attendu : CTF{...}';
+      if (canon.startsWith('CYBERLAB{') || canon.startsWith('CTF{') || canon.startsWith('FLAG{') || canon.startsWith('AEGIS{') || canon.startsWith('CHIMERA{')) {
+        format = 'Format : CTF{...}';
+      } else if (canon.startsWith('DEFENSE{') || canon.startsWith('REMEDIATION{') || canon.startsWith('SIGMA{') || canon.startsWith('YARA{')) {
+        format = 'Format : DEFENSE{...}';
+      } else if (canon.includes('.') && !canon.includes(' ') && !canon.includes('{')) {
+        format = 'Format : nom_de_fichier / domaine';
+      } else if (!canon.includes('{') && canon.length > 0) {
+        format = 'Format : Texte / Réponse directe';
+      }
 
-    // Masquage du texte des indices non débloqués
+      return {
+        id: t.id,
+        title: t.title,
+        description: t.description,
+        points: t.points || 0,
+        is_completed: isCompleted,
+        requires_flag: !!t.flag || !!t.canonical_flag,
+        task_type: t.task_type || 'flag',
+        flag_format: format,
+        is_defense: Boolean(t.is_defense || t.id === 't4' || t.id === 't5' || t.id === 't6' || (t.title || '').toLowerCase().includes('défense') || (t.title || '').toLowerCase().includes('protéger') || (t.title || '').toLowerCase().includes('remédiation'))
+      };
+    });
+
+    // Masquage du texte des indices non débloqués (100% GRATUIT)
     const safeHints = hints.map((h, idx) => ({
       index: idx,
       title: h.title || `Indice n°${idx + 1}`,
-      cost: h.cost || 10,
+      cost: 0,
+      is_free: true,
       is_unlocked: unlockedHints.has(idx),
       content: unlockedHints.has(idx) ? h.content : null
     }));
@@ -862,16 +894,52 @@ class TrainingManager {
     return files;
   }
 
-  // 8. Soumission et validation de flag (Anti-Triche Strict HMAC & Multi-Étapes)
+  // 8. Soumission et validation de flag (Anti-Triche Strict HMAC & Validation Robuste TryHackMe Style)
   submitFlag(challengeId, taskId, submittedFlag, playerNickname = 'Opérateur RedTeam', ipAddress = '127.0.0.1', explicitPlayerId = null) {
     const ch = this.db.prepare('SELECT * FROM training_challenges WHERE id = ?').get(challengeId);
     if (!ch) throw new Error('Challenge introuvable.');
 
     const tasks = JSON.parse(ch.tasks_json || '[]');
-    const task = tasks.find(t => t.id === taskId);
+    let task = tasks.find(t => taskIdsMatch(t.id, taskId));
+    
+    // Support de repli si soumission de t_defense
+    if (!task && (taskId === 't_defense' || taskId === 'defense')) {
+      task = {
+        id: 't_defense',
+        title: 'Comment s\'en protéger',
+        points: 0,
+        canonical_flag: 'DEFENSE{HARDENING_APPLIED_SUCCESSFULLY}',
+        is_defense: true
+      };
+    }
+
     if (!task) throw new Error('Tâche introuvable.');
 
-    const cleanSubmitted = (submittedFlag || '').trim();
+    if (!submittedFlag || typeof submittedFlag !== 'string') {
+      return {
+        success: false,
+        is_correct: false,
+        correct: false,
+        task_id: taskId,
+        message: 'Veuillez saisir un drapeau avant de soumettre.',
+        error: 'Veuillez saisir un drapeau avant de soumettre.'
+      };
+    }
+
+    // Normalisation de l'entrée utilisateur : trim, support avec ou sans guillemets englobants
+    const rawSubmitted = submittedFlag.trim();
+    const cleanSubmitted = rawSubmitted.replace(/^["'`]|["'`]$/g, '').trim();
+    if (!rawSubmitted && !cleanSubmitted) {
+      return {
+        success: false,
+        is_correct: false,
+        correct: false,
+        task_id: taskId,
+        message: 'Veuillez saisir un drapeau non vide.',
+        error: 'Veuillez saisir un drapeau non vide.'
+      };
+    }
+
     const canonicalFlag = (task.flag || task.canonical_flag || '').trim();
 
     // Récupération de l'ID du joueur
@@ -881,6 +949,19 @@ class TrainingManager {
     const dynamicFlag = this.generateDynamicFlag(challengeId, taskId, canonicalFlag, playerId);
     const isCampaign = (ch.category === 'campaign' || ch.category === 'Campaign' || ch.id.startsWith('aegis-box-'));
 
+    // Helper pour extraire le corps intérieur d'un flag : CTF{xyz} -> xyz, FLAG{xyz} -> xyz, DEFENSE{xyz} -> xyz
+    const extractBody = (flagStr) => {
+      if (!flagStr) return '';
+      const m = flagStr.match(/^[A-Za-z0-9_-]+[{(]([\s\S]+)[})]$/);
+      return m ? m[1].trim() : flagStr.trim();
+    };
+
+    const subBodyRaw = extractBody(rawSubmitted).toLowerCase();
+    const subBodyClean = extractBody(cleanSubmitted).toLowerCase();
+    const subBody = subBodyClean;
+    const canonBody = extractBody(canonicalFlag).toLowerCase();
+    const dynBody = extractBody(dynamicFlag).toLowerCase();
+
     let isCorrect = false;
     let customErrorMsg = null;
 
@@ -889,9 +970,13 @@ class TrainingManager {
       const isDynamicFlagTask = (canonicalFlag.startsWith('AEGIS{') || canonicalFlag.startsWith('CHIMERA{') || canonicalFlag.startsWith('FLAG{'));
 
       if (isDynamicFlagTask) {
-        if (cleanSubmitted === dynamicFlag || cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase()) {
+        if (rawSubmitted === dynamicFlag || rawSubmitted.toLowerCase() === dynamicFlag.toLowerCase() ||
+            cleanSubmitted === dynamicFlag || cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase() ||
+            (subBodyRaw && subBodyRaw === dynBody) || (subBodyClean && subBodyClean === dynBody)) {
           isCorrect = true;
-        } else if (cleanSubmitted === canonicalFlag || cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase()) {
+        } else if (rawSubmitted === canonicalFlag || rawSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
+                   cleanSubmitted === canonicalFlag || cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
+                   (subBodyRaw && subBodyRaw === canonBody) || (subBodyClean && subBodyClean === canonBody)) {
           // Rejet formel du flag statique copié (anti-triche writeup)
           isCorrect = false;
           customErrorMsg = '❌ Flag statique refusé ! Le mode Campagne utilise des flags dynamiques calculés pour ton identité d\'opérateur. Explore la cible pour extraire ton flag personnel.';
@@ -901,19 +986,42 @@ class TrainingManager {
         }
       } else {
         // Tâches SOC, Détection ou Remédiation (réponses de texte ou tokens de règles)
-        if (cleanSubmitted === canonicalFlag || cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
-            cleanSubmitted === dynamicFlag || cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase()) {
+        if (rawSubmitted === canonicalFlag || rawSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
+            cleanSubmitted === canonicalFlag || cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
+            rawSubmitted === dynamicFlag || rawSubmitted.toLowerCase() === dynamicFlag.toLowerCase() ||
+            cleanSubmitted === dynamicFlag || cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase() ||
+            (subBodyRaw && (subBodyRaw === canonBody || subBodyRaw === dynBody)) ||
+            (subBodyClean && (subBodyClean === canonBody || subBodyClean === dynBody))) {
           isCorrect = true;
         }
       }
     } else {
-      // Pour les 123 challenges classiques, rétro-compatibilité totale
-      isCorrect = canonicalFlag && (
+      // Pour tous les challenges classiques : tolérance maximale et intelligente (casse, espaces, préfixe)
+      const directMatch = canonicalFlag && (
+        rawSubmitted === canonicalFlag ||
+        rawSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
         cleanSubmitted === canonicalFlag ||
-        cleanSubmitted === dynamicFlag ||
         cleanSubmitted.toLowerCase() === canonicalFlag.toLowerCase() ||
+        rawSubmitted === dynamicFlag ||
+        rawSubmitted.toLowerCase() === dynamicFlag.toLowerCase() ||
+        cleanSubmitted === dynamicFlag ||
         cleanSubmitted.toLowerCase() === dynamicFlag.toLowerCase()
       );
+
+      const bodyMatch = (subBodyRaw && (subBodyRaw === canonBody || subBodyRaw === dynBody)) ||
+                        (subBodyClean && (subBodyClean === canonBody || subBodyClean === dynBody));
+
+      isCorrect = Boolean(directMatch || bodyMatch);
+
+      if (!isCorrect) {
+        if (canonicalFlag.startsWith('CTF{') && !cleanSubmitted.includes('{')) {
+          customErrorMsg = 'Format attendu sous la forme CTF{...}. Vérifiez vos accolades.';
+        } else if (canonicalFlag.startsWith('DEFENSE{') && !cleanSubmitted.includes('{')) {
+          customErrorMsg = 'Format attendu sous la forme DEFENSE{...}. Vérifiez vos accolades.';
+        } else {
+          customErrorMsg = 'Drapeau incorrect. Vérifiez vos étapes ou consultez les indices gratuits.';
+        }
+      }
     }
 
     // Journalisation de la soumission
@@ -943,12 +1051,13 @@ class TrainingManager {
     let challengeNewlySolved = false;
 
     if (isCorrect) {
-      if (!completedTasks.has(taskId)) {
-        completedTasks.add(taskId);
-        pointsAwarded = task.points || Math.round(ch.points / tasks.length);
+      const alreadySolved = [...completedTasks].some(cId => taskIdsMatch(cId, task.id));
+      if (!alreadySolved) {
+        completedTasks.add(task.id);
+        pointsAwarded = task.points || Math.round(ch.points / Math.max(1, tasks.length));
       }
 
-      const allSolved = tasks.every(t => completedTasks.has(t.id));
+      const allSolved = tasks.length > 0 ? tasks.every(t => [...completedTasks].some(cId => taskIdsMatch(cId, t.id))) : true;
       const status = allSolved ? 'solved' : 'in_progress';
       const solvedAt = allSolved && !prog.solved_at ? new Date().toISOString() : prog.solved_at;
 
@@ -1509,7 +1618,7 @@ class TrainingManager {
     };
   }
 
-  // 9. Déblocage d'indice avec coût en gemmes
+  // 9. Déblocage d'indice 100% gratuit et progressif (TryHackMe Style)
   unlockHint(challengeId, hintIndex) {
     const ch = this.db.prepare('SELECT * FROM training_challenges WHERE id = ?').get(challengeId);
     if (!ch) throw new Error('Challenge introuvable.');
@@ -1524,21 +1633,8 @@ class TrainingManager {
     }
 
     const unlocked = new Set(JSON.parse(prog.unlocked_hints || '[]'));
-    if (unlocked.has(hintIndex)) {
-      return { hint: hint.content, cost_paid: 0, already_unlocked: true };
-    }
-
-    const cost = hint.cost || 10;
-
-    // Déduction des gemmes sur le compte utilisateur
-    const user = this.db.prepare('SELECT gems FROM user_state WHERE id = ?').get('current_player') || { gems: 100 };
-    if (user.gems < cost) {
-      throw new Error(`Crédits insuffisants. Cet indice requiert ${cost} gemmes (tu en as ${user.gems}).`);
-    }
-
-    this.db.prepare('UPDATE user_state SET gems = gems - ? WHERE id = ?').run(cost, 'current_player');
-
     unlocked.add(hintIndex);
+
     this.db.prepare(`
       INSERT INTO training_user_progress (challenge_id, status, tasks_completed, unlocked_hints, writeup_unlocked, attempts_count, points_earned, solved_at, updated_at)
       VALUES (?, 'in_progress', '[]', ?, 0, 0, 0, NULL, ?)
@@ -1547,11 +1643,15 @@ class TrainingManager {
         updated_at = excluded.updated_at
     `).run(challengeId, JSON.stringify([...unlocked]), new Date().toISOString());
 
+    const user = this.db.prepare('SELECT gems FROM user_state WHERE id = ?').get('current_player') || { gems: 100 };
+
     return {
       hint: hint.content,
-      cost_paid: cost,
+      cost: 0,
+      cost_paid: 0,
+      is_free: true,
       already_unlocked: false,
-      remaining_gems: user.gems - cost
+      remaining_gems: user.gems || 100
     };
   }
 
