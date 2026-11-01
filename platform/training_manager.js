@@ -610,6 +610,8 @@ class TrainingManager {
       prerequisites: JSON.parse(ch.prerequisites || '[]'),
       recommended_tools: JSON.parse(ch.recommended_tools || '[]'),
       narrative_story: ch.narrative_story,
+      description: ch.narrative_story || ch.mission_order || '',
+      scenario: ch.mission_order || ch.narrative_story || '',
       tasks: safeTasks,
       hints: safeHints,
       downloadable_files: downloadableFiles,

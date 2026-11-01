@@ -1186,6 +1186,7 @@ class TrainingSystem {
     const isRunning = this.activeInstance && (this.activeInstance.status === 'RUNNING' || this.activeInstance.status === 'running');
     const localWebTarget = this.getLocalWebTarget(c.id);
     const isWeb = localWebTarget !== null;
+    const isOsint = (c.category || '').toLowerCase().includes('osint') || (c.tags && (Array.isArray(c.tags) ? c.tags.includes('osint') : String(c.tags).includes('osint')));
     const avatar = CyberAvatarEngine.getAvatar(c);
 
     // Defense metadata
@@ -1249,7 +1250,7 @@ class TrainingSystem {
                 `}
               </span>
               <span class="text-xs font-black uppercase tracking-wider font-mono ${isRunning ? 'text-emerald-400' : 'text-slate-400'}">
-                ${isRunning ? 'MACHINE VIRTUELLE ACTIVE — RÉSEAU LAB CONNECTÉ' : 'MACHINE VIRTUELLE HORS LIGNE'}
+                ${isOsint ? (isRunning ? 'ENVIRONNEMENT D\'ENQUÊTE OSINT ACTIF // RECHERCHE DE DONNÉES' : 'SIMULATION OSINT HORS LIGNE') : (isRunning ? 'MACHINE VIRTUELLE ACTIVE — RÉSEAU LAB CONNECTÉ' : 'MACHINE VIRTUELLE HORS LIGNE')}
               </span>
             </div>
 
@@ -1386,8 +1387,34 @@ class TrainingSystem {
             <span>🎯</span>
             <span>Contexte Opérationnel & Briefing</span>
           </div>
-          <div class="text-sm text-slate-300 leading-relaxed space-y-3">
-            <p class="whitespace-pre-wrap">${this.escapeHtml(c.description)}</p>
+          <!-- ENCART TRYHACKME : POINT DE DEPART DE LA MISSION -->
+          <div class="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-blue-950/40 border border-cyan-500/30 font-mono text-xs space-y-2">
+            <div class="flex items-center justify-between text-cyan-300 font-bold uppercase tracking-wider text-[11px]">
+              <span class="flex items-center gap-2">
+                <span>📍</span>
+                <span>Point de Départ & Cible Initiale (Règles d'Engagement)</span>
+              </span>
+              <span class="text-[10px] text-emerald-400 font-normal">✓ Données Prêtes</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-300 pt-2 border-t border-slate-800/80">
+              <div>
+                <span class="text-slate-500 block text-[10px] uppercase font-bold">Organisation Cible :</span>
+                <span class="text-white font-bold">${this.escapeHtml(org)}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block text-[10px] uppercase font-bold">${isOsint ? 'Domaine Principal Fourni :' : 'Cible Réseau Initiale :'}</span>
+                <span class="text-cyan-400 font-bold select-all">${isOsint ? (c.id === 'osint-03-domain-recon' ? 'finbank.lab' : (c.domain || 'finbank.lab')) : (isWeb ? 'Application Web (Portail Cible)' : ip)}</span>
+              </div>
+            </div>
+            ${isOsint ? `
+              <div class="p-2.5 rounded-lg bg-slate-950/80 border border-cyan-900/40 text-[11px] text-cyan-200/90 leading-relaxed font-sans mt-1">
+                <strong>🔎 Méthodologie OSINT :</strong> Ce lab est une investigation sur sources ouvertes (reconnaissance passive). Il n'y a pas d'IP à attaquer en brute-force : téléchargez les artefacts ci-dessus pour examiner les données réelles et remonter la piste !
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="text-sm text-slate-300 leading-relaxed space-y-3 pt-2 font-sans">
+            <p class="whitespace-pre-wrap">${this.escapeHtml(c.description || c.narrative_story || c.scenario || "Briefing d'opération en cours de déploiement.")}</p>
             ${c.scenario ? `
               <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs text-slate-300 font-mono space-y-1.5">
                 <span class="text-amber-400 font-bold uppercase tracking-wider block text-[10px]">Directive d'Engagement :</span>

@@ -32,7 +32,7 @@
     "Google Dorks",
     "Wayback"
   ],
-  "narrative_story": "Les journaux de transparence des certificats (Certificate Transparency Logs) répertorient tous les certificats SSL/TLS émis publiquement par les autorités de certification. En interrogeant la base de données crt.sh pour le domaine cible, découvre les sous-domaines non répertoriés dans les serveurs DNS publics (vpn, dev, git, api-internal) et accède au panneau d'administration caché.",
+  "narrative_story": "Dans le cadre d'un audit de renseignement offensif pour le groupe bancaire international FinBank, vous disposez uniquement du domaine racine officiel de l'organisation : 'finbank.lab'.\n\nLes équipes informatiques ont récemment déployé plusieurs nouveaux serveurs et généré des certificats SSL/TLS publics. Ces transactions sont obligatoirement archivées dans les registres publics de Transparence des Certificats (Certificate Transparency / crt.sh). Un export brut des journaux de certificats ('finbank_certificates_dump.txt') a été intercepté et mis à votre disposition dans la section Artefacts ci-dessus.\n\nVotre objectif OSINT : analyser les entrées de certificats, cartographier les sous-domaines non indexés dans les DNS publics (notamment les passerelles d'accès distant et les consoles de développement internes) et identifier le flag confidentiel dissimulé dans les extensions du certificat de staging.",
   "target_port": 3333,
   "virtual_ip": "10.10.25.115"
 }

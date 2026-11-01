@@ -1,0 +1,69 @@
+# ==============================================================================
+# CERTIFICATE TRANSPARENCY LOG QUERY EXPORT (crt.sh)
+# Target Identity: finbank.lab
+# Query Filter: %.finbank.lab
+# Export Timestamp: 2026-10-24T08:14:22Z
+# Total Certificates Found: 14 entries
+# ==============================================================================
+
+[ENTRY #001]
+crt.sh ID      : 1489201940
+Logged At      : 2026-09-12 14:22:01 UTC
+Not Before     : 2026-09-12 00:00:00 UTC
+Not After      : 2026-12-11 23:59:59 UTC
+Common Name    : finbank.lab
+Matching Idents: finbank.lab, www.finbank.lab
+Issuer         : C=US, O=Let's Encrypt, CN=R3
+Serial Number  : 03:b4:91:8a:22:4f:01:89:cc:12
+Status         : Valid (Production Gateway)
+
+[ENTRY #002]
+crt.sh ID      : 1489240112
+Logged At      : 2026-09-15 09:11:45 UTC
+Not Before     : 2026-09-15 00:00:00 UTC
+Not After      : 2026-12-14 23:59:59 UTC
+Common Name    : api.finbank.lab
+Matching Idents: api.finbank.lab, api-v2.finbank.lab
+Issuer         : C=US, O=DigiCert Inc, CN=DigiCert Global G2 TLS RSA SHA256 2020 CA1
+Serial Number  : 04:fa:11:02:99:ee:cc:41:88:12
+Status         : Valid (Public API Gateway)
+
+[ENTRY #003]
+crt.sh ID      : 1490104822
+Logged At      : 2026-09-28 17:40:19 UTC
+Not Before     : 2026-09-28 00:00:00 UTC
+Not After      : 2026-12-27 23:59:59 UTC
+Common Name    : vpn-emea.finbank.lab
+Matching Idents: vpn-emea.finbank.lab, sslvpn-backup.finbank.lab
+Issuer         : C=US, O=Let's Encrypt, CN=E1
+Serial Number  : 07:19:ac:55:bb:34:90:ee:41:09
+Status         : Active (Remote Access Concentrator - Europe Middle East Africa)
+Notes          : External VPN Gateway endpoint for mobile staff.
+
+[ENTRY #004]
+crt.sh ID      : 1491849201
+Logged At      : 2026-10-02 11:05:32 UTC
+Not Before     : 2026-10-02 00:00:00 UTC
+Not After      : 2027-10-02 23:59:59 UTC
+Common Name    : auth.finbank.lab
+Matching Idents: auth.finbank.lab, sso.finbank.lab, keycloak.finbank.lab
+Issuer         : C=US, O=DigiCert Inc, CN=DigiCert TLS RSA SHA256 2020 CA1
+Serial Number  : 09:dd:88:14:00:aa:fe:77:21:65
+Status         : Active (SSO / IAM Centralized Gateway)
+
+[ENTRY #005]
+crt.sh ID      : 1492301984
+Logged At      : 2026-10-14 22:48:11 UTC
+Not Before     : 2026-10-14 00:00:00 UTC
+Not After      : 2026-11-14 23:59:59 UTC
+Common Name    : gitlab-dev.finbank.lab
+Matching Idents: gitlab-dev.finbank.lab, ci-runner-internal.finbank.lab, registry-dev.finbank.lab
+Issuer         : C=US, O=Let's Encrypt, CN=R3
+Serial Number  : 0a:fe:99:31:c2:00:44:88:51:77
+Status         : Active (Internal Git & CI/CD Pipelines Repository)
+SAN Details    :
+  - DNS:gitlab-dev.finbank.lab
+  - DNS:ci-runner-internal.finbank.lab
+  - DNS:registry-dev.finbank.lab
+  - URI:urn:cyberlab:mission:flag=CYBERLAB{CERTIFICATE_TRANSPARENCY_SUBDOMAIN_LEAK}
+  - Comment: Dev team staging certificate - leak detected during periodic automated CT monitoring.
