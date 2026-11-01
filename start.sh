@@ -16,16 +16,16 @@ echo ""
 # 1. Vérification du moteur d'exécution Node.js
 if ! command -v node >/dev/null 2>&1; then
     echo "❌ [ERREUR] Node.js n'est pas installé ou n'est pas dans votre PATH."
-    echo "ℹ️  Veuillez installer Node.js v18 ou supérieur (https://nodejs.org)."
+    echo "ℹ️  Veuillez installer Node.js v24.x (https://nodejs.org)."
     exit 1
 fi
 
 NODE_VERSION_RAW=$(node -v | tr -d 'v')
 NODE_MAJOR=$(echo "$NODE_VERSION_RAW" | cut -d. -f1)
 
-if [ "$NODE_MAJOR" -lt 18 ]; then
-    echo "❌ [ERREUR] Node.js v18+ est requis. Version détectée : v$NODE_VERSION_RAW"
-    echo "ℹ️  Veuillez mettre à jour Node.js vers v18, v20 ou v22."
+if [ "$NODE_MAJOR" -ne 24 ]; then
+    echo "❌ [ERREUR] Node.js v24.x est requis. Version détectée : v$NODE_VERSION_RAW"
+    echo "ℹ️  Veuillez mettre à jour Node.js vers v24.x."
     exit 1
 fi
 

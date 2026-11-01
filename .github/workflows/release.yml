@@ -29,7 +29,7 @@ jobs:
           node-version: 24
 
       - name: 🧪 Exécution de la suite de tests de validation
-        run: node test_suite.js
+        run: npm run test:all
 
       - name: 🔨 Compilation des exécutables Windows (.EXE)
         shell: powershell
@@ -37,9 +37,11 @@ jobs:
           $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
           Write-Host "[*] Compilation de CyberRange-PRO.exe (Launcher)..."
           & $csc /nologo /target:winexe /out:CyberRange-PRO.exe /r:System.Windows.Forms.dll,System.Drawing.dll src-launcher\Launcher.cs
+          if ($LASTEXITCODE -ne 0) { throw 'Compilation du launcher échouée' }
 
           Write-Host "[*] Compilation de CyberRange-PRO-Setup.exe (Installateur 1-Clic)..."
           & $csc /nologo /target:winexe /out:CyberRange-PRO-Setup.exe /r:System.Windows.Forms.dll,System.Drawing.dll,Microsoft.CSharp.dll,System.IO.Compression.dll,System.IO.Compression.FileSystem.dll src-launcher\Installer.cs
+          if ($LASTEXITCODE -ne 0) { throw 'Compilation de l’installateur échouée' }
 
       - name: 📦 Préparation des packages de distribution
         shell: powershell
@@ -53,6 +55,10 @@ jobs:
           Copy-Item -Recurse -Force public dist\CyberRange-PRO\
           Copy-Item -Recurse -Force challenges dist\CyberRange-PRO\
           Copy-Item -Recurse -Force platform dist\CyberRange-PRO\
+          Copy-Item -Recurse -Force docs dist\CyberRange-PRO\
+          Copy-Item -Recurse -Force scripts dist\CyberRange-PRO\
+          Copy-Item -Recurse -Force .github dist\CyberRange-PRO\
+          Copy-Item -Force test_suite.js, test_edge_cases_phase3.js, test_edge_cases_phase4.js, test_edge_cases_phase5.js dist\CyberRange-PRO\
           Copy-Item -Force CyberRange-PRO.exe dist\CyberRange-PRO\
           Copy-Item -Force CyberRange-PRO-Setup.exe dist\CyberRange-PRO\
           Copy-Item -Force server.js dist\CyberRange-PRO\
@@ -94,6 +100,7 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           name: "CyberRange PRO ${{ env.RELEASE_TAG }} (Installer & Portable)"
           generate_release_notes: true
+          body_path: docs/RELEASE-v1.3.2.md
           draft: false
           prerelease: false
           files: |

@@ -1,5 +1,9 @@
 # ⚡ CyberRange PRO (Offensive & Defensive Cybersecurity Academy)
 
+> **État réel et prérequis :** Node.js **24.x** est requis. Le catalogue comprend 134 exercices mêlant simulations, analyse d'artefacts et cibles intégrées ; démarrer une instance ne lance actuellement aucune VM ni aucun conteneur Docker. Les certificats sont des attestations locales personnelles. Le frontend utilise encore des ressources Internet. Les garanties et travaux restants sont détaillés dans [docs/HARDENING.md](docs/HARDENING.md), qui prévaut sur les anciennes descriptions ci-dessous.
+>
+> **Tests :** utiliser `npm test` ou `npm run test:all`. Les suites s'exécutent dans une installation temporaire et refusent l'exécution directe contre le profil de l'opérateur.
+
 <p align="center">
   <img src="https://img.shields.io/badge/Architecture-100%25_Native_Node.js-10b981?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Native Node.js" />
   <img src="https://img.shields.io/badge/Dependencies-Zero_npm-6366f1?style=for-the-badge" alt="Zero npm dependencies" />
@@ -50,7 +54,7 @@ La plateforme opère une synthèse unique entre :
 ## ⚡ Architecture Zéro Dépendance npm
 
 CyberRange PRO a été conçu selon une rigueur d'ingénierie stricte :
-- **Backend 100% Natif :** Propulsé exclusivement par les modules intégrés de Node.js v18+ (`node:http`, `node:sqlite`, `node:crypto`, `node:fs`, `node:path`, `node:child_process`). Aucun répertoire `node_modules` n'est requis pour exécuter le serveur.
+- **Backend 100% Natif :** Propulsé exclusivement par les modules intégrés de Node.js v24.x (`node:http`, `node:sqlite`, `node:crypto`, `node:fs`, `node:path`, `node:child_process`). Aucun répertoire `node_modules` n'est requis pour exécuter le serveur.
 - **Double Base SQLite Isolée :**
   - `cyberrange.db` : Stockage hermétique de la progression du joueur (XP, niveaux validés, badges, série streak, quêtes, inventaire, certificats). **Préservation absolue : cette base n'est jamais écrasée lors des mises à jour.**
   - `targets.db` : Base de données isolée dédiée aux exercices d'injections SQL réalistes et aux cibles exploitables.
@@ -123,7 +127,7 @@ Une campagne scénarisée d'entreprise simulant l'assaut et la défense d'une in
 3. Lancez le jeu via le raccourci ou en exécutant `start.bat`.
 
 ### 🐧 Linux & 🍎 macOS
-1. Assurez-vous que **Node.js (v18+)** est installé (`node -v`).
+1. Assurez-vous que **Node.js (v24.x)** est installé (`node -v`).
 2. Clonez le dépôt et rendez les scripts exécutables :
    ```bash
    git clone https://github.com/ZIOTI/CyberLab.git
@@ -161,7 +165,7 @@ It bridges two distinct paradigms:
 ## ⚡ Zero npm Backend Architecture
 
 CyberRange PRO adheres to a zero-bloat design philosophy:
-- **100% Native Node.js Backend:** Built exclusively using Node.js v18+ built-ins (`node:http`, `node:sqlite`, `node:crypto`, `node:fs`, `node:path`, `node:child_process`). No external npm packages required.
+- **100% Native Node.js Backend:** Built exclusively using Node.js v24.x built-ins (`node:http`, `node:sqlite`, `node:crypto`, `node:fs`, `node:path`, `node:child_process`). No external npm packages required.
 - **Hermetically Isolated Dual SQLite Databases:**
   - `cyberrange.db`: Stores operator state (XP, completed levels, badges, streak, quests, inventory, certificates). **Guaranteed retention: never overwritten across software updates.**
   - `targets.db`: Isolated database for vulnerable training targets and realistic SQL injection scenarios.

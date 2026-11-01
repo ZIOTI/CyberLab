@@ -146,12 +146,8 @@ class CyberAppPro {
       const res = await fetch('/api/user-progress');
       if (res.ok) {
         const data = await res.json();
-        if ((data.xp || 0) >= this.state.xp) {
-          this.state = { ...this.state, ...data };
-          this.saveLocalState();
-        } else {
-          await this.saveToBackend();
-        }
+        this.state = { ...this.state, ...data, completedLevels: data.completed_levels || [], unlockedBadges: data.unlocked_badges || [], maxStreak: data.max_streak || 1 };
+        this.saveLocalState();
       }
     } catch (e) {
       console.warn('Mode autonome local SQLite.', e);

@@ -1420,7 +1420,7 @@ class TrainingSystem {
             class="w-full btn-mini-3d btn-mini-green py-2.5 text-xs font-mono"
           >
             <span>▶</span>
-            <span>Démarrer la Machine</span>
+            <span>Démarrer la simulation</span>
           </button>
         </div>
       `;
@@ -1437,7 +1437,7 @@ class TrainingSystem {
         <div class="flex items-center justify-between font-mono">
           <span class="text-xs font-black text-emerald-400 flex items-center gap-2">
             <span class="radar-ping"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span></span>
-            <span>MACHINE EN LIGNE</span>
+            <span>SIMULATION ACTIVE — aucune VM démarrée</span>
           </span>
           <span id="target-countdown-display" class="text-xs font-black text-amber-400">--:--</span>
         </div>
@@ -1668,7 +1668,7 @@ class TrainingSystem {
           </div>
 
           <div class="flex-1 bg-white relative">
-            <iframe id="target-in-app-iframe" src="${targetUrl}" class="w-full h-full border-0"></iframe>
+            <iframe sandbox="allow-scripts allow-forms allow-downloads" referrerpolicy="no-referrer" title="Cible pédagogique isolée" id="target-in-app-iframe" src="${targetUrl}" class="w-full h-full border-0"></iframe>
           </div>
         </div>
       `;

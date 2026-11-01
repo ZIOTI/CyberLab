@@ -205,6 +205,18 @@ namespace CyberRangeSetup
                             };
                             string downloadUrl = "https://github.com/ZIOTI/CyberLab/releases/latest/download/CyberRange-PRO.zip";
                             client.DownloadFile(new Uri(downloadUrl), tempZip);
+                            string checksums = client.DownloadString("https://github.com/ZIOTI/CyberLab/releases/latest/download/checksums.txt");
+                            string expectedHash = null;
+                            foreach (string line in checksums.Split('\n')) {
+                                string[] parts = line.Trim().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (parts.Length == 2 && parts[1] == "CyberRange-PRO.zip") expectedHash = parts[0];
+                            }
+                            using (var sha = System.Security.Cryptography.SHA256.Create())
+                            using (var stream = File.OpenRead(tempZip)) {
+                                string actualHash = BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+                                if (expectedHash == null || !string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+                                    throw new InvalidDataException("Archive non vérifiée : installation refusée.");
+                            }
                         }
 
                         UpdateUI("Extraction du laboratoire (préservation SQLite)...", 75);
@@ -281,7 +293,7 @@ namespace CyberRangeSetup
                     if (string.IsNullOrEmpty(entry.Name)) continue;
 
                     string destinationPath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
-                    if (!destinationPath.StartsWith(targetDir, StringComparison.OrdinalIgnoreCase))
+                    if (!destinationPath.StartsWith(Path.GetFullPath(targetDir).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
                         continue;
 
                     // NE JAMAIS ÉCRASER LA BASE SQLITE

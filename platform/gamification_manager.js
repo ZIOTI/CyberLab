@@ -47,7 +47,15 @@ class GamificationManager {
     this.db = db;
     this.trainingManager = trainingManager;
     this.skillTreeManager = skillTreeManager;
-    this.hmacSecret = process.env.CYBERLAB_CERT_SECRET || 'CYBERLAB_OFFENSIVE_ACADEMY_ROOT_CERT_SIGNING_KEY_2026';
+    const fs = require('node:fs');
+    const path = require('node:path');
+    const keyPath = path.join(__dirname, '..', '.certificate-key');
+    if (!process.env.CYBERLAB_CERT_SECRET && !fs.existsSync(keyPath)) {
+      try { fs.writeFileSync(keyPath, crypto.randomBytes(32).toString('hex'), { flag: 'wx', mode: 0o600 }); }
+      catch (error) { if (error.code !== 'EEXIST') throw error; }
+    }
+    this.hmacSecret = process.env.CYBERLAB_CERT_SECRET || fs.readFileSync(keyPath, 'utf8').trim();
+    if (this.hmacSecret.length < 32) throw new Error('Certificate signing key must contain at least 32 characters');
     this.initTables();
   }
 

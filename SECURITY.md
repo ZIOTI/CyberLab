@@ -1,5 +1,7 @@
 # 🛡️ Politique de Sécurité & Divulgation Responsable (SECURITY.md)
 
+> État de sécurité : consulter [HARDENING.md](docs/HARDENING.md) pour les protections effectivement implémentées et leurs limites. Cette application locale mono-utilisateur n'est pas conçue pour une exposition Internet. Les cibles utilisent une sandbox navigateur ; leur migration vers un service distinct et la validation navigateur complète restent à réaliser. Les empreintes de distribution ne remplacent pas une signature indépendante.
+
 La sécurité des utilisateurs et des plateformes hôtes exécutant **CyberRange PRO** est notre priorité absolue.
 
 ---

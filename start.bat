@@ -36,6 +36,12 @@ pause
 exit /b 1
 
 :START_SERVER
+cd /d "%~dp0"
+"%NODE_EXEC%" -e "if(process.versions.node.split('.')[0] !== '24') process.exit(1)"
+if errorlevel 1 (
+    echo Node.js 24.x est requis.
+    exit /b 1
+)
 echo [+] Moteur Node detecte : %NODE_EXEC%
 echo [*] Demarrage du serveur sur http://localhost:3333 ...
 echo.

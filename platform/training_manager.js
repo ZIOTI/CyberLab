@@ -633,7 +633,8 @@ class TrainingManager {
     const instanceData = {
       id: instanceId,
       challenge_id: challengeId,
-      container_id: 'container_' + instanceId,
+      runtime: 'simulation',
+      container_id: 'simulation_' + instanceId,
       virtual_ip: virtualIp,
       assigned_port: assignedPort,
       started_at: startedAt,
@@ -698,6 +699,7 @@ class TrainingManager {
 
     return {
       id: row.id,
+      runtime: 'simulation',
       challenge_id: row.challenge_id,
       virtual_ip: row.virtual_ip,
       assigned_port: row.assigned_port,

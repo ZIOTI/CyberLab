@@ -31,6 +31,8 @@ update_extract/
 update_temp.zip
 *.tmp
 
+.certificate-key
+
 # Logs
 *.log
 logs/

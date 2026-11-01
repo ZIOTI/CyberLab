@@ -1,8 +1,9 @@
+if (process.env.CYBERLAB_TEST_ISOLATED !== '1') { console.error('Use npm test or node scripts/test-isolated.js test_edge_cases_phase3.js'); process.exit(1); }
 const assert = require('assert');
 const fs = require('fs');
 const { spawn } = require('node:child_process');
 
-const BASE_URL = 'http://127.0.0.1:3333';
+const BASE_URL = `http://127.0.0.1:${process.env.PORT}`;
 
 async function isServerUp() {
   try {
@@ -14,7 +15,7 @@ async function isServerUp() {
 }
 
 async function ensureServerRunning() {
-  if (await isServerUp()) {
+  if (await isServerUp()) { throw new Error('Test port already occupied; refusing to reuse a server.');
     console.log('[TEST] Serveur CyberLab déjà actif sur port 3333.');
     return null;
   }

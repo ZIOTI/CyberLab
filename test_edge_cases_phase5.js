@@ -1,3 +1,4 @@
+if (process.env.CYBERLAB_TEST_ISOLATED !== '1') { console.error('Use npm test or node scripts/test-isolated.js test_edge_cases_phase5.js'); process.exit(1); }
 // ============================================================================
 // BANC DE TESTS DE ROBUSTESSE & CAS LIMITES — PHASE 5
 // CyberRange PRO : Durcissement Sécurité, Anti-CSRF, Rate Limiting, Confinement & Intégrité
@@ -10,7 +11,7 @@ const { spawn } = require('node:child_process');
 const { MemoryRateLimiter } = require('./platform/rate_limiter');
 const updater = require('./updater');
 
-const BASE_URL = 'http://127.0.0.1:3333';
+const BASE_URL = `http://127.0.0.1:${process.env.PORT}`;
 
 async function isServerUp() {
   try {
@@ -22,7 +23,7 @@ async function isServerUp() {
 }
 
 async function ensureServerRunning() {
-  if (await isServerUp()) {
+  if (await isServerUp()) { throw new Error('Test port already occupied; refusing to reuse a server.');
     console.log('[TEST] Serveur CyberLab déjà actif sur port 3333.');
     return null;
   }
@@ -189,8 +190,11 @@ async function runEdgeCases() {
 
   // Vérification des droits exécutables dans le catalogue Git
   const { execSync } = require('child_process');
-  const gitFiles = execSync('git ls-files --stage start.sh update.sh').toString();
-  assert(gitFiles.includes('100755'), 'Scripts possess Unix executable mode (100755)');
+  // The sandbox has no .git directory. Verify the shipped scripts themselves.
+  if (process.platform !== 'win32') {
+    assert(fs.statSync('start.sh').mode & 0o111, 'start.sh is executable');
+    assert(fs.statSync('update.sh').mode & 0o111, 'update.sh is executable');
+  }
   console.log('✔ Scripts de démarrage et mise à jour multiplateforme validés.');
 
   console.log('========================================================================');
@@ -198,7 +202,9 @@ async function runEdgeCases() {
   console.log('========================================================================');
 }
 
-ensureServerRunning().then(() => runEdgeCases()).then(() => {
+let ownedServer;
+process.on('exit', () => { if (ownedServer) ownedServer.kill(); });
+ensureServerRunning().then(server => { ownedServer = server; return runEdgeCases(); }).then(() => {
   process.exit(0);
 }).catch(err => {
   console.error('FAILED:', err);

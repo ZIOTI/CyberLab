@@ -1,9 +1,10 @@
+if (process.env.CYBERLAB_TEST_ISOLATED !== '1') { console.error('Use npm test or node scripts/test-isolated.js test_suite.js'); process.exit(1); }
 const assert = require('assert');
 const fs = require('fs');
 const { spawn } = require('node:child_process');
 const TrainingManager = require('./platform/training_manager');
 
-const BASE_URL = 'http://127.0.0.1:3333';
+const BASE_URL = `http://127.0.0.1:${process.env.PORT}`;
 
 async function isServerUp() {
   try {
@@ -15,7 +16,7 @@ async function isServerUp() {
 }
 
 async function ensureServerRunning() {
-  if (await isServerUp()) {
+  if (await isServerUp()) { throw new Error('Test port already occupied; refusing to reuse a server.');
     console.log('[TEST] Serveur CyberLab déjà actif sur port 3333.');
     return null;
   }
@@ -55,6 +56,42 @@ async function testAll() {
   const home = await fetch(`${BASE_URL}/`).then(r => r.text());
   assert(home.includes('CYBERRANGE PRO'), 'Home page title check');
   console.log('✔ Home page test PASSED');
+
+  // Security regressions: these checks exercise the real HTTP routes in a disposable installation.
+  for (const origin of ['https://attacker.invalid', 'null', 'http://localhost:1']) {
+    const denied = await fetch(`${BASE_URL}/api/user-progress`, {
+      method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ xp: 999999, completed_levels: ['m5-l9'] })
+    });
+    assert.strictEqual(denied.status, 403, `Reject foreign origin ${origin}`);
+  }
+  const beforeForgery = await fetch(`${BASE_URL}/api/user-progress`).then(r => r.json());
+  await fetch(`${BASE_URL}/api/user-progress`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ xp: 999999, gems: 999999, completed_levels: ['m5-l9'] })
+  });
+  const afterForgery = await fetch(`${BASE_URL}/api/user-progress`).then(r => r.json());
+  assert.strictEqual(afterForgery.xp, beforeForgery.xp, 'Client cannot forge XP');
+  assert.strictEqual(afterForgery.gems, beforeForgery.gems, 'Client cannot forge gems');
+  assert.deepStrictEqual(afterForgery.completed_levels, beforeForgery.completed_levels, 'Client cannot forge completions');
+  const answer = () => fetch(`${BASE_URL}/api/verify-answer`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ level_id: 'm1-l1', answer: 'operator' })
+  }).then(r => r.json());
+  assert.strictEqual((await answer()).is_correct, true);
+  const earned = await fetch(`${BASE_URL}/api/user-progress`).then(r => r.json());
+  assert(earned.xp > beforeForgery.xp, 'Server awards curriculum XP');
+  await answer();
+  const replayed = await fetch(`${BASE_URL}/api/user-progress`).then(r => r.json());
+  assert.strictEqual(replayed.xp, earned.xp, 'Replay cannot award XP twice');
+  assert.strictEqual(replayed.gems, earned.gems, 'Replay cannot award gems twice');
+  const targetDocument = await fetch(`${BASE_URL}/targets/training/web-07-reflected-xss/`);
+  assert(targetDocument.headers.get('content-security-policy').includes('sandbox allow-scripts'), 'Target documents receive opaque-origin sandbox policy');
+  assert(!targetDocument.headers.get('content-security-policy').includes('allow-same-origin'), 'Targets cannot inherit platform origin');
+  assert(!home.includes('<iframe id="target-in-app-iframe"'), 'No unprotected target iframe in home');
+  const { verifyZipIntegrity } = require('./updater');
+  assert.throws(() => verifyZipIntegrity('package.json', null), /expected SHA-256/, 'Missing checksum fails closed');
+  console.log('✔ Origin isolation, server-owned progress, replay protection and mandatory checksums PASSED');
 
   // 2. Test robots.txt
   const robots = await fetch(`${BASE_URL}/robots.txt`).then(r => r.text());

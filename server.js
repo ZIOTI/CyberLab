@@ -36,23 +36,9 @@ function pruneExpiredCsrfTokens() {
 }
 
 function isSameOrigin(req) {
-  const origin = req.headers['origin'];
-  if (!origin) return true; // Requête locale/directe ou même origine
-  try {
-    const originUrl = new URL(origin);
-    const hostHeader = req.headers['host'] || `127.0.0.1:${PORT}`;
-    const expectedHost = hostHeader.split(':')[0];
-    const expectedPort = hostHeader.split(':')[1] || '80';
-
-    if (originUrl.hostname === 'localhost' || originUrl.hostname === '127.0.0.1' || originUrl.hostname === expectedHost) {
-      if (!originUrl.port || originUrl.port === expectedPort || originUrl.port === String(PORT)) {
-        return true;
-      }
-    }
-    return false;
-  } catch (e) {
-    return false;
-  }
+  const origin = req.headers.origin;
+  if (!origin) return true;
+  return origin === `http://${req.headers.host}`;
 }
 
 function validateCsrfToken(req) {
@@ -84,6 +70,14 @@ const HOST = process.env.HOST || '127.0.0.1';
 const DB_PATH = path.join(__dirname, 'cyberrange.db');
 const TARGETS_DB_PATH = path.join(__dirname, 'targets.db');
 const PUBLIC_DIR = path.join(__dirname, 'public');
+// Load the trusted curriculum once; request payloads never execute as JavaScript.
+const curriculumContext = { window: {} };
+require('node:vm').runInNewContext(
+  fs.readFileSync(path.join(PUBLIC_DIR, 'js', 'challenges.js'), 'utf8'),
+  curriculumContext,
+  { timeout: 1000 }
+);
+const curriculumRewards = new Map(curriculumContext.window.CYBER_LEVELS.map(level => [level.id, level.xp]));
 
 // Initialisation des bases SQLite locales :
 // 1. cyberrange.db : Progression utilisateur & état du joueur (isolé)
@@ -324,7 +318,8 @@ let web04Loot = [];
 function sendJSON(res, statusCode, data) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Access-Control-Allow-Origin': '*',
+    // CORS is granted only to deliberately vulnerable target routes.
+
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Custom-Auth, X-CSRF-Token'
   });
@@ -371,6 +366,19 @@ const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = parsedUrl.pathname;
   const method = req.method;
+  const allowedHosts = new Set([`127.0.0.1:${PORT}`, `localhost:${PORT}`]);
+  if (!allowedHosts.has(req.headers.host)) return sendJSON(res, 403, { error: 'Invalid Host' });
+  if (pathname.startsWith('/api/') && !isSameOrigin(req)) {
+    return sendJSON(res, 403, { error: 'Cross-origin platform API access forbidden' });
+  }
+  if (pathname.startsWith('/targets/')) res.setHeader('Access-Control-Allow-Origin', '*');
+  // An opaque document origin prevents exercise scripts from accessing platform state,
+  // even when a target is opened directly instead of inside the training iframe.
+  if (pathname.startsWith('/targets/') || /^\/(portal|nexus|vault|hidden_admin_vault_9041)(\/|$)/.test(pathname)) {
+    res.setHeader('Content-Security-Policy', "sandbox allow-scripts allow-forms allow-downloads; default-src 'self' 'unsafe-inline' data: blob: https:; connect-src 'self' http://127.0.0.1:* http://localhost:*; frame-ancestors 'self'");
+  }
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+
 
   if (method === 'OPTIONS') {
     const origin = req.headers['origin'];
@@ -1995,7 +2003,9 @@ const server = http.createServer(async (req, res) => {
       } catch (e) {}
 
       for (const cat of categories) {
-        const candidate = path.join(__dirname, 'challenges', cat, chId, 'src', rest);
+        const sourceDir = path.resolve(__dirname, 'challenges', cat, chId, 'src');
+        const candidate = path.resolve(sourceDir, rest);
+        if (!candidate.startsWith(sourceDir + path.sep)) continue;
         if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
           const ext = path.extname(candidate).toLowerCase();
           const mimeTypes = {
@@ -2140,35 +2150,11 @@ const server = http.createServer(async (req, res) => {
       const nickname = (data.nickname || 'Opérateur RedTeam').trim();
       const avatar = (data.avatar || '🥷').trim();
       const theme = data.theme || 'dark';
-      const xp = parseInt(data.xp, 10) || 0;
-      const streak = parseInt(data.streak, 10) || 1;
-      const maxStreak = parseInt(data.max_streak, 10) || streak;
-      const hearts = data.hearts !== undefined ? parseInt(data.hearts, 10) : 5;
-      const combo = parseInt(data.combo, 10) || 0;
-      const gems = parseInt(data.gems, 10) || 100;
-      const completed = JSON.stringify(data.completed_levels || []);
-      const badges = JSON.stringify(data.unlocked_badges || []);
-      const now = new Date().toISOString();
-
-      if (db) {
-        db.prepare(`
-          INSERT INTO user_state (id, nickname, avatar, theme, xp, streak, max_streak, hearts, combo, gems, completed_levels, unlocked_badges, updated_at)
-          VALUES ('current_player', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ON CONFLICT(id) DO UPDATE SET
-            nickname = excluded.nickname,
-            avatar = excluded.avatar,
-            theme = excluded.theme,
-            xp = excluded.xp,
-            streak = excluded.streak,
-            max_streak = excluded.max_streak,
-            hearts = excluded.hearts,
-            combo = excluded.combo,
-            gems = excluded.gems,
-            completed_levels = excluded.completed_levels,
-            unlocked_badges = excluded.unlocked_badges,
-            updated_at = excluded.updated_at
-        `).run(nickname, avatar, theme, xp, streak, maxStreak, hearts, combo, gems, completed, badges, now);
+      if (nickname.length > 80 || avatar.length > 32 || !['dark', 'light'].includes(theme)) {
+        return sendJSON(res, 400, { error: 'Invalid profile preferences' });
       }
+      if (db) db.prepare("UPDATE user_state SET nickname = ?, avatar = ?, theme = ?, updated_at = ? WHERE id = 'current_player'")
+        .run(nickname, avatar, theme, new Date().toISOString());
 
       return sendJSON(res, 200, { success: true });
     } catch (err) {
@@ -2194,10 +2180,7 @@ const server = http.createServer(async (req, res) => {
       const submitted = (body.answer || '').trim();
 
       const expected = OFFICIAL_FLAGS[levelId];
-      let isCorrect = expected && (
-        expected.toLowerCase() === submitted.toLowerCase() ||
-        submitted.toLowerCase().includes(expected.toLowerCase())
-      );
+      let isCorrect = expected && expected.toLowerCase() === submitted.toLowerCase();
       if (!isCorrect && (levelId === 'm4-mid' || levelId === 'm4-l4')) {
         isCorrect = submitted.includes('CYBER{CLIENT_MID_EVAL_IDOR_SESSION_PWNED}') || submitted.includes('CYBER{IDOR_DIRECT_OBJECT_FINANCIAL_LEAK}');
       }
@@ -2220,7 +2203,24 @@ const server = http.createServer(async (req, res) => {
         );
       }
 
-      if (isCorrect && gamificationManager) {
+      let firstCompletion = false;
+      if (isCorrect && db) {
+        db.exec('BEGIN IMMEDIATE');
+        try {
+          const state = db.prepare("SELECT completed_levels FROM user_state WHERE id = 'current_player'").get();
+          const completed = JSON.parse(state.completed_levels || '[]');
+          if (!completed.includes(levelId)) {
+            completed.push(levelId);
+            const reward = curriculumRewards.get(levelId);
+            if (!Number.isFinite(reward) || reward < 0) throw new Error('Unknown curriculum level');
+            db.prepare("UPDATE user_state SET completed_levels = ?, xp = xp + ?, gems = gems + 25 WHERE id = 'current_player'")
+              .run(JSON.stringify(completed), reward);
+            firstCompletion = true;
+          }
+          db.exec('COMMIT');
+        } catch (error) { db.exec('ROLLBACK'); throw error; }
+      }
+      if (firstCompletion && gamificationManager) {
         gamificationManager.trackQuestProgress('current_player', 'complete_curriculum', 1);
         gamificationManager.trackQuestProgress('current_player', 'earn_xp', 20);
         gamificationManager.checkAndApplyStreak('current_player');
@@ -2509,7 +2509,7 @@ const server = http.createServer(async (req, res) => {
   let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
 
   const safePath = path.resolve(filePath);
-  if (!safePath.startsWith(path.resolve(PUBLIC_DIR))) {
+  if (!safePath.startsWith(path.resolve(PUBLIC_DIR) + path.sep)) {
     res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
     return res.end('403 Forbidden');
   }
@@ -2532,7 +2532,7 @@ const server = http.createServer(async (req, res) => {
         <body>
           <div class="box">
             <h2>[404 NOT FOUND]</h2>
-            <p>La ressource demandée <code>${pathname}</code> n'existe pas sur le serveur.</p>
+            <p>La ressource demandée <code>${pathname.replace(/[<>&"']/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;", "'":"&#39;"}[ch]))}</code> n'existe pas sur le serveur.</p>
             <p><a href="/">← Retour au QG CyberRange</a></p>
           </div>
         </body>

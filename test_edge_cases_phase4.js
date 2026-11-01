@@ -1,3 +1,4 @@
+if (process.env.CYBERLAB_TEST_ISOLATED !== '1') { console.error('Use npm test or node scripts/test-isolated.js test_edge_cases_phase4.js'); process.exit(1); }
 const assert = require('node:assert');
 const { DatabaseSync } = require('node:sqlite');
 const GamificationManager = require('./platform/gamification_manager');

@@ -147,6 +147,7 @@ function computeFileSha256(filePath) {
 
 // Vérification stricte d'intégrité SHA-256
 function verifyZipIntegrity(filePath, expectedSha256) {
+  if (!/^[a-f0-9]{64}$/i.test(expectedSha256 || '')) throw new Error('Missing or invalid expected SHA-256; update refused');
   const actualHash = computeFileSha256(filePath);
   if (expectedSha256) {
     const cleanExpected = expectedSha256.trim().toLowerCase();
@@ -201,7 +202,7 @@ async function checkForUpdates() {
             if (parts.length >= 2) {
               const hash = parts[0].trim();
               const filename = parts[1].trim();
-              if (filename === zipName || filename === 'CyberRange-PRO.zip' || filename.endsWith('.zip')) {
+              if (filename === zipName) {
                 expectedSha256 = hash;
                 break;
               }
@@ -250,7 +251,7 @@ function copyDirRecursiveSafe(src, dest) {
     const destPath = path.join(dest, entry.name);
 
     // PROTECTION ABSOLUE DE LA BASE DE DONNÉES DE PROGRESSION
-    if (entry.name === 'cyberrange.db' || entry.name.startsWith('cyberrange.db-')) {
+    if (entry.name === '.certificate-key' || entry.name === 'cyberrange.db' || entry.name.startsWith('cyberrange.db-')) {
       continue; // Ne JAMAIS écraser la base SQLite des niveaux !
     }
 
