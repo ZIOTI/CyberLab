@@ -88,7 +88,10 @@ jobs:
           # Génération automatique du fichier de contrôle d'intégrité SHA-256 (checksums.txt)
           Get-FileHash -Algorithm SHA256 dist\CyberRange-PRO-Setup.exe, dist\CyberRange-PRO.zip, "dist\CyberRange-PRO-$versionTag.zip" | ForEach-Object { "$($_.Hash.ToLower())  $([System.IO.Path]::GetFileName($_.Path))" } | Set-Content -Encoding ascii dist\checksums.txt
 
-          # Enregistre la version pour les steps suivants
+          # Enregistre la version et la note de release pour les steps suivants
+          $bodyFile = "docs/RELEASE-$versionTag.md"
+          if (-not (Test-Path $bodyFile)) { $bodyFile = "docs/RELEASE-v1.4.0.md" }
+          "RELEASE_BODY_PATH=$bodyFile" >> $env:GITHUB_ENV
           "RELEASE_TAG=$versionTag" >> $env:GITHUB_ENV
           "RELEASE_VERSION=$($pkg.version)" >> $env:GITHUB_ENV
 
@@ -100,7 +103,7 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           name: "CyberRange PRO ${{ env.RELEASE_TAG }} (Installer & Portable)"
           generate_release_notes: true
-          body_path: docs/RELEASE-v1.4.0.md
+          body_path: ${{ env.RELEASE_BODY_PATH }}
           draft: false
           prerelease: false
           files: |
